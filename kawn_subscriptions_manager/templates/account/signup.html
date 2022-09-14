@@ -1,22 +1,110 @@
-{% extends "account/base.html" %}
-
+{% load static %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 
-{% block head_title %}{% translate "Signup" %}{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Sign Up</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <link href="{% static 'css/nucleo-icons.css'  %}" rel="stylesheet" />
+  <link href="{% static 'css/nucleo-svg.css'  %}" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link id="pagestyle" href="{% static 'css/soft-ui-dashboard.css'  %}" rel="stylesheet" />
+</head>
 
-{% block inner %}
-<h1>{% translate "Sign Up" %}</h1>
+<body class="">
+  <main class="main-content  mt-0">
+    <section class="min-vh-50 mb-0">
+      <div class="page-header align-items-start pt-3 pb-11 m-3 border-radius-lg">
+        <!-- <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-5 text-center mx-auto">
+            </div>
+          </div>
+        </div> -->
+      </div>
+      <div class="container">
+        <div class="row mt-lg-n10 mt-md-n11 mt-n10">
+          <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+            <div class="card z-index-0">
+              <div class="card-header text-center pt-5 pb-2">
+                <h5 class="font-weight-bolder text-info text-gradient">{% translate "Sign Up" %}</h5>
+              </div>
+              <div class="card-body">
+                <form role="form text-left" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                  {% csrf_token %}
+                  {{ form|crispy }}
+                  {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                  </div>
+                  {% endif %}
+                  <div class="text-center">
+                    <button class="btn bg-gradient-info w-100 my-4 mb-2" type="submit">{% translate "Sign Up" %}</button>
+                  </div>
+                  <p class="text-sm mt-3 mb-0">{% blocktranslate %} Already have an account? 
+                    <a href="{{ login_url }}" class="text-info text-gradient font-weight-bolder">Sign in</a>{% endblocktranslate %}
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <footer class="footer py-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mb-4 mx-auto text-center">
+            <a href="javascript:;" target="_blank" class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2">
+              Company
+            </a>
+            <a href="javascript:;" target="_blank" class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2">
+              About Us
+            </a>
+            <a href="javascript:;" target="_blank" class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2">
+              Team
+            </a>
+            <a href="javascript:;" target="_blank" class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2">
+              Products
+            </a>
+            <a href="javascript:;" target="_blank" class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2">
+              Blog
+            </a>
+            <a href="javascript:;" target="_blank" class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2">
+              Pricing
+            </a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8 mx-auto text-center mt-1">
+            <p class="mb-0 text-secondary">
+              Copyright © <script>
+                document.write(new Date().getFullYear())
+              </script> PT Technomedia Multi Sejahtera.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
 
-<p>{% blocktranslate %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktranslate %}</p>
-
-<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  {% csrf_token %}
-  {{ form|crispy }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <button class="btn btn-primary" type="submit">{% translate "Sign Up" %} &raquo;</button>
-</form>
-
-{% endblock %}
+  <script src="{% static 'js/core/popper.min.js'  %}"></script>
+  <script src="{% static 'js/core/bootstrap.min.js'  %}../assets/js/core/bootstrap.min.js"></script>
+  <script src="{% static 'js/plugins/perfect-scrollbar.min.js'  %}"></script>
+  <script src="{% static 'js/plugins/smooth-scrollbar.min.js'  %}"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <script src="{% static 'js/core/soft-ui-dashboard.min.js'  %}"></script>
+</body>
+</html>

@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 from pathlib import Path
 
 import environ
+import os
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # kawn_subscriptions_manager/
@@ -42,10 +43,14 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    "default": env.db(
-        "DATABASE_URL",
-        default="postgres:///kawn_subscriptions_manager",
-    ),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'kawn_subscriptions_manager',
+        'USER': 'postgres',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
@@ -77,7 +82,7 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "django_celery_beat",
+    # "django_celery_beat",
 ]
 
 LOCAL_APPS = [
@@ -102,9 +107,11 @@ AUTHENTICATION_BACKENDS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "users:redirect"
+LOGIN_REDIRECT_URL = "users:home"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
+
+LOGOUT_URL = 'account_logout'
 
 # PASSWORDS
 # ------------------------------------------------------------------------------
@@ -149,7 +156,9 @@ STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(APPS_DIR / "static")]
+STATICFILES_DIRS = [
+    os.path.join(APPS_DIR, 'static')
+]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -159,7 +168,7 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR / "media")
+MEDIA_ROOT = os.path.join(APPS_DIR, 'media')
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = "/media/"
 
@@ -257,29 +266,29 @@ LOGGING = {
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
-# Celery
-# ------------------------------------------------------------------------------
-if USE_TZ:
-    # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-timezone
-    CELERY_TIMEZONE = TIME_ZONE
-# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-broker_url
-CELERY_BROKER_URL = env("CELERY_BROKER_URL")
-# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-result_backend
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-accept_content
-CELERY_ACCEPT_CONTENT = ["json"]
-# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-task_serializer
-CELERY_TASK_SERIALIZER = "json"
-# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-result_serializer
-CELERY_RESULT_SERIALIZER = "json"
-# https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-time-limit
-# TODO: set to whatever value is adequate in your circumstances
-CELERY_TASK_TIME_LIMIT = 5 * 60
-# https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-soft-time-limit
-# TODO: set to whatever value is adequate in your circumstances
-CELERY_TASK_SOFT_TIME_LIMIT = 60
-# https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-scheduler
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+# # Celery
+# # ------------------------------------------------------------------------------
+# if USE_TZ:
+#     # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-timezone
+#     CELERY_TIMEZONE = TIME_ZONE
+# # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-broker_url
+# CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+# # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-result_backend
+# CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+# # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-accept_content
+# CELERY_ACCEPT_CONTENT = ["json"]
+# # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-task_serializer
+# CELERY_TASK_SERIALIZER = "json"
+# # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-result_serializer
+# CELERY_RESULT_SERIALIZER = "json"
+# # https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-time-limit
+# # TODO: set to whatever value is adequate in your circumstances
+# CELERY_TASK_TIME_LIMIT = 5 * 60
+# # https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-soft-time-limit
+# # TODO: set to whatever value is adequate in your circumstances
+# CELERY_TASK_SOFT_TIME_LIMIT = 60
+# # https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-scheduler
+# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)

@@ -3,6 +3,7 @@ from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django.contrib.auth import forms as admin_forms
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
+from django import forms
 
 User = get_user_model()
 
@@ -40,3 +41,19 @@ class UserSocialSignupForm(SocialSignupForm):
     Default fields will be added automatically.
     See UserSignupForm otherwise.
     """
+
+class SupervisorAddForm(UserAdminCreationForm):
+    """
+    Form for User Creation in the Admin Area.
+    To change user signup, see UserSignupForm and UserSocialSignupForm.
+    """
+    class Meta:
+        model = User
+        fields = ["username", "email", "password1", "password2"]
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.type = "SUPERVISOR"
+        if commit:
+            user.save()
+        return user
