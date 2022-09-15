@@ -40,6 +40,22 @@ class User(AbstractUser):
     #         self.type = self.base_type
     #     return super().save(*args, **kwargs)
 
+class SubscriptionPlan(models.Model):
+    name = models.CharField(_("Name"), max_length=255)
+    duration = models.IntegerField(_("Duration"))
+    price = models.IntegerField(_("Price"))
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    subscriptionplan = models.ForeignKey(SubscriptionPlan, on_delete = models.CASCADE)
+    start_date = models.DateTimeField(_("Start Date"))
+    end_date = models.DateTimeField(_("End Date"))
+    remaining_duration = models.IntegerField(_("End Date"))
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
 class SalesManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(type=User.Types.SALES)
