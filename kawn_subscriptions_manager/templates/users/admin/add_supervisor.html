@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="row mt-4">
+<div class="row">
   <div class="col-lg-12 mb-lg-0 mb-4">
     <div class="card">
       <div class="card-body p-5">
@@ -11,12 +11,11 @@
           <div class="col-lg-10">
             <div class="d-flex flex-column h-100">
               <h5 class="font-weight-bolder">Add Supervisor</h5>
-              <p class="mb-5"></p>
               <form method="post" novalidate>
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}">
                 {{ form|crispy }}
-                <button type="submit" class="btn bg-gradient-primary w-100 mt-4 mb-0">ADD</button>
+                <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">ADD</button>
               </form>
             </div>
           </div>
