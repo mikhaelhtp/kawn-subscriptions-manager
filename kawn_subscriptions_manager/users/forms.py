@@ -47,9 +47,11 @@ class SupervisorAddForm(UserAdminCreationForm):
     Form for User Creation in the Admin Area.
     To change user signup, see UserSignupForm and UserSocialSignupForm.
     """
+    email = forms.EmailField()
     class Meta:
         model = User
         fields = ["username", "email", "password1", "password2"]
+
 
     def save(self, commit=True):
         user = super().save(commit=False)

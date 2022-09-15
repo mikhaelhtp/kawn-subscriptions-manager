@@ -11,10 +11,8 @@ class User(AbstractUser):
         SUPERVISOR = "SUPERVISOR", "Supervisor"
         ADMIN = "ADMIN", "Admin"
 
-    base_type = Types.SALES
-
     type = models.CharField(
-        _("Type"), max_length=50, choices=Types.choices, default=base_type
+        _("Type"), max_length=50, choices=Types.choices, default=Types.SALES
     )
 
     """
@@ -37,10 +35,10 @@ class User(AbstractUser):
         """
         return reverse("users:detail", kwargs={"username": self.username})
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.type = self.base_type
-        return super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         self.type = self.base_type
+    #     return super().save(*args, **kwargs)
 
 class SalesManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
