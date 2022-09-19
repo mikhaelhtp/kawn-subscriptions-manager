@@ -29,3 +29,23 @@ def admin_only(view_func):
 			return render(request, '403.html')
 
 	return wrapper_function
+
+def supervisor_only(view_func):
+	def wrapper_function(request, *args, **kwargs):
+		if request.user.type == "SUPERVISOR":
+			return view_func(request, *args, **kwargs)
+		else:
+			# return HttpResponse('You are not authorized to view this page')
+			return render(request, '403.html')
+
+	return wrapper_function
+
+def sales_only(view_func):
+	def wrapper_function(request, *args, **kwargs):
+		if request.user.type == "SALES":
+			return view_func(request, *args, **kwargs)
+		else:
+			# return HttpResponse('You are not authorized to view this page')
+			return render(request, '403.html')
+
+	return wrapper_function

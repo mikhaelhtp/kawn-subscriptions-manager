@@ -2,16 +2,18 @@ from allauth.account.forms import SignupForm
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django.contrib.auth import forms as admin_forms
 from django.contrib.auth import get_user_model
+from kawn_subscriptions_manager.users.models import SubscriptionPlan
 from django.utils.translation import gettext_lazy as _
 from django import forms
+from django.forms import ModelForm
+from .models import Subscription
+from django.contrib.admin.widgets import AdminDateWidget
 
 User = get_user_model()
-
 
 class UserAdminChangeForm(admin_forms.UserChangeForm):
     class Meta(admin_forms.UserChangeForm.Meta):
         model = User
-
 
 class UserAdminCreationForm(admin_forms.UserCreationForm):
     """
@@ -26,14 +28,12 @@ class UserAdminCreationForm(admin_forms.UserCreationForm):
             "username": {"unique": _("This username has already been taken.")}
         }
 
-
 class UserSignupForm(SignupForm):
     """
     Form that will be rendered on a user sign up section/screen.
     Default fields will be added automatically.
     Check UserSocialSignupForm for accounts created from social.
     """
-
 
 class UserSocialSignupForm(SocialSignupForm):
     """
@@ -50,12 +50,42 @@ class SupervisorAddForm(UserAdminCreationForm):
     email = forms.EmailField()
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
-
+        fields = ["username", "email","type", "password1", "password2"]
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.type = "SUPERVISOR"
         if commit:
             user.save()
         return user
+
+class SubscriptionPlanAddForm(ModelForm):
+    class Meta:
+        model = SubscriptionPlan
+        fields = ['name','duration', 'price']
+
+    def save(self, commit=True):
+        subscriptionplan = super().save(commit=False)
+        if commit:
+            subscriptionplan.save()
+        return subscriptionplan
+
+class SubscriptionAddForm(ModelForm):
+
+    class Meta:
+        model = Subscription
+        fields = ['user','subscriptionplan', 'start_date', 'end_date']
+        widgets = {
+            'start_date': forms.DateInput({'type':'date'}),
+            'end_date': forms.DateInput({'type':'date'}),
+        }
+
+    def save(self, commit=True):
+        subscription = super().save(commit=False)
+        if commit:
+            subscription.save()
+        return subscription
+
+class SubscriptionPlanEditForm(ModelForm):
+    class Meta:
+        model = SubscriptionPlan
+        fields = '__all__'

@@ -2,8 +2,8 @@
 
 {% load crispy_forms_tags %}
 
-{% block menu-title %}Add Supervisor{% endblock %}
-{% block users-active %}active{% endblock %}
+{% block menu-title %}Edit Subscription Plan{% endblock %}
+{% block listsubscriptionplan-active %}active{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -13,7 +13,7 @@
         <div class="row">
           <div class="col-lg-10">
             <div class="d-flex flex-column h-100">
-              <h5 class="font-weight-bolder">Add Supervisor</h5>
+              <h5 class="font-weight-bolder">Add Subscription Plan</h5>
               <form method="post" novalidate>
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}">

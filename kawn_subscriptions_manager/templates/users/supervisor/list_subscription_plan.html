@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block menu-title %}List Subscriptions Plan{% endblock %}
+{% block listsubscriptionplan-active %}active{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header pb-0 justify-content-lg-between">
+        <h6>Subscription Plans</h6>
+      </div>
+      <a href="{% url 'users:addSubscriptionPlan' %}" class="btn bg-gradient-info col-md-2 ms-3">Add Subscription Plan</a>
+      <div class="card-body px-0 pt-0 pb-2">
+        <div class="table-responsive p-0">
+          <table class="table align-items-center mb-0">
+            <thead>
+              <tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Duration</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for data in results %}
+              <tr>
+                <td>
+                  <div class="d-flex px-2 py-1 ">
+                    <div class="d-flex flex-column justify-content-center text-center">
+                      <p class="text-xs text-secondary mb-0">{{ data.0 }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.1 }} Month</p>
+                </td>
+                <td class="align-middle text-center text-sm">
+                    <p class="text-xs text-secondary mb-0">Rp {{ data.2 }}</p>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <a href="{% url 'users:editSubscriptionPlan' %}" class="badge bg-gradient-success">Edit</a>
+                  <a href="" class="badge bg-gradient-danger">Deactivate</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

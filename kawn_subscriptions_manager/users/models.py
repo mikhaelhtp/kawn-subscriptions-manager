@@ -35,15 +35,11 @@ class User(AbstractUser):
         """
         return reverse("users:detail", kwargs={"username": self.username})
 
-    # def save(self, *args, **kwargs):
-    #     if not self.id:
-    #         self.type = self.base_type
-    #     return super().save(*args, **kwargs)
-
 class SubscriptionPlan(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     duration = models.IntegerField(_("Duration"))
     price = models.IntegerField(_("Price"))
+    is_active = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -52,7 +48,6 @@ class Subscription(models.Model):
     subscriptionplan = models.ForeignKey(SubscriptionPlan, on_delete = models.CASCADE)
     start_date = models.DateTimeField(_("Start Date"))
     end_date = models.DateTimeField(_("End Date"))
-    remaining_duration = models.IntegerField(_("End Date"))
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
