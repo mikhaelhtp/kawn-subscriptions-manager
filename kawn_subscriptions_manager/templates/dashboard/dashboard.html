@@ -90,23 +90,4 @@
         </div>
     </div>
 </div>
-<div class="row mt-4">
-    {% for subscriptionplan in SubscriptionPlans %}
-    <div class="col-lg-4 mt-3">
-        <div class="card h-100 p-3">
-            <div class="overflow-hidden position-relative border-radius-lg bg-cover h-100">
-                <span class="mask"></span>
-                <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
-                    <p class="mb-1 pt-2 text-bold text-center">{{ subscriptionplan.name }}</p>
-                    <h5 class="font-weight-bolder mb-4 pt-2 text-center">Rp {{ subscriptionplan.price}}</h5>
-                    <p class="text-center">Duration : {{ subscriptionplan.duration}} month</p>
-                    <p class="">Wealth creation is an evolutionarily recent positive-sum game. It is all about who take
-                        the opportunity first.</p>
-                    <a href="{% url 'users:subscribe' subscriptionplan.id %}" class="btn bg-gradient-info w-100 mt-4 mb-0">Subscribe</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
 {% endblock content %}

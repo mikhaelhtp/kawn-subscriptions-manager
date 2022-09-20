@@ -82,12 +82,16 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "fontawesomefree",
     # "django_celery_beat",
 ]
 
 LOCAL_APPS = [
     "kawn_subscriptions_manager.users",
     # Your stuff: custom apps go here
+    "kawn_subscriptions_manager.subscriptions",
+    "kawn_subscriptions_manager.dashboard",
+    "kawn_subscriptions_manager.clients",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

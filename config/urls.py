@@ -4,16 +4,19 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required, permission_required
 
 urlpatterns = [
-    # path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("", login_required(TemplateView.as_view(template_name="dashboard/dashboard.html"))),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
-    path("users/", include("kawn_subscriptions_manager.users.urls", namespace="users")),
+    path("users/", include("kawn_subscriptions_manager.users.urls")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
-    path('', include('kawn_subscriptions_manager.users.urls')),
+    path("subscriptions/", include("kawn_subscriptions_manager.subscriptions.urls")),
+    path("dashboard/", include("kawn_subscriptions_manager.dashboard.urls")),
+    path("clients/", include("kawn_subscriptions_manager.clients.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
