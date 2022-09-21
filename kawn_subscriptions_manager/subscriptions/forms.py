@@ -6,6 +6,7 @@ from django.forms import ModelForm
 from .models import SubscriptionPlan, Subscription
 
 class SubscriptionPlanAddForm(ModelForm):
+
     class Meta:
         model = SubscriptionPlan
         fields = ['name','duration', 'price']
@@ -15,6 +16,7 @@ class SubscriptionPlanAddForm(ModelForm):
         if commit:
             subscriptionplan.save()
         return subscriptionplan
+
 
 class SubscriptionAddForm(ModelForm):
 
@@ -32,7 +34,9 @@ class SubscriptionAddForm(ModelForm):
             subscription.save()
         return subscription
 
-class SubscriptionPlanEditForm(ModelForm):
+
+class SubscriptionPlanUpdateForm(ModelForm):
+
     class Meta:
         model = SubscriptionPlan
-        fields = '__all__'
+        fields = ['name', 'duration', 'price']

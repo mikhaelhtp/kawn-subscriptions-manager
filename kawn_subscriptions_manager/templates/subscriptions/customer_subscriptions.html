@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block menu-title %}List User Subscriptions{% endblock %}
+{% block menu-title %}Customer Subscriptions{% endblock %}
 {% block listusersubscriptions-active %}active{% endblock %}
 
 {% block content %}
@@ -8,36 +8,32 @@
   <div class="col-12">
     <div class="card mb-4">
       <div class="card-header pb-0">
-        <h6>User Susbcriptions</h6>
+        <h5 class="font-weight-bolder">Customer Subscriptions</h5>
       </div>
       <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
           <table class="table align-items-center mb-0">
             <thead>
               <tr class="text-center">
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer Name</th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subscription Plan
+                <th class="text-uppercase font-weight-bold text-xxs font-weight-bolder opacity-7">Customer Name</th>
+                <th class="text-uppercase font-weight-bold text-xxs font-weight-bolder opacity-7 ps-2">Subscription Plan
                 </th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start Date
+                <th class="text-center text-uppercase font-weight-bold text-xxs font-weight-bolder opacity-7">Start Date
                 </th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">End Date
+                <th class="text-center text-uppercase font-weight-bold text-xxs font-weight-bolder opacity-7">End Date
                 </th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Remaining
+                <th class="text-center text-uppercase font-weight-bold text-xxs font-weight-bolder opacity-7">Remaining
                   Date</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                <th class="text-center text-uppercase font-weight-bold text-xxs font-weight-bolder opacity-7">Action</th>
               </tr>
             </thead>
             <tbody>
               {% for data in results %}
               <tr class="text-center">
-                <td>
-                  <div class="d-flex px-2 py-1 ">
-                    <div class="d-flex flex-column justify-content-center text-center">
-                      <p class="text-xs text-secondary mb-0">{{ data.0 }}</p>
-                    </div>
-                  </div>
+                <td class="align-middle text-center text-sm">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.0 }}</p>
                 </td>
-                <td class="">
+                <td class="align-middle text-center text-sm">
                   <p class="text-xs font-weight-bold mb-0">{{ data.1 }}</p>
                 </td>
                 <td class="align-middle text-center text-sm">
@@ -47,7 +43,7 @@
                   <span class="badge badge-sm bg-gradient-danger">{{ data.3 }}</span>
                 </td>
                 <td class="align-middle text-center text-sm">
-                  <p class="text-xs text-secondary mb-0">{{ data.4|floatformat }} days</p>
+                  <p class="text-xs font-weight-bold mb-0">{{ data.4|floatformat }} days</p>
                 </td>
                 <td class="align-middle text-center text-sm">
                   <a href="" class="badge bg-gradient-info">Activate</a>

@@ -1,20 +1,16 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse, reverse_lazy
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, RedirectView, UpdateView, CreateView, ListView
-from django.contrib.auth.views import LoginView 
-from django.shortcuts import redirect, render
-from django.core.exceptions import PermissionDenied
-from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect, render
+from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
+from django.views.generic import DetailView, RedirectView, UpdateView, CreateView
 
 from .models import User
 from .forms import SupervisorAddForm
 from kawn_subscriptions_manager.decorators import admin_only
-
-from var_dump import var_dump
 
 User = get_user_model()
 
@@ -62,6 +58,7 @@ user_redirect_view = UserRedirectView.as_view()
 
 @method_decorator([login_required, admin_only], name='dispatch')
 class AddUsers(LoginRequiredMixin, CreateView):
+    
     model = User
     form_class = SupervisorAddForm
     # fields = ['username','email', 'password']
@@ -71,7 +68,7 @@ class AddUsers(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         user = form.save()
         # login(self.request, user)
-        return redirect('users:home')
+        return redirect('users:addUsers')
 
 add_users = AddUsers.as_view()
 
