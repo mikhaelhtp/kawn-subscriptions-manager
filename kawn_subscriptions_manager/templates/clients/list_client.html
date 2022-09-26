@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block menu-title %}List Client{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0 col-md-12">
+                <div class="row">
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    {% endfor %}
+                    <div class="col-md-10 align-middle">
+                        <h6>Clients</h6>
+                    </div>
+                    <div class="col-md-2"> <a href="{% url 'clients:add_client' %}"
+                            class="btn bg-gradient-info col-md-12">Add
+                            Client</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr class="text-center">
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Client
+                                    Name</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Business Name
+                                </th>
+                                <th
+                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    Sales Name
+                                </th>
+                                <th
+                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in object_list %}
+                            <tr class="text-center">
+                                <td class="align-middle text-center text-sm">
+                                    <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <p class="text-xs font-weight-bold mb-0">{{ data.business_name }}</p>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <p class="text-xs font-weight-bold mb-0">{{ data.user.name }}</p>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <div class="d-inline">
+                                        <a href="" class="badge bg-gradient-info">Activate</a>
+                                    </div>
+                                    <form class="d-inline" id="form-id"
+                                        action="{% url 'clients:delete_client' data.id %}" method="post">
+                                        {% csrf_token %}
+                                        <input name="_method" type="hidden" value="Delete">
+                                        <button type="submit" class="badge btn-danger btn-flat show_confirm"
+                                            data-toggle="tooltip" title='Delete'>Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr class="text-center">
+                                <td colspan="4" class="align-middle text-center text-sm">
+                                    <p class="text-xs font-weight-bold mb-0">No Item in List</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block inline_javascript %}
+<script type="text/javascript">
+    $('.show_confirm').click(function (event) {
+        var form = $(this).closest("form");
+        var name = $(this).data("name");
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        })
+            .then((willDelete) => {
+                if (willDelete.isConfirmed) {
+                    form.submit();
+                }
+            });
+    });
+</script>
+{% endblock inline_javascript %}
