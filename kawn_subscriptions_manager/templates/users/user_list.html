@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block menu-title %}Users List{% endblock %}
+{% block listsubscriptionplan-active %}active{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0 justify-content-lg-between">
+                <h4 class="mb-4">Users</h4>
+            </div>
+            <div class="row">
+                <a href="{% url 'users:addUsers' %}" class="btn bg-gradient-info col-md-2 ms-4">Add User</a>
+                <!-- <a href="{% url 'users:inviteUsers' %}" class="btn bg-gradient-info col-md-2 ms-2">Invite User</a> -->
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr class="text-center">
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Username
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Access
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in object_list %}
+                            <tr class="text-center text-black">
+                                <td class="align-middle text-center text-sm">
+                                    <p class="text-xs mb-0">{{ user.name }}</p>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <p class="text-xs mb-0">{{ user.email }}</p>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <p class="text-xs mb-0">{{ user.username }}</p>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <p class="text-xs mb-0">{{ user.type }}</p>
+                                </td>
+                                <td class="align-middle text-sm">
+                                    <a href="{% url 'users:editUsers' user.id %}" class="badge bg-warning">Edit</a>
+                                    <form class="d-inline" id="form-id" action="{% url 'users:deleteUsers' user.id %}" method="post">
+                                        {% csrf_token %}
+                                        <input name="_method" type="hidden" value="Delete">
+                                        <button type="submit" class="badge btn-danger btn-flat show_confirm"
+                                            data-toggle="tooltip" title='Delete'>Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
