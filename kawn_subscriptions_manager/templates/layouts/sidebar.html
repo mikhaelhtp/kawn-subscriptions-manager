@@ -33,6 +33,15 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{% url 'clients:list_client'  %}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Clients</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link  {% block listsubscriptionplan-active %}{% endblock %}"
                     href="{% url 'subscriptions:listSubscriptionPlan'  %}">
                     <div
@@ -43,13 +52,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link  {% block listusersubscriptions-active %}{% endblock %}"
-                    href="{% url 'subscriptions:customerSubscription'  %}">
+                <a class="nav-link  {% block listclientsubscriptions-active %}{% endblock %}"
+                    href="{% url 'subscriptions:listClientSubscription'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-list"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Customer Subscriptions</span>
+                    <span class="nav-link-text ms-1">Client Subscriptions</span>
                 </a>
             </li>
             <li class="nav-item">
