@@ -1,10 +1,8 @@
 import imp
-from symbol import import_stmt
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
 
 class User(AbstractUser):
     class Types(models.TextChoices):
@@ -37,48 +35,48 @@ class User(AbstractUser):
         return reverse("users:detail", kwargs={"username": self.username})
 
 
-class SalesManager(models.Manager):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type=User.Types.SALES)
+# class SalesManager(models.Manager):
+#     def get_queryset(self, *args, **kwargs):
+#         return super().get_queryset(*args, **kwargs).filter(type=User.Types.SALES)
 
 
-class SupervisorManager(models.Manager):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type=User.Types.SUPERVISOR)
+# class SupervisorManager(models.Manager):
+#     def get_queryset(self, *args, **kwargs):
+#         return super().get_queryset(*args, **kwargs).filter(type=User.Types.SUPERVISOR)
 
 
-class AdminManager(models.Manager):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type=User.Types.ADMIN)
+# class AdminManager(models.Manager):
+#     def get_queryset(self, *args, **kwargs):
+#         return super().get_queryset(*args, **kwargs).filter(type=User.Types.ADMIN)
 
 
-class Sales(User):
-    base_type = User.Types.SALES
-    objects = SalesManager()
+# class Sales(User):
+#     base_type = User.Types.SALES
+#     objects = SalesManager()
 
-    class Meta:
-        proxy = True
-
-
-class Supervisor(User):
-    base_type = User.Types.SUPERVISOR
-    objects = SupervisorManager()
-
-    @property
-    def more(self):
-        return self.supervisormore
-
-    class Meta:
-        proxy = True
+#     class Meta:
+#         proxy = True
 
 
-class Admin(User):
-    base_type = User.Types.ADMIN
-    objects = AdminManager()
+# class Supervisor(User):
+#     base_type = User.Types.SUPERVISOR
+#     objects = SupervisorManager()
 
-    @property
-    def more(self):
-        return self.adminmore
+#     @property
+#     def more(self):
+#         return self.supervisormore
 
-    class Meta:
-        proxy = True
+#     class Meta:
+#         proxy = True
+
+
+# class Admin(User):
+#     base_type = User.Types.ADMIN
+#     objects = AdminManager()
+
+#     @property
+#     def more(self):
+#         return self.adminmore
+
+#     class Meta:
+#         proxy = True

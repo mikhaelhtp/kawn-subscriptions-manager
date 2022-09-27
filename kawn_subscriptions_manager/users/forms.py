@@ -20,7 +20,6 @@ from allauth.utils import email_address_exists, generate_unique_username
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 from django.contrib.auth.password_validation import validate_password
-from rest_framework import serializers
 from django.core.exceptions import ValidationError
 
 
