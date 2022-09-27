@@ -12,10 +12,10 @@ from django.views.generic import UpdateView, CreateView, ListView, DeleteView
 
 from .models import Subscription, SubscriptionPlan
 from .forms import SubscriptionPlanUpdateForm, AddClientSubscriptionForm
-from kawn_subscriptions_manager.decorators import supervisor_only, sales_only
+from kawn_subscriptions_manager.decorators import allowed_users, supervisor_only, sales_only
 
 # Create your views here.
-@method_decorator([login_required, supervisor_only], name='dispatch')
+@method_decorator([login_required], name='dispatch')
 class ListSubscriptionPlan(LoginRequiredMixin, ListView):
 
     model = SubscriptionPlan
@@ -25,7 +25,7 @@ class ListSubscriptionPlan(LoginRequiredMixin, ListView):
 list_subscription_plan= ListSubscriptionPlan.as_view()
 
 
-@method_decorator([login_required, supervisor_only], name='dispatch')
+@method_decorator([login_required, allowed_users(['ADMIN', 'SUPERVISOR'])], name='dispatch')
 class AddSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     model = SubscriptionPlan
@@ -37,7 +37,7 @@ class AddSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 add_subscription_plan= AddSubscriptionPlan.as_view()
 
 
-@method_decorator([login_required, supervisor_only], name='dispatch')
+@method_decorator([login_required, allowed_users(['ADMIN', 'SUPERVISOR'])], name='dispatch')
 class UpdateSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     model = SubscriptionPlan
@@ -49,7 +49,7 @@ class UpdateSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, UpdateView
 update_subscription_plan = UpdateSubscriptionPlan.as_view()
 
 
-@method_decorator([login_required, supervisor_only], name='dispatch')
+@method_decorator([login_required, allowed_users(['ADMIN', 'SUPERVISOR'])], name='dispatch')
 class delateSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     model = SubscriptionPlan
@@ -60,6 +60,8 @@ delate_subscription_plan = delateSubscriptionPlan.as_view()
 
 
 @login_required()
+@allowed_users(allowed_roles=['ADMIN', 'SUPERVISOR'])
+# @supervisor_only
 def subscriptionplan_deactivate(request, id):
     subscriptionplan = SubscriptionPlan.objects.get(pk=id)
     subscriptionplan.is_active = False
@@ -69,6 +71,8 @@ def subscriptionplan_deactivate(request, id):
 
 
 @login_required()
+@allowed_users(allowed_roles=['ADMIN', 'SUPERVISOR'])
+# @supervisor_only
 def subscriptionplan_activate(request, id):
     subscriptionplan = SubscriptionPlan.objects.get(pk=id)
     subscriptionplan.is_active = True
@@ -108,9 +112,9 @@ class ListClientSubscription(LoginRequiredMixin, ListView):
         user_role = self.request.user.type
         cursor = connection.cursor()
         if user_role == "SALES":
-            cursor.execute("SELECT cc.name as client_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id WHERE cc.user_id="+str(userid))
+            cursor.execute("SELECT cc.name as client_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id WHERE cc.user_id="+str(userid) + "ORDER BY ss.id")
         else:
-            cursor.execute("SELECT cc.name as client_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id")
+            cursor.execute("SELECT cc.name as client_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id ORDER BY ss.id")
         results = cursor.fetchall()
         context = super().get_context_data(**kwargs)
         context["results"] = results
@@ -121,7 +125,7 @@ class ListClientSubscription(LoginRequiredMixin, ListView):
 list_client_subscription = ListClientSubscription.as_view()
 
 
-@method_decorator([login_required, sales_only], name='dispatch')
+@method_decorator([login_required, allowed_users(['ADMIN', 'SALES'])], name='dispatch')
 class AddClientSubscription(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Subscription
     template_name = 'subscriptions/client_subscriptions/add_client_subscription.html'
