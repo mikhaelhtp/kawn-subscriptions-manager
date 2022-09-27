@@ -24,7 +24,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link  {% block profile-active %}{% endblock %}" href="{% url 'users:users-profile'  %}">
+                <a class="nav-link  {% block profile-active %}{% endblock %}" href="{% url 'users:profileUsers'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-user"></i>
@@ -62,7 +62,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link  {% block users-active %}{% endblock %}" href="{% url 'users:addUsers'%}">
+                <a class="nav-link  {% block users-active %}{% endblock %}" href="{% url 'users:listUsers'%}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-users"></i>
