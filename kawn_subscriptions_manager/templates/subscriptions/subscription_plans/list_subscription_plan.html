@@ -8,11 +8,11 @@
   <div class="col-12">
     <div class="card mb-4">
       <div class="card-header pb-0 justify-content-lg-between">
-
         {% for message in messages %}
         <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
-          <strong >{{ message }}</strong>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <strong class="text-white">{{ message }}</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
         </div>
         {% endfor %}
 
@@ -52,18 +52,23 @@
                   {% endif %}
                 </td>
                 <td class="align-middle text-sm">
-                  <a href="{% url 'subscriptions:updateSubscriptionPlan' data.id %}" class="badge bg-warning">Edit</a>
-                  {% if data.is_active %}
-                  <a href="{% url 'subscriptions:deactivateSubscriptionPlan' data.id %}"
-                    class="badge bg-gradient-danger">Deactivate</a>
-                  {% else %}
-                  <a href="{% url 'subscriptions:activateSubscriptionPlan' data.id %}"
-                    class="badge bg-gradient-info">Activate</a>
-                  {% endif %}
+                  <div class="d-inline">
+                    <a href="{% url 'subscriptions:updateSubscriptionPlan' data.id %}" class="badge bg-warning">Edit</a>
+                    {% if data.is_active %}
+                    <a href="{% url 'subscriptions:deactivateSubscriptionPlan' data.id %}"
+                      class="badge bg-gradient-danger">Deactivate</a>
+                    {% else %}
+                    <a href="{% url 'subscriptions:activateSubscriptionPlan' data.id %}"
+                      class="badge bg-gradient-info">Activate</a>
+                    {% endif %}
+                  </div>
                   {% if data.is_active == False %}
-                  <form id="form-id" action="{% url 'subscriptions:delateSubscriptionPlan' data.id %}" method="post">
+                  <form class="d-inline" id="form-id" action="{% url 'subscriptions:deleteSubscriptionPlan' data.id %}"
+                    method="post">
                     {% csrf_token %}
-                    <a href="#" onclick="document.forms['form-id'].submit();" class="badge bg-gradient-danger"> Delete </a>
+                    </a>
+                    <button type="submit" class="badge btn-danger btn-flat show_confirm" data-toggle="tooltip"
+                      title='Delete'>Delete</button>
                   </form>
                   {% endif %}
                 </td>
@@ -77,3 +82,27 @@
   </div>
 </div>
 {% endblock content %}
+
+{% block inline_javascript %}
+<script type="text/javascript">
+    $('.show_confirm').click(function (event) {
+        var form = $(this).closest("form");
+        var name = $(this).data("name");
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        })
+            .then((willDelete) => {
+                if (willDelete.isConfirmed) {
+                    form.submit();
+                }
+            });
+    });
+</script>
+{% endblock inline_javascript %}
