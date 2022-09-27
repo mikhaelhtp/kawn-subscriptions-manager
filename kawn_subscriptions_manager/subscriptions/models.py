@@ -7,7 +7,7 @@ class SubscriptionPlan(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     duration = models.IntegerField(_("Duration"))
     price = models.IntegerField(_("Price"))
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 

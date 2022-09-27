@@ -50,13 +50,13 @@ update_subscription_plan = UpdateSubscriptionPlan.as_view()
 
 
 @method_decorator([login_required, allowed_users(['ADMIN', 'SUPERVISOR'])], name='dispatch')
-class delateSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class deleteSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     model = SubscriptionPlan
     success_url = reverse_lazy('subscriptions:listSubscriptionPlan')
     success_message = ("Subscription plan successfully delated!")
 
-delate_subscription_plan = delateSubscriptionPlan.as_view()
+delete_subscription_plan = deleteSubscriptionPlan.as_view()
 
 
 @login_required()
@@ -148,7 +148,7 @@ def deactivate_client_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     subscription.is_active = False
     subscription.save()
-    messages.success(request, "Client subscription has been successfully deactivated!")
+    messages.success(request, "Client subscription has been deactivated successfully!")
     return redirect('subscriptions:listClientSubscription')
 
 
@@ -157,5 +157,5 @@ def activate_client_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     subscription.is_active = True
     subscription.save()
-    messages.success(request, "Client subscription has been successfully activated!")
+    messages.success(request, "Client subscription has been activated successfully!")
     return redirect('subscriptions:listClientSubscription')

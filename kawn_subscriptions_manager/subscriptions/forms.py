@@ -51,10 +51,10 @@ class AddClientSubscriptionForm(ModelForm):
         super(AddClientSubscriptionForm, self).__init__(*args, **kwargs)
         # this is pseudo code but you should get all variants
         # then get the product related to each variant
-        client = Client.objects.filter(user_id=user.id)
+        client = Client.objects.filter(user_id=user.id, is_active=True)
         clients = [(i.id, i.name) for i in client]
 
-        subscriptionplan = SubscriptionPlan.objects.all()
+        subscriptionplan = SubscriptionPlan.objects.filter(is_active=True)
         subscriptionplans = [(i.id, i.name) for i in subscriptionplan]
 
         self.fields['client'].choices = clients
