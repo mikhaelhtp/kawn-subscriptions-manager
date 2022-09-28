@@ -1,6 +1,8 @@
 from django.db import models
-from kawn_subscriptions_manager.clients.models import Client
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+from kawn_subscriptions_manager.clients.models import Client
 
 # Create your models here.
 class SubscriptionPlan(models.Model):
@@ -21,6 +23,14 @@ class Subscription(models.Model):
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    def check_status(self):
+        now = timezone.now()
+        if now > self.end_date and self.is_active:
+            self.is_active = False
+            self.save()
+            return False
+        return self.is_active
 
     @property
     def subscription_price(self):
