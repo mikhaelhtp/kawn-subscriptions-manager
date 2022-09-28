@@ -52,7 +52,7 @@ class AddClientSubscriptionForm(ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(AddClientSubscriptionForm, self).__init__(*args, **kwargs)
         client = Client.objects.filter(user_id=user.id, is_active=True)
-        clients = [(i.id, i.name) for i in client]
+        clients = [(i.id, i.business_name) for i in client]
 
         subscriptionplan = SubscriptionPlan.objects.filter(is_active=True)
         subscriptionplans = [(i.id, i.name) for i in subscriptionplan]
