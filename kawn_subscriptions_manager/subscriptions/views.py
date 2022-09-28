@@ -6,18 +6,18 @@ from django.contrib import messages
 from django.db import connection
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import UpdateView, CreateView, ListView, DeleteView
 
 from .models import Subscription, SubscriptionPlan
-from .forms import SubscriptionPlanUpdateForm, AddClientSubscriptionForm
-from kawn_subscriptions_manager.decorators import allowed_users, supervisor_only, sales_only
+from .forms import AddClientSubscriptionForm
+from kawn_subscriptions_manager.decorators import allowed_users, sales_only, supervisor_only
 
 # Create your views here.
 @method_decorator([login_required], name='dispatch')
 class ListSubscriptionPlan(LoginRequiredMixin, ListView):
-
     model = SubscriptionPlan
     template_name = 'subscriptions/subscription_plans/list_subscription_plan.html'
     queryset = SubscriptionPlan.objects.all()
@@ -27,85 +27,76 @@ list_subscription_plan= ListSubscriptionPlan.as_view()
 
 @method_decorator([login_required, allowed_users(['ADMIN', 'SUPERVISOR'])], name='dispatch')
 class AddSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-
     model = SubscriptionPlan
     fields = ['name','duration', 'price']
     template_name = 'subscriptions/subscription_plans/add_subscription_plan.html'
-    success_url = reverse_lazy('subscriptions:listSubscriptionPlan')
-    success_message = ("Subscription plan successfully added!")
+    success_url = reverse_lazy('subscriptions:list_subscription_plan')
+    success_message = ("Subscription plans successfully added!")
 
 add_subscription_plan= AddSubscriptionPlan.as_view()
 
 
 @method_decorator([login_required, allowed_users(['ADMIN', 'SUPERVISOR'])], name='dispatch')
 class UpdateSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-
     model = SubscriptionPlan
-    form_class = SubscriptionPlanUpdateForm
+    fields = ['name', 'duration', 'price']
     template_name = 'subscriptions/subscription_plans/update_subscription_plan.html'
-    success_url = reverse_lazy('subscriptions:listSubscriptionPlan')
-    success_message = ("Subscription plan successfully updated!")
+    success_url = reverse_lazy('subscriptions:list_subscription_plan')
+    success_message = ("Subscription plans successfully updated!")
 
 update_subscription_plan = UpdateSubscriptionPlan.as_view()
 
 
 @method_decorator([login_required, allowed_users(['ADMIN', 'SUPERVISOR'])], name='dispatch')
-class deleteSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-
+class DeleteSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = SubscriptionPlan
-    success_url = reverse_lazy('subscriptions:listSubscriptionPlan')
-    success_message = ("Subscription plan successfully delated!")
+    success_url = reverse_lazy('subscriptions:list_subscription_plan')
+    success_message = ("Subscription plans successfully delated!")
 
-delete_subscription_plan = deleteSubscriptionPlan.as_view()
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(DeleteSubscriptionPlan, self).delete(request, *args, **kwargs)
+
+delete_subscription_plan = DeleteSubscriptionPlan.as_view()
 
 
 @login_required()
 @allowed_users(allowed_roles=['ADMIN', 'SUPERVISOR'])
 # @supervisor_only
-def subscriptionplan_deactivate(request, id):
+def deactivate_subscription_plan(request, id):
     subscriptionplan = SubscriptionPlan.objects.get(pk=id)
     subscriptionplan.is_active = False
     subscriptionplan.save()
-    messages.success(request, "Subscription plan has been successfully deactivated!")
-    return redirect('subscriptions:listSubscriptionPlan')
+    messages.success(request, "Subscription plans has been successfully deactivated!")
+    return redirect('subscriptions:list_subscription_plan')
 
 
 @login_required()
 @allowed_users(allowed_roles=['ADMIN', 'SUPERVISOR'])
 # @supervisor_only
-def subscriptionplan_activate(request, id):
+def activate_subscription_plan(request, id):
     subscriptionplan = SubscriptionPlan.objects.get(pk=id)
     subscriptionplan.is_active = True
     subscriptionplan.save()
-    messages.success(request, "Subscription plan has been successfully activated!")
-    return redirect('subscriptions:listSubscriptionPlan')
-
-
-# @method_decorator([login_required, supervisor_only], name='dispatch')
-# class customerSubscription(LoginRequiredMixin, ListView):
-
-#     model = Subscription
-#     template_name = 'subscriptions/client_subscriptions/customer_subscriptions.html'
-#     context_object_name = 'results'
-
-#     def get_context_data(self, **kwargs):
-#         cursor = connection.cursor()
-#         cursor.execute("SELECT u.name as user_name, usp.name as usp_name, us.start_date, us.end_date, DATE_PART('day', us.end_date - now()) as remaining_duration FROM subscriptions_subscription us INNER JOIN subscriptions_subscriptionplan usp ON usp.id = us.subscriptionplan_id INNER JOIN users_user u ON u.id = us.user_id")
-#         results = cursor.fetchall()
-#         context = super().get_context_data(**kwargs)
-#         context["results"] = results
-
-#         return context 
-
-# customer_subscription= customerSubscription.as_view()
+    messages.success(request, "Subscription plans has been successfully activated!")
+    return redirect('subscriptions:list_subscription_plan')
 
 
 @method_decorator([login_required], name='dispatch')
 class ListClientSubscription(LoginRequiredMixin, ListView):
     model = Subscription
     template_name = 'subscriptions/client_subscriptions/list_client_subscription.html'
-    # queryset = Subscription.objects.all().
     context_object_name = 'results'
+    queryset = Subscription.objects.all()
+
+    # def get_context_object_name(self, object_list):
+    #     subscription = Subscription.objects.all()
+    #     now = timezone.now()
+    #     if now > subscription.end_date and subscription.is_active:
+    #         subscription.is_active = False
+    #         subscription.save()
+    #         return False
+    #     return subscription.is_active
 
     def get_context_data(self, **kwargs):
         userid = self.request.user.id
@@ -118,7 +109,6 @@ class ListClientSubscription(LoginRequiredMixin, ListView):
         results = cursor.fetchall()
         context = super().get_context_data(**kwargs)
         context["results"] = results
-        # var_dump(results)
 
         return context
 
@@ -129,10 +119,8 @@ list_client_subscription = ListClientSubscription.as_view()
 class AddClientSubscription(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Subscription
     template_name = 'subscriptions/client_subscriptions/add_client_subscription.html'
-    success_url = reverse_lazy('subscriptions:listClientSubscription')
-    success_message = _("Subscription successfully added")
-    # form_class = AddClientSubscriptionForm
-    # form_class.fields['price'].initial = SubscriptionPlan.objects.filter(price=request.price)
+    success_url = reverse_lazy('subscriptions:list_client_subscription')
+    success_message = _("Subscriptions successfully added")
 
     def get_form(self):
         if self.request.method == 'POST':
@@ -149,8 +137,8 @@ def deactivate_client_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     subscription.is_active = False
     subscription.save()
-    messages.success(request, "Client subscription has been deactivated successfully!")
-    return redirect('subscriptions:listClientSubscription')
+    messages.success(request, "Client subscriptions has been deactivated successfully!")
+    return redirect('subscriptions:list_client_subscription')
 
 
 @login_required()
@@ -159,5 +147,5 @@ def activate_client_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     subscription.is_active = True
     subscription.save()
-    messages.success(request, "Client subscription has been activated successfully!")
-    return redirect('subscriptions:listClientSubscription')
+    messages.success(request, "Client subscriptions has been activated successfully!")
+    return redirect('subscriptions:list_client_subscription')
