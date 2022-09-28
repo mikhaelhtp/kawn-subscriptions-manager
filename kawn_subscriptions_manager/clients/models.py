@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from kawn_subscriptions_manager.users.models import User
 
+
 # Create your models here.
 class Client(models.Model):
     name = models.CharField(_("Name"), max_length=255)

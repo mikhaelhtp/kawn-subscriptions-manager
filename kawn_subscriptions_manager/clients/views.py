@@ -13,6 +13,7 @@ from kawn_subscriptions_manager.users.models import User
 from kawn_subscriptions_manager.clients.models import Client
 from .forms import ClientAddForm
 
+
 #Create your views here.
 class ListClient(LoginRequiredMixin, ListView):
     model = Client
@@ -35,7 +36,7 @@ class AddClient(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Client
     fields = ['name','business_name']
     success_message = _("Client successfully added")
-    template_name = 'clients/add_client.html'
+    template_name = 'clients/form_client.html'
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
@@ -52,7 +53,7 @@ class UpdateClient(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Client
     fields = ['name','business_name']
     success_message = _("Client successfully updated")
-    template_name = 'clients/add_client.html'
+    template_name = 'clients/form_client.html'
     success_url = reverse_lazy('clients:list_client')
 
 update_client = UpdateClient.as_view()
