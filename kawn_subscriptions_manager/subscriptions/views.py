@@ -125,7 +125,7 @@ class ListClientSubscription(LoginRequiredMixin, ListView):
 list_client_subscription = ListClientSubscription.as_view()
 
 
-@method_decorator([login_required, allowed_users(['ADMIN', 'SALES'])], name='dispatch')
+@method_decorator([login_required, sales_only], name='dispatch')
 class AddClientSubscription(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Subscription
     template_name = 'subscriptions/client_subscriptions/add_client_subscription.html'
@@ -144,6 +144,7 @@ add_client_subscription = AddClientSubscription.as_view()
 
 
 @login_required()
+@allowed_users(allowed_roles=['ADMIN', 'SALES'])
 def deactivate_client_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     subscription.is_active = False
@@ -153,6 +154,7 @@ def deactivate_client_subscription(request, id):
 
 
 @login_required()
+@allowed_users(allowed_roles=['ADMIN', 'SALES'])
 def activate_client_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     subscription.is_active = True

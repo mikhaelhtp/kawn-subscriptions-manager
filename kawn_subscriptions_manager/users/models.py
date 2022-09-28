@@ -1,8 +1,11 @@
-import imp
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+UNIQUE_EMAIL = getattr(settings, 'ACCOUNT_UNIQUE_EMAIL', True)
+EMAIL_MAX_LENGTH = getattr(settings, 'ACCOUNT_EMAIL_MAX_LENGTH', 254)
 
 class User(AbstractUser):
     class Types(models.TextChoices):
@@ -22,6 +25,7 @@ class User(AbstractUser):
 
     #: First and last name do not cover name patterns around the globe
     name = models.CharField(_("Name of User"), blank=True, max_length=255)
+    email = models.EmailField(unique=UNIQUE_EMAIL, max_length=EMAIL_MAX_LENGTH, verbose_name='e-mail address')
     # first_name = None  # type: ignore
     # last_name = None  # type: ignore
 
