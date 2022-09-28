@@ -18,7 +18,7 @@
 
         <h5 class="font-weight-bolder">Subscription Plans</h5>
       </div>
-      <a href="{% url 'subscriptions:addSubscriptionPlan' %}" class="btn bg-gradient-info ms-3 w-20 mt-2">Add
+      <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info ms-3 w-20 mt-2">Add
         Subscription Plans</a>
       <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
@@ -53,17 +53,17 @@
                 </td>
                 <td class="align-middle text-sm">
                   <div class="d-inline">
-                    <a href="{% url 'subscriptions:updateSubscriptionPlan' data.id %}" class="badge bg-warning">Edit</a>
+                    <a href="{% url 'subscriptions:update_subscription_plan' data.id %}" class="badge bg-warning">Edit</a>
                     {% if data.is_active %}
-                    <a href="{% url 'subscriptions:deactivateSubscriptionPlan' data.id %}"
+                    <a href="{% url 'subscriptions:deactivate_subscription_plan' data.id %}"
                       class="badge bg-gradient-danger">Deactivate</a>
                     {% else %}
-                    <a href="{% url 'subscriptions:activateSubscriptionPlan' data.id %}"
+                    <a href="{% url 'subscriptions:activate_subscription_plan' data.id %}"
                       class="badge bg-gradient-info">Activate</a>
                     {% endif %}
                   </div>
                   {% if data.is_active == False %}
-                  <form class="d-inline" id="form-id" action="{% url 'subscriptions:deleteSubscriptionPlan' data.id %}"
+                  <form class="d-inline" id="form-id" action="{% url 'subscriptions:delete_subscription_plan' data.id %}"
                     method="post">
                     {% csrf_token %}
                     </a>

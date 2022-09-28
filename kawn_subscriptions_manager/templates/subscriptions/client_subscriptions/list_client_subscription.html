@@ -19,7 +19,7 @@
           <div class="col-md-10 align-middle">
             <h6>Client Susbcriptions</h6>
           </div>
-          <div class="col-md-2"> <a href="{% url 'subscriptions:addClientSubscription' %}"
+          <div class="col-md-2"> <a href="{% url 'subscriptions:add_client_subscription' %}"
               class="btn bg-gradient-info col-md-12">Add Subscription</a>
           </div>
         </div>
@@ -56,10 +56,10 @@
                   <p class="text-xs font-weight-bold mb-0">{{ data.2 }}</p>
                 </td>
                 <td class="align-middle text-center text-sm">
-                  <span class="badge badge-sm bg-gradient-info">{{ data.3 }}</span>
+                  <span class="badge badge-sm bg-gradient-info">{{ data.3|date:'Y M d' }}</span>
                 </td>
                 <td class="align-middle text-center text-sm">
-                  <span class="badge badge-sm bg-danger">{{ data.4 }}</span>
+                  <span class="badge badge-sm bg-danger">{{ data.4|date:'Y M d' }}</span>
                 </td>
                 <td class="align-middle text-center text-sm">
                   <p class="text-xs font-weight-bold mb-0">{{ data.5|floatformat }} days</p>
@@ -73,10 +73,10 @@
                 </td>
                 <td class="align-middle text-center text-sm">
                   {% if data.6 %}
-                  <a href="{% url 'subscriptions:deactivateClientSubscription' data.7 %}"
+                  <a href="{% url 'subscriptions:deactivate_client_subscription' data.7 %}"
                     class="badge bg-gradient-danger">Deactivate</a>
                   {% else %}
-                  <a href="{% url 'subscriptions:activateClientSubscription' data.7 %}"
+                  <a href="{% url 'subscriptions:activate_client_subscription' data.7 %}"
                     class="badge bg-gradient-info">Activate</a>
                   {% endif %}
                 </td>
