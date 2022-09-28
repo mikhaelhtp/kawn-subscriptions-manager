@@ -30,17 +30,19 @@ from .models import SubscriptionPlan, Subscription
 #         }
 
 
-class SubscriptionPlanUpdateForm(ModelForm):
+# class SubscriptionPlanUpdateForm(ModelForm):
 
-    class Meta:
-        model = SubscriptionPlan
-        fields = ['name', 'duration', 'price']
+#     class Meta:
+#         model = SubscriptionPlan
+#         fields = ['name', 'duration', 'price']
 
 
 class AddClientSubscriptionForm(ModelForm):
 
     class Meta:
         model = Subscription
+        # start_date = forms.DateTimeInput(input_formats=['%m/%d/%Y %H:%M'])
+        # end_date = forms.DateTimeInput(input_formats=['%m/%d/%Y %H:%M'])
         fields = ["subscriptionplan", "client", "start_date", "end_date"]
         widgets = {
             'start_date': forms.DateTimeInput({'type':'date'}),
@@ -49,8 +51,6 @@ class AddClientSubscriptionForm(ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(AddClientSubscriptionForm, self).__init__(*args, **kwargs)
-        # this is pseudo code but you should get all variants
-        # then get the product related to each variant
         client = Client.objects.filter(user_id=user.id, is_active=True)
         clients = [(i.id, i.name) for i in client]
 
@@ -61,8 +61,16 @@ class AddClientSubscriptionForm(ModelForm):
         self.fields['subscriptionplan'].choices = subscriptionplans
         self.fields['subscriptionplan'].label = "Subscription Plan"
 
-    def save(self, commit=True):
-        subscription = super().save(commit=False)
-        if commit:
-            subscription.save()
-        return subscription
+    # def check_status(self):
+    #     now = timezone.now()
+    #     if now > self.end_date and self.is_active:
+    #         self.is_active = False
+    #         self.save()
+    #         return False
+    #     return self.is_active
+
+    # def save(self, commit=True):
+    #     subscription = super().save(commit=False)
+    #     if commit:
+    #         subscription.save()
+    #     return subscription
