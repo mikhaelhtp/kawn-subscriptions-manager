@@ -39,13 +39,13 @@
                                 <div class="card-header pb-0 text-left bg-transparent">
                                     <img src="{% static 'images/kawn_logo.svg' %}" alt="" width="30%"><br>
                                     <h3 class="font-weight-bolder text-info text-gradient">Subscriptions Manager</h3>
-                                    <p class="mb-0">Enter your email and password to sign in</p>
+                                    <p class="mb-0">Enter your credentials to login</p>
                                     {% for message in messages %}
-                                    <div class="alert alert-success alert-dismissible fade show {{ message.tags }}"
-                                        role="alert">
+                                    <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
                                         <strong class="text-white">{{ message }}</strong>
                                         <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            aria-label="Close"><span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
                                     {% endfor %}
                                 </div>
@@ -59,7 +59,8 @@
                                 <div class="card-footer text-center pt-0 mb-3 px-lg-2 px-1">
                                     <p class="mb-0 text-sm mx-auto">
                                         <a href="{% url 'account_reset_password' %}" class="text-info text-gradient font-weight-bold">
-                                            Forgot Password?</a>
+                                            Forgot Password?
+                                        </a>
                                     </p>
                                 </div>
                             </div>
