@@ -74,10 +74,10 @@ class UsersAddForm(UserAdminCreationForm):
             user.save()
         return user
 
-class UsersEditForm(UserAdminChangeForm):
+class UsersEditForm(ModelForm):
     class Meta:
         model = User
-        fields = ["name", "email", "username", "type", "password"]
+        fields = ["name", "email", "username", "type"]
     
     def save(self, commit=True):
         user = super().save(commit=False)

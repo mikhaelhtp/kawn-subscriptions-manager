@@ -93,7 +93,7 @@ class AddUsers(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             html_message=html,
             fail_silently=False
         )
-        return redirect('users:add_user')
+        return redirect('users:add_users')
 
 add_users = AddUsers.as_view()
 

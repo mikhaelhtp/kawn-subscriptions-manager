@@ -29,7 +29,7 @@ list_subscription_plan= ListSubscriptionPlan.as_view()
 class AddSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = SubscriptionPlan
     fields = ['name','duration', 'price']
-    template_name = 'subscriptions/subscription_plans/add_subscription_plan.html'
+    template_name = 'subscriptions/subscription_plans/form_subscription_plan.html'
     success_url = reverse_lazy('subscriptions:list_subscription_plan')
     success_message = ("Subscription plans successfully added!")
 
@@ -40,7 +40,7 @@ add_subscription_plan= AddSubscriptionPlan.as_view()
 class UpdateSubscriptionPlan(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = SubscriptionPlan
     fields = ['name', 'duration', 'price']
-    template_name = 'subscriptions/subscription_plans/update_subscription_plan.html'
+    template_name = 'subscriptions/subscription_plans/form_subscription_plan.html'
     success_url = reverse_lazy('subscriptions:list_subscription_plan')
     success_message = ("Subscription plans successfully updated!")
 
@@ -103,12 +103,16 @@ class ListClientSubscription(LoginRequiredMixin, ListView):
         user_role = self.request.user.type
         cursor = connection.cursor()
         if user_role == "SALES":
-            cursor.execute("SELECT cc.name as client_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id WHERE cc.user_id="+str(userid) + "ORDER BY ss.id")
+            cursor.execute("SELECT cc.business_name as outlet_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id WHERE cc.user_id="+str(userid) + "ORDER BY ss.id")
         else:
-            cursor.execute("SELECT cc.name as client_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id ORDER BY ss.id")
+            cursor.execute("SELECT cc.business_name as outlet_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id ORDER BY ss.id")
         results = cursor.fetchall()
         context = super().get_context_data(**kwargs)
         context["results"] = results
+
+        now = timezone.now()
+        Subscription.objects.filter(end_date__lte=now).update(is_active=False)
+        # var_dump(results)
 
         return context
 
@@ -118,7 +122,7 @@ list_client_subscription = ListClientSubscription.as_view()
 @method_decorator([login_required, sales_only], name='dispatch')
 class AddClientSubscription(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Subscription
-    template_name = 'subscriptions/client_subscriptions/add_client_subscription.html'
+    template_name = 'subscriptions/client_subscriptions/form_client_subscription.html'
     success_url = reverse_lazy('subscriptions:list_client_subscription')
     success_message = _("Subscriptions successfully added")
 
@@ -130,6 +134,27 @@ class AddClientSubscription(LoginRequiredMixin, SuccessMessageMixin, CreateView)
 
 add_client_subscription = AddClientSubscription.as_view()
 
+@method_decorator([login_required, sales_only], name='dispatch')
+class UpdateClientSubscription(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Subscription
+    success_message = _("Subscription successfully updated")
+    fields = ['start_date', 'end_date']
+    template_name = 'subscriptions/client_subscriptions/form_client_subscription.html'
+    success_url = reverse_lazy('subscriptions:list_client_subscription')
+
+    def form_valid(self, form):
+        subscription = form.save()
+        now = timezone.now()
+        if form.cleaned_data['end_date']>now:
+            subscription.is_active = True
+            subscription.save()
+        else:
+            subscription.is_active = False
+            subscription.save()
+        return super().form_valid(form)
+
+update_client_subscription = UpdateClientSubscription.as_view()
+
 
 @login_required()
 @allowed_users(allowed_roles=['ADMIN', 'SALES'])
@@ -138,14 +163,4 @@ def deactivate_client_subscription(request, id):
     subscription.is_active = False
     subscription.save()
     messages.success(request, "Client subscriptions has been deactivated successfully!")
-    return redirect('subscriptions:list_client_subscription')
-
-
-@login_required()
-@allowed_users(allowed_roles=['ADMIN', 'SALES'])
-def activate_client_subscription(request, id):
-    subscription = Subscription.objects.get(pk=id)
-    subscription.is_active = True
-    subscription.save()
-    messages.success(request, "Client subscriptions has been activated successfully!")
     return redirect('subscriptions:list_client_subscription')
