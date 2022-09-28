@@ -20118,7 +20118,7 @@ fieldset:disabled .btn {
 }
 
 .alert-success {
-  background-image: linear-gradient(310deg, #17ad37 0%, #84dc14 100%);
+  background-image: linear-gradient(310deg, #17ad37 0%, #17ad37 100%);
 }
 
 .alert-info {
@@ -26604,5 +26604,8 @@ pre[class*="language-"] {
     overflow: auto !important;
   }
 }
+
+/* custom */
+
 
 /*# sourceMappingURL=dashboard-free.css.map */
