@@ -25,9 +25,11 @@ from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
+
 class UserAdminChangeForm(admin_forms.UserChangeForm):
     class Meta(admin_forms.UserChangeForm.Meta):
         model = User
+
 
 class UserAdminCreationForm(admin_forms.UserCreationForm):
     """
@@ -42,12 +44,14 @@ class UserAdminCreationForm(admin_forms.UserCreationForm):
             "username": {"unique": _("This username has already been taken.")}
         }
 
+
 class UserSignupForm(SignupForm):
     """
     Form that will be rendered on a user sign up section/screen.
     Default fields will be added automatically.
     Check UserSocialSignupForm for accounts created from social.
     """
+
 
 class UserSocialSignupForm(SocialSignupForm):
     """
@@ -56,14 +60,17 @@ class UserSocialSignupForm(SocialSignupForm):
     See UserSignupForm otherwise.
     """
 
+
 class UsersAddForm(UserAdminCreationForm):
     """
     Form for User Creation in the Admin Area.
     To change user signup, see UserSignupForm and UserSocialSignupForm.
     """
+
     name = forms.CharField(max_length=255)
     username = forms.CharField(max_length=20)
     email = forms.EmailField(required=True)
+
     class Meta:
         model = User
         fields = ["username", "name", "email", "type", "password1", "password2"]
@@ -74,11 +81,12 @@ class UsersAddForm(UserAdminCreationForm):
             user.save()
         return user
 
+
 class UsersEditForm(ModelForm):
     class Meta:
         model = User
         fields = ["name", "email", "username", "type"]
-    
+
     def save(self, commit=True):
         user = super().save(commit=False)
         if commit:
