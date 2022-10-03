@@ -14,63 +14,53 @@ from kawn_subscriptions_manager.clients.models import Client
 from .forms import ClientAddForm
 
 
-#Create your views here.
-class ListClient(LoginRequiredMixin, ListView):
+class ListClient(ListView):
     model = Client
-    template_name = 'clients/list_client.html'
+    template_name = "clients/list_client.html"
     # paginate_by = 2
 
     def get_queryset(self):
         userid = self.request.user.id
         user_role = self.request.user.type
         if user_role == "SALES":
-            return Client.objects.filter(user_id=userid).order_by('id')
+            return Client.objects.filter(user_id=userid).order_by("id")
         else:
-            return Client.objects.all().order_by('user_id')
-
-list_client= ListClient.as_view()
+            return Client.objects.all().order_by("user_id")
 
 
-@method_decorator([login_required, sales_only], name='dispatch')
-class AddClient(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+# @method_decorator([login_required, sales_only], name="dispatch")
+class AddClient(SuccessMessageMixin, CreateView):
     model = Client
-    fields = ['name','business_name']
+    fields = ["name", "business_name"]
     success_message = _("Client successfully added")
-    template_name = 'clients/form_client.html'
+    template_name = "clients/form_client.html"
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         client = form.save()
         client.user_id = User.objects.get(pk=self.request.user.id)
         client.save()
-        return redirect('clients:list_client')
-
-add_client = AddClient.as_view()
+        return redirect("clients:list_client")
 
 
-@method_decorator([login_required, sales_only], name='dispatch')
 class UpdateClient(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Client
-    fields = ['name','business_name']
+    fields = ["name", "business_name"]
     success_message = _("Client successfully updated")
-    template_name = 'clients/form_client.html'
-    success_url = reverse_lazy('clients:list_client')
-
-update_client = UpdateClient.as_view()
+    template_name = "clients/form_client.html"
+    success_url = reverse_lazy("clients:list_client")
 
 
-@method_decorator([login_required, sales_only], name='dispatch')
+@method_decorator([login_required, sales_only], name="dispatch")
 class DeleteClient(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Client
-    context_object_name = 'client'
-    success_url = reverse_lazy('clients:list_client')
+    context_object_name = "client"
+    success_url = reverse_lazy("clients:list_client")
     success_message = _("Client successfully deleted")
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(DeleteClient, self).delete(request, *args, **kwargs)
-
-delete_client = DeleteClient.as_view()
 
 
 @login_required()
@@ -80,7 +70,7 @@ def deactivate_client(request, id):
     client.is_active = False
     client.save()
     messages.success(request, "Client has been deactivated successfully!")
-    return redirect('clients:list_client')
+    return redirect("clients:list_client")
 
 
 @login_required()
@@ -90,4 +80,4 @@ def activate_client(request, id):
     client.is_active = True
     client.save()
     messages.success(request, "Client has been activated successfully!")
-    return redirect('clients:list_client')
+    return redirect("clients:list_client")

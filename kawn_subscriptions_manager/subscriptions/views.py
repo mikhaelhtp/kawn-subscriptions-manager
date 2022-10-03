@@ -97,7 +97,9 @@ class ListClientSubscription(LoginRequiredMixin, ListView):
             )
         else:
             cursor.execute(
+                
                 "SELECT cc.business_name as outlet_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id ORDER BY ss.id"
+            
             )
         results = cursor.fetchall()
         context = super().get_context_data(**kwargs)

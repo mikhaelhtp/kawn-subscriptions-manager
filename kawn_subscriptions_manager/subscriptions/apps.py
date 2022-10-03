@@ -18,4 +18,3 @@ class SubscriptionsConfig(AppConfig):
             import kawn_subscriptions_manager.users.signals  # noqa F401
         except ImportError:
             pass
-

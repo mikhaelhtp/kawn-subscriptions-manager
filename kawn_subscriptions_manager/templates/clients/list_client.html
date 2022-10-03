@@ -17,7 +17,8 @@
                     {% endfor %}
                     <div class="align-middle">
                         <h5 class="font-weight-bolder">Clients</h5>
-                        <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info col-md-2 mt-2">Add Client</a>
+                        <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info col-md-2 mt-2">Add
+                            Client</a>
                     </div>
                 </div>
             </div>
@@ -65,7 +66,8 @@
                                 </td>
                                 <td class="align-middle text-center text-sm">
                                     <div class="d-inline">
-                                        <a href="{% url 'clients:update_client' data.id %}" class="badge bg-warning">Edit</a>
+                                        <a href="{% url 'clients:update_client' data.id %}"
+                                            class="badge bg-warning">Edit</a>
                                         {% if data.is_active %}
                                         <a href="{% url 'clients:deactivate_client' data.id %}"
                                             class="badge bg-gradient-danger">Deactivate</a>
