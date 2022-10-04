@@ -8,7 +8,7 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from kawn_subscriptions_manager.decorators import supervisor_only, sales_only
 from kawn_subscriptions_manager.clients.models import Client, Outlet
-from .forms import ClientAddForm
+from kawn_subscriptions_manager.users.models import User
 
 
 class ListClient(ListView):
