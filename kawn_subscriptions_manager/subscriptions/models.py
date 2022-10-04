@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from kawn_subscriptions_manager.clients.models import Client
+from kawn_subscriptions_manager.clients.models import Client, Outlet
 
 
 class SubscriptionPlan(models.Model):
@@ -15,7 +15,7 @@ class SubscriptionPlan(models.Model):
 
 
 class Subscription(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, unique=True)
+    outlet = models.ForeignKey(Outlet, on_delete=models.CASCADE, null=True, unique=True)
     subscriptionplan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
     start_date = models.DateTimeField(_("Start Date"))
     end_date = models.DateTimeField(_("End Date"))

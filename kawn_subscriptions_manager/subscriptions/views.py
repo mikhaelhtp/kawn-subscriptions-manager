@@ -91,15 +91,24 @@ class ListClientSubscription(LoginRequiredMixin, ListView):
         cursor = connection.cursor()
         if user_role == "SALES":
             cursor.execute(
-                "SELECT cc.business_name as outlet_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id WHERE cc.user_id="
+                "SELECT co.name as outlet_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id "
+                + "FROM subscriptions_subscription ss "
+                + "INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id "
+                + "INNER JOIN clients_outlet co ON co.id = ss.outlet_id "
+                + "INNER JOIN clients_client cc ON cc.id = co.client_id "
+                + "INNER JOIN users_user uu ON uu.id = cc.user_id WHERE cc.user_id= "
                 + str(userid)
                 + "ORDER BY ss.id"
             )
         else:
             cursor.execute(
-                
-                "SELECT cc.business_name as outlet_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id FROM subscriptions_subscription ss INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id INNER JOIN clients_client cc ON cc.id = ss.client_id INNER JOIN users_user uu ON uu.id = cc.user_id ORDER BY ss.id"
-            
+                "SELECT co.name as outlet_name, uu.name as sales_name, ssp.name as subscription_plan_name, ss.start_date, ss.end_date, DATE_PART('day', ss.end_date - now()) as remaining_duration, ss.is_active, ss.id "
+                + "FROM subscriptions_subscription ss "
+                + "INNER JOIN subscriptions_subscriptionplan ssp ON ss.subscriptionplan_id = ssp.id "
+                + "INNER JOIN clients_outlet co ON co.id = ss.outlet_id "
+                + "INNER JOIN clients_client cc ON cc.id = co.client_id "
+                + "INNER JOIN users_user uu ON uu.id = cc.user_id "
+                + "ORDER BY ss.id "
             )
         results = cursor.fetchall()
         context = super().get_context_data(**kwargs)
