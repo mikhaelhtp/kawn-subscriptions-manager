@@ -7,15 +7,19 @@ from .views import (
     DeleteClient,
     activate_client,
     deactivate_client,
+    ListOutlet,
+    AddOutlet
 )
 
 
 app_name = "clients"
 urlpatterns = [
-    path("list_client/", ListClient.as_view(), name="list_client"),
-    path("add_client/", AddClient.as_view(), name="add_client"),
-    path("update_client/<int:pk>", UpdateClient.as_view(), name="update_client"),
-    path("delete_client/<int:pk>/", DeleteClient.as_view(), name="delete_client"),
-    path("activate_client/<int:id>", activate_client, name="activate_client"),
-    path("deactivate_client/<int:id>", deactivate_client, name="deactivate_client"),
+    path("list/", ListClient.as_view(), name="list_client"),
+    path("add/", AddClient.as_view(), name="add_client"),
+    path("update/<int:pk>/", UpdateClient.as_view(), name="update_client"),
+    path("delete/<int:pk>/", DeleteClient.as_view(), name="delete_client"),
+    path("activate/<int:id>/", activate_client, name="activate_client"),
+    path("deactivate/<int:id>/", deactivate_client, name="deactivate_client"),
+    path("outlets/list/<int:id>/", ListOutlet.as_view(), name="list_outlet_client"),
+    path("outlets/add/<int:id>", AddOutlet.as_view(), name="add_outlet_client"),
 ]

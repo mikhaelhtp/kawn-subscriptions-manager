@@ -1,6 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -9,8 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from kawn_subscriptions_manager.decorators import supervisor_only, sales_only
-from kawn_subscriptions_manager.users.models import User
-from kawn_subscriptions_manager.clients.models import Client
+from kawn_subscriptions_manager.clients.models import Client, Outlet
 from .forms import ClientAddForm
 
 
@@ -28,10 +25,9 @@ class ListClient(ListView):
             return Client.objects.all().order_by("user_id")
 
 
-# @method_decorator([login_required, sales_only], name="dispatch")
 class AddClient(SuccessMessageMixin, CreateView):
     model = Client
-    fields = ["name", "business_name"]
+    fields = ["name"]
     success_message = _("Client successfully added")
     template_name = "clients/form_client.html"
 
@@ -43,16 +39,15 @@ class AddClient(SuccessMessageMixin, CreateView):
         return redirect("clients:list_client")
 
 
-class UpdateClient(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class UpdateClient(SuccessMessageMixin, UpdateView):
     model = Client
-    fields = ["name", "business_name"]
+    fields = ["name"]
     success_message = _("Client successfully updated")
     template_name = "clients/form_client.html"
     success_url = reverse_lazy("clients:list_client")
 
 
-@method_decorator([login_required, sales_only], name="dispatch")
-class DeleteClient(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class DeleteClient(SuccessMessageMixin, DeleteView):
     model = Client
     context_object_name = "client"
     success_url = reverse_lazy("clients:list_client")
@@ -63,7 +58,6 @@ class DeleteClient(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return super(DeleteClient, self).delete(request, *args, **kwargs)
 
 
-@login_required()
 @sales_only
 def deactivate_client(request, id):
     client = Client.objects.get(pk=id)
@@ -73,7 +67,6 @@ def deactivate_client(request, id):
     return redirect("clients:list_client")
 
 
-@login_required()
 @sales_only
 def activate_client(request, id):
     client = Client.objects.get(pk=id)
@@ -81,3 +74,28 @@ def activate_client(request, id):
     client.save()
     messages.success(request, "Client has been activated successfully!")
     return redirect("clients:list_client")
+
+
+class ListOutlet(ListView):
+    model = Outlet
+    template_name = "clients/list_outlet_client.html"
+
+    def get_context_data(self):
+        context = {
+            "object_list" : Outlet.objects.filter(client_id=self.kwargs['id']),
+            "id" : self.kwargs['id'],
+        }
+        return context
+
+class AddOutlet(SuccessMessageMixin, CreateView):
+    model = Outlet
+    fields = ["name"]
+    success_message = _("Outlet successfully added")
+    template_name = "clients/form_outlet.html"
+
+    def form_valid(self, form):
+        messages.success(self.request, self.success_message)
+        outlet = form.save()
+        outlet.client_id = self.kwargs['id']
+        outlet.save()
+        return redirect("clients:list_outlet_client", id=self.kwargs['id'])
