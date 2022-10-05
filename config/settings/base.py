@@ -157,7 +157,9 @@ MIDDLEWARE = [
 LOGIN_REQUIRED_IGNORE_VIEW_NAMES = []
 
 LOGIN_REQUIRED_IGNORE_PATHS = [
-    r"/accounts/login/$",
+    r"/accounts/login/",
+    r"/accounts/password/reset/",
+    r"/accounts/confirm-email/",
 ]
 
 # STATIC
