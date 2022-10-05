@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
-from kawn_subscriptions_manager.decorators import supervisor_only, sales_only
+from kawn_subscriptions_manager.decorators import sales_only
 from kawn_subscriptions_manager.clients.models import Client, Outlet
 from kawn_subscriptions_manager.users.models import User
 
@@ -24,15 +24,22 @@ class ListClient(ListView):
         else:
             return Client.objects.all().order_by("user_id")
 
+    def get_template_names(self):
+        if self.request.user.type == "SALES":
+            return ["clients/sales/list_client.html"]
+        else:
+            return ["clients/list_client.html"]
 
-class AddClient(SuccessMessageMixin, CreateView):
+
+@method_decorator([sales_only], name="dispatch")
+class AddClient(CreateView):
     model = Client
     fields = ["name"]
     success_message = _("Client successfully added")
     template_name = "clients/form_client.html"
 
     def form_valid(self, form):
-        messages.success(self.request, self.success_message)
+        messages.success(self.request, "Client successfully added")
         client = form.save()
         client.user_id = User.objects.get(pk=self.request.user.id)
         client.save()
@@ -47,18 +54,16 @@ class UpdateClient(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy("clients:list_client")
 
 
-class DeleteClient(SuccessMessageMixin, DeleteView):
+class DeleteClient(DeleteView):
     model = Client
     context_object_name = "client"
     success_url = reverse_lazy("clients:list_client")
-    success_message = _("Client successfully deleted")
 
     def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
+        messages.success(self.request, "Client successfully deleted")
         return super(DeleteClient, self).delete(request, *args, **kwargs)
 
 
-@sales_only
 def deactivate_client(request, id):
     client = Client.objects.get(pk=id)
     client.is_active = False
@@ -67,7 +72,6 @@ def deactivate_client(request, id):
     return redirect("clients:list_client")
 
 
-@sales_only
 def activate_client(request, id):
     client = Client.objects.get(pk=id)
     client.is_active = True
@@ -82,10 +86,17 @@ class ListOutlet(ListView):
 
     def get_context_data(self):
         context = {
-            "object_list" : Outlet.objects.filter(client_id=self.kwargs['id']),
-            "id" : self.kwargs['id'],
+            "object_list": Outlet.objects.filter(client_id=self.kwargs["id"]),
+            "id": self.kwargs["id"],
         }
         return context
+
+    def get_template_names(self):
+        if self.request.user.type == "SALES":
+            return ["clients/sales/list_outlet_client.html"]
+        else:
+            return ["clients/list_outlet_client.html"]
+
 
 class AddOutlet(SuccessMessageMixin, CreateView):
     model = Outlet
@@ -96,6 +107,6 @@ class AddOutlet(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         outlet = form.save()
-        outlet.client_id = self.kwargs['id']
+        outlet.client_id = self.kwargs["id"]
         outlet.save()
-        return redirect("clients:list_outlet_client", id=self.kwargs['id'])
+        return redirect("clients:list_outlet_client", id=self.kwargs["id"])
