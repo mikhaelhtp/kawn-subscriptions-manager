@@ -15,7 +15,7 @@ class SubscriptionPlan(models.Model):
 
 
 class Subscription(models.Model):
-    outlet = models.ForeignKey(Outlet, on_delete=models.CASCADE, null=True, unique=True)
+    outlet = models.OneToOneField(Outlet, on_delete=models.CASCADE, null=True, unique=True)
     subscriptionplan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
     start_date = models.DateTimeField(_("Start Date"))
     end_date = models.DateTimeField(_("End Date"))
