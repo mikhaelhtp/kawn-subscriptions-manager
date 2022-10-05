@@ -48,10 +48,10 @@
                     <span class="nav-link-text ms-1">Subscription Plans</span>
                 </a>
             </li>
-            {% url 'subscriptions:list_client_subscription' as list_client_subscription %}
+            {% url 'subscriptions:list_subscription' as list_subscription %}
             <li class="nav-item">
-                <a class="nav-link  {% if request.get_full_path == list_client_subscription %}active{% endif %}"
-                    href="{% url 'subscriptions:list_client_subscription'  %}">
+                <a class="nav-link  {% if request.get_full_path == list_subscription %}active{% endif %}"
+                    href="{% url 'subscriptions:list_subscription'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-list"></i>
@@ -59,6 +59,7 @@
                     <span class="nav-link-text ms-1">Client Subscriptions</span>
                 </a>
             </li>
+            {% if request.user.type == "ADMIN" %}
             {% url 'users:list_users' as list_users %}
             <li class="nav-item">
                 <a class="nav-link  {% if request.get_full_path == list_users %}active{% endif %}" href="{% url 'users:list_users'%}">
@@ -69,6 +70,7 @@
                     <span class="nav-link-popeo ms-1">Users</span>
                 </a>
             </li>
+            {% endif %}
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Settings Menu</h6>
             </li>
