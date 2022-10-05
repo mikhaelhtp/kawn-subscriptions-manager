@@ -7,11 +7,9 @@ from kawn_subscriptions_manager.clients.models import Client, Outlet
 from .models import SubscriptionPlan, Subscription
 
 
-class AddClientSubscriptionForm(ModelForm):
+class AddSubscriptionForm(ModelForm):
     class Meta:
         model = Subscription
-        # start_date = forms.DateTimeInput(input_formats=['%m/%d/%Y %H:%M'])
-        # end_date = forms.DateTimeInput(input_formats=['%m/%d/%Y %H:%M'])
         fields = ["subscriptionplan", "outlet", "start_date", "end_date"]
         widgets = {
             "start_date": forms.DateTimeInput({"type": "date"}),
@@ -19,7 +17,7 @@ class AddClientSubscriptionForm(ModelForm):
         }
 
     def __init__(self, user, *args, **kwargs):
-        super(AddClientSubscriptionForm, self).__init__(*args, **kwargs)
+        super(AddSubscriptionForm, self).__init__(*args, **kwargs)
         client = Client.objects.values_list('id').filter(user_id=user.id)
         outlet = Outlet.objects.filter(client_id__in=client)
         outlets = [(i.id, i.name) for i in outlet]

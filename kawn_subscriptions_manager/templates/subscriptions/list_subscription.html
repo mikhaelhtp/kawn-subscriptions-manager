@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block menu-title %}List User Subscriptions{% endblock %}
+{% block listclientsubscriptions-active %}active{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header pb-0 col-md-12">
+        <div class="row">
+          {% for message in messages %}
+          <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
+            <strong class="text-white">{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+          </div>
+          {% endfor %}
+          <div class="align-middle">
+            <h6>Client Susbcriptions</h6>
+          </div>
+        </div>
+      </div>
+      <div class="card-body px-0 pt-0 pb-2">
+        <div class="table-responsive p-0">
+          <table class="table align-items-center mb-0">
+            <thead>
+              <tr class="text-center">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Outlet Name</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sales Name</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subscription Plan
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start Date
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">End Date
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  RemainingDate</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for data in results %}
+              <tr class="text-center">
+                <td class="align-middle text-center text-sm">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.0 }}</p>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.1 }}</p>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.2 }}</p>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <span class="badge badge-sm bg-gradient-info">{{ data.3|date:'Y M d' }}</span>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <span class="badge badge-sm bg-danger">{{ data.4|date:'Y M d' }}</span>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.5|floatformat }} days</p>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  {% if data.6 %}
+                  <p class="text-xs font-weight-bold mb-0">Active</p>
+                  {% else %}
+                  <p class="text-xs font-weight-bold mb-0">Not Active</p>
+                  {% endif %}
+                </td>
+                <td class="align-middle text-center text-sm">
+                  {% if data.6 %}
+                  <a href="{% url 'subscriptions:deactivate_subscription' data.7 %}"
+                    class="badge bg-gradient-danger">Deactivate</a>
+                  {% else %}
+                  <a href="{% url 'subscriptions:update_subscription' data.7 %}"
+                    class="badge bg-gradient-info">Activate</a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr class="text-center">
+                <td colspan="8" class="align-middle text-center text-sm">
+                  <p class="text-xs font-weight-bold mb-0">No Item in List</p>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

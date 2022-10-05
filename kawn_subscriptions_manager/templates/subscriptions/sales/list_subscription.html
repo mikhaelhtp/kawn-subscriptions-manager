@@ -17,8 +17,8 @@
           </div>
           {% endfor %}
           <div class="align-middle">
-            <h5 class="font-weight-bolder">Client Susbcriptions</h5>
-            <a href="{% url 'subscriptions:add_client_subscription' %}"
+            <h6>Client Susbcriptions</h6>
+            <a href="{% url 'subscriptions:add_subscription' %}"
               class="btn bg-gradient-info col-md-2 mt-2">Add Subscription</a>
           </div>
         </div>
@@ -72,10 +72,10 @@
                 </td>
                 <td class="align-middle text-center text-sm">
                   {% if data.6 %}
-                  <a href="{% url 'subscriptions:deactivate_client_subscription' data.7 %}"
+                  <a href="{% url 'subscriptions:deactivate_subscription' data.7 %}"
                     class="badge bg-gradient-danger">Deactivate</a>
                   {% else %}
-                  <a href="{% url 'subscriptions:update_client_subscription' data.7 %}"
+                  <a href="{% url 'subscriptions:update_subscription' data.7 %}"
                     class="badge bg-gradient-info">Activate</a>
                   {% endif %}
                 </td>
