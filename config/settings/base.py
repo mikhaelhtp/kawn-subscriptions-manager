@@ -47,11 +47,12 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "kawn_subscriptions_manager",
         "USER": "postgres",
-        "PASSWORD": "password",
+        "PASSWORD": "root",
         "HOST": "localhost",
-        "PORT": "5432",
+        "PORT": "5433",
     }
 }
+
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -83,6 +84,8 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "fontawesomefree",
+    "requests_http_signature",
+    "bootstrap_pagination",
     # "django_celery_beat",
 ]
 
@@ -90,6 +93,7 @@ LOCAL_APPS = [
     "kawn_subscriptions_manager.users",
     # Your stuff: custom apps go here
     "kawn_subscriptions_manager.subscriptions",
+    "kawn_subscriptions_manager.api",
     "kawn_subscriptions_manager.dashboard",
     "kawn_subscriptions_manager.clients",
 ]
@@ -152,6 +156,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "kawn_subscriptions_manager.users.middleware.RestrictUserMiddleware",
 ]
 
 LOGIN_REQUIRED_IGNORE_VIEW_NAMES = []
@@ -309,14 +314,14 @@ LOGGING = {
 # CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # django-allauth
 # ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
+ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", False)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "none"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "kawn_subscriptions_manager.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
