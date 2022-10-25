@@ -1,25 +1,41 @@
+from email.policy import default
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.utils.text import slugify
 
-from kawn_subscriptions_manager.clients.models import Client, Outlet
+from kawn_subscriptions_manager.clients.models import Outlet
 
 
 class SubscriptionPlan(models.Model):
-    name = models.CharField(_("Name"), max_length=255)
-    duration = models.IntegerField(_("Duration"))
-    price = models.IntegerField(_("Price"))
-    is_active = models.BooleanField(default=True)
+    name = models.CharField(max_length=255, null=True)
+    slug = models.SlugField(max_length=255, null=True, editable=False)
+    price = models.FloatField(null=True)
+    description = models.TextField(null=True)
+    is_public = models.BooleanField(default=True)
+    plan_type = models.CharField(max_length=255, null=True)
+    trial_unit = models.CharField(max_length=255, null=True)
+    trial_period = models.SmallIntegerField(null=True)
+    recurrence_unit = models.CharField(max_length=255, null=True, blank=True)
+    recurrence_period = models.SmallIntegerField(null=True)
+    is_active = models.BooleanField(null=True, default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
+    def save(self):
+        self.slug = slugify(self.name)
+        super(SubscriptionPlan, self).save()
+
 
 class Subscription(models.Model):
-    outlet = models.OneToOneField(Outlet, on_delete=models.CASCADE, null=True, unique=True)
-    subscriptionplan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
-    start_date = models.DateTimeField(_("Start Date"))
-    end_date = models.DateTimeField(_("End Date"))
-    price = models.IntegerField(_("Price"), null=True)
-    is_active = models.BooleanField(default=True)
+    outlet = models.ForeignKey(Outlet, on_delete=models.CASCADE, null=True)
+    subscriptionplan = models.ForeignKey(
+        SubscriptionPlan, on_delete=models.CASCADE, null=True
+    )
+    expires = models.DateTimeField(null=True)
+    billing_date = models.DateTimeField(null=True)
+    active = models.BooleanField(null=True, default=True)
+    cancelled = models.BooleanField(null=True)
+    voucher = models.IntegerField(null=True)
     created = models.DateTimeField(auto_now_add=True)
+    deleted = models.DateTimeField(null=True)
     modified = models.DateTimeField(auto_now=True)

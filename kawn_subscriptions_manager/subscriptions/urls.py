@@ -9,7 +9,7 @@ from kawn_subscriptions_manager.subscriptions.views import (
     deactivate_subscription_plan,
     ListSubscription,
     AddSubscription,
-    UpdateSubscription,
+    ActivateSubscription,
     deactivate_subscription,
 )
 
@@ -56,9 +56,9 @@ urlpatterns = [
         name="add_subscription",
     ),
     path(
-        "subscription/update/<int:pk>",
-        view=UpdateSubscription.as_view(),
-        name="update_subscription",
+        "subscription/activate/<int:pk>",
+        view=ActivateSubscription.as_view(),
+        name="activate_subscription",
     ),
     path(
         "subscription/deactivate/<int:id>",
