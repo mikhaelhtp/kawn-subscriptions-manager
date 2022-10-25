@@ -21,3 +21,8 @@ crispy-bootstrap5==0.6  # https://github.com/django-crispy-forms/crispy-bootstra
 django-compressor==4.1  # https://github.com/django-compressor/django-compressor
 django-redis==5.2.0  # https://github.com/jazzband/django-redis
 django-login-required-middleware
+django-bootstrap-pagination
+django-filter
+django-tables2
+tablib[xlsx]
+django-phonenumber-field[phonenumberslite]
