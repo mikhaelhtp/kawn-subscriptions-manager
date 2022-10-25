@@ -1,6 +1,6 @@
 from django.db import connection
 
-from kawn_subscriptions_manager.signatures import req
+from kawn_subscriptions_manager.signature import req
 
 
 data = tuple(req["results"])
@@ -64,12 +64,12 @@ for edata in data:
 
 
 cursor = connection.cursor()
-query = "INSERT INTO clients_apioutlet(id, name, display_name, subscription_plan_read, phone, province_read, city_read, address, postal_code, outlet_code, outlet_image, is_expired, transaction_code_prefix, archieved, deleted, taxes, gratuity, enable_dashboard, branch_id, device_users, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING"
+query = "INSERT INTO clients_outlet(id, name, display_name, subscription_plan_read, phone, province_read, city_read, address, postal_code, outlet_code, outlet_image, is_expired, transaction_code_prefix, archieved, deleted, taxes, gratuity, enable_dashboard, branch_id, device_users, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING"
 data = list_data
 try:
     cursor.executemany(query, data)
     connection.commit()
-    # print("Data stored to database")
+    print("Data outlet stored to database")
 except connection.DatabaseError as message:
     if connection:
         connection.rollback()
