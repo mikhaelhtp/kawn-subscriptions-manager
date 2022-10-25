@@ -1,0 +1,37 @@
+/* ==================== Sortable */
+.sortable th::after {
+  font-family: "Font Awesome 6 Free";
+  content: "\f0dc";
+  color: inherit;
+  padding-left: 4px;
+  font-size: 1em;
+}
+
+.sortable th.dir-d::after {
+  font-family: "Font Awesome 6 Free";
+  font-size: 1em;
+  content: '\f063';
+  color: inherit;
+  padding-left: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.sortable th.dir-u::after {
+  font-family: "Font Awesome 6 Free";
+  font-size: 1em;
+  content: '\f062';
+  color: inherit;
+  padding-left: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+th.no-sort {
+  pointer-events: none;
+}
+
+th.no-sort::after {
+  content: none;
+}
+/* ==================== End Sortable */
