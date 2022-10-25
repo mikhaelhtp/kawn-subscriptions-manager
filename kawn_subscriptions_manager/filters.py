@@ -1,5 +1,5 @@
 from random import choices
-from django_filters import DateFilter
+from django_filters import DateFilter, ChoiceFilter
 import django_filters
 
 from kawn_subscriptions_manager.subscriptions.models import (
@@ -21,18 +21,19 @@ class SubscriptionPlanFilter(django_filters.FilterSet):
 
 class SubscriptionFilter(django_filters.FilterSet):
 
+    subscriptionplan = ChoiceFilter(
+        label='Subscription Plan', empty_label="All", choices=[])
     expires = DateFilter(field_name="expires", lookup_expr="lte", label="Expired Date")
 
     class Meta:
         model = Subscription
-        fields = ["active", "subscriptionplan"]
+        fields = ["active"]
 
     def __init__(self, *args, **kwargs):
         super(SubscriptionFilter, self).__init__(*args, **kwargs)
         subscription_plan = SubscriptionPlan.objects.all()
         subscription_plans = [(i.id, i.name) for i in subscription_plan]
-        self.filters["subscriptionplan"] = django_filters.ChoiceFilter(
-            choices=subscription_plans
-        )
+        self.filters["subscriptionplan"].extra['choices'] = subscription_plans
         self.filters["active"].label = "Status"
         self.filters["active"].lookup_expr = "icontains"
+        self.filters["expires"] = DateFilter()
