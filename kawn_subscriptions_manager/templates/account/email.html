@@ -69,7 +69,7 @@
 
 
 {% block inline_javascript %}
-{{ block.super }}
+{% comment %} {{ block.super }} {% endcomment %}
 <script type="text/javascript">
 window.addEventListener('DOMContentLoaded',function() {
   const message = "{% translate 'Do you really want to remove the selected e-mail address?' %}";
@@ -85,3 +85,4 @@ window.addEventListener('DOMContentLoaded',function() {
 });
 </script>
 {% endblock %}
+

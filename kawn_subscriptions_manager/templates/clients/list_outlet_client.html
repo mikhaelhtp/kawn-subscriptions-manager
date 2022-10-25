@@ -1,82 +1,116 @@
 {% extends "base.html" %}
 
 {% block menu-title %}List Outlet Client{% endblock %}
+{% load django_tables2 %}
+{% load bootstrap_pagination %}
 
 {% block content %}
 <div class="row">
-  <div class="col-12">
-    <div class="card mb-4">
-      <div class="card-header pb-0 col-md-12">
-        <div class="row">
-          {% for message in messages %}
-          <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
-            <strong class="text-white">{{ message }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
-          </div>
-          {% endfor %}
-          <div class="align-middle">
-            <h5 class="font-weight-bolder">Outlets</h5>
-          </div>
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0 col-md-12">
+                <div class="row">
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
+                        <strong class="text-white">{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    {% endfor %}
+                    <div class="align-middle">
+                        <h5 class="font-weight-bolder">{{ name.name }}'s Outlets</h5>
+                    </div>
+                </div>
+                <!-- <div class="pull-right">
+                    {% if export_formats %}
+                    {% for format in export_formats %}
+                    <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
+                        download <code>.{{ format }}</code>
+                    </a>
+                    {% endfor %}
+                    {% endif %}
+                </div> -->
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+                <!-- <div class="row">
+                    <div class="col">
+                        <form action="" method="get" class="mx-3 form-inline justify-content-center">
+                            {{ myFilter.form }}
+                            <button type="submit">Filter</button>
+                            <button><a href="{% url 'clients:list_outlet' %}">Clear Filter</a></button>
+                        </form>
+                    </div>
+                </div> -->
+                <div class="table-responsive p-0">
+                    <table class="table sortable align-items-center mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Outlet Name</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-en">Phone</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Address</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">City</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Province</th>
+                                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in object_list %}
+                            <tr>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-end">{{ data.phone }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0">{{ data.address }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0">{{ data.city_read }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0">{{ data.province_read }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <a href="{% url 'clients:update_outlet' data.id %}" class="badge bg-info">Edit</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr class="text-center">
+                                <td colspan="7" class="align-middle text-center text-sm">
+                                    <p class="text-xs font-weight-bold mb-0">No Item in List</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="card-body px-0 pt-0 pb-2">
-        <div class="table-responsive p-0">
-          <table class="table align-items-center mb-0">
-            <thead>
-              <tr class="text-center">
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Outlet Name</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for data in object_list %}
-              <tr class="text-center">
-                <td class="align-middle text-center text-sm">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
-                </td>
-                <td class="align-middle text-center text-sm">
-                  
-                </td>
-              </tr>
-              {% empty %}
-              <tr class="text-center">
-                <td colspan="5" class="align-middle text-center text-sm">
-                  <p class="text-xs font-weight-bold mb-0">No Item in List</p>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 {% endblock content %}
 
 {% block inline_javascript %}
 <script type="text/javascript">
-  $('.show_confirm').click(function (event) {
-    var form = $(this).closest("form");
-    var name = $(this).data("name");
-    event.preventDefault();
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    })
-      .then((willDelete) => {
-        if (willDelete.isConfirmed) {
-          form.submit();
-        }
-      });
-  });
+    $('.show_confirm').click(function (event) {
+        var form = $(this).closest("form");
+        var name = $(this).data("name");
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        })
+            .then((willDelete) => {
+                if (willDelete.isConfirmed) {
+                    form.submit();
+                }
+            });
+    });
 </script>
 {% endblock inline_javascript %}

@@ -24,6 +24,7 @@
   <!-- This file stores project-specific CSS -->
   {% compress css %}
   <link href="{% static 'css/project.css' %}" rel="stylesheet">
+  <link href="{% static 'css/sortable.css' %}" rel="stylesheet">
 
   <!-- Template -->
   <!--     Fonts and icons     -->
@@ -58,6 +59,7 @@
   <!-- place project specific Javascript in this file -->
   {% compress js %}
   <script defer src="{% static 'js/project.js' %}"></script>
+  <script src="{% static 'js/sortable.js' %}"></script>
   {% endcompress %}
 
   {% endblock javascript %}
@@ -82,12 +84,6 @@
   {% block modal %}{% endblock modal %}
 
   {% block inline_javascript %}
-  {% comment %}
-  Script tags with only code, no src (defer by default). To run
-  with a "defer" so that you run inline code:
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {/* Run whatever you want */ });
-  </script>
 
   <!--   Core JS Files   -->
   <script src="{% static 'js/core/popper.min.js' %}"></script>
@@ -105,12 +101,18 @@
     }
   </script>
 
-  <!-- <script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{% static 'js/soft-ui-dashboard.min.js' %}"></script>
+  {% endblock inline_javascript %}
+
+  <script>
     // Toggle Sidenav
     const iconNavbarSidenav = document.getElementById('iconNavbarSidenav');
     const iconSidenav = document.getElementById('iconSidenav');
     const sidenav = document.getElementById('sidenav-main');
     let body = document.getElementsByTagName('body')[0];
+    let navbar = document.getElementsByTagName('navbar')[0];
+    let sidebar = document.getElementsByTagName('sidebar')[0];
     let className = 'g-sidenav-pinned';
 
     if (iconNavbarSidenav) {
@@ -125,7 +127,7 @@
       if (body.classList.contains(className)) {
         body.classList.remove(className);
         setTimeout(function () {
-          sidenav.classList.remove('bg-white');
+          sidenav.classList.remove('bg-transparent');
         }, 100);
         sidenav.classList.remove('bg-transparent');
 
@@ -136,13 +138,7 @@
         iconSidenav.classList.remove('d-none');
       }
     }
-  </script> -->
-
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="{% static 'js/soft-ui-dashboard.min.js' %}"></script>
-
-  {% endcomment %}
-  {% endblock inline_javascript %}
+  </script>
 </body>
 
 </html>

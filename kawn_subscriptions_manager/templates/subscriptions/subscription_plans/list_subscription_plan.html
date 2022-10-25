@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
+{% load bootstrap_pagination %}
+{% load django_tables2 %}
+{% load humanize %}
+{% load crispy_forms_tags %}
 
 {% block menu-title %}List Subscriptions Plan{% endblock %}
 {% block listsubscriptionplan-active %}active{% endblock %}
@@ -15,44 +20,75 @@
               aria-hidden="true">&times;</span></button>
         </div>
         {% endfor %}
-        <h5 class="font-weight-bolder">Subscription Plans</h5>
+        <div class="align-middle">
+          <h6>Susbcriptions Plan</h6>
+        </div>
+        <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info ms-3 w-20 mt-2">Add
+          Subscription Plans</a>
       </div>
-      <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info ms-3 w-20 mt-2">Add
-        Subscription Plans</a>
+      <div class="pull-right">
+        {% if view.export_formats %}
+        {% for format in view.export_formats %}
+        <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
+          download <code>.{{ format }}</code>
+        </a>
+        {% endfor %}
+        {% endif %}
+      </div>
+      <div class="col-lg-6">
+        <form method="get">
+          {{ subscription_plan_filter.form }}
+          <button type="submit">Filter</button>
+          <button><a href="{% url 'subscriptions:list_subscription_plan' %}">Clear Filter</a></button>
+        </form>
+      </div>
       <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
-          <table class="table align-items-center mb-0">
+          <table class="table sortable align-items-center mb-0">
             <thead>
               <tr>
-                <th class="text-uppercase text-bold text-xxs font-weight-bolder">Name</th>
-                <th class="text-uppercase text-bold text-xxs font-weight-bolder ps-2">Duration</th>
-                <th class="text-uppercase text-bold text-xxs font-weight-bolder ps-2">Price</th>
-                <th class="text-uppercase text-bold text-xxs font-weight-bolder ps-2">Status</th>
-                <th class="text-uppercase text-bold text-xxs font-weight-bolder">Action</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Name</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Duration</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Price</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Trial Unit</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Recurrence Period</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Recurrence Unit</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Action</th>
               </tr>
             </thead>
             <tbody>
               {% for data in object_list %}
               <tr>
-                <td class="text-sm px-4">
+                <td class="text-start px-4">
                   <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
                 </td>
-                <td class="align-middle text-sm">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.duration }} Month</p>
+                <td class="align-middle">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.trial_period }} Month</p>
                 </td>
-                <td class="align-middle text-sm">
-                  <p class="text-xs font-weight-bold mb-0">Rp {{ data.price }}</p>
+                <td class="align-middle">
+                  <p class="text-xs font-weight-bold mb-0">Rp {{ data.price|intcomma }}</p>
                 </td>
-                <td class="align-middle text-sm">
+                <td class="align-middle">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.trial_unit }}</p>
+                </td>
+                <td class="align-middle">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.recurrence_period }}</p>
+                </td>
+                <td class="align-middle">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.recurrence_unit }}</p>
+                </td>
+                <td class="align-middle">
                   {% if data.is_active %}
                   <p class="text-xs font-weight-bold mb-0">Active</p>
                   {% else %}
                   <p class="text-xs font-weight-bold mb-0">Not Active</p>
                   {% endif %}
                 </td>
-                <td class="align-middle text-sm">
+                <td class="align-middle">
                   <div class="d-inline">
-                    <a href="{% url 'subscriptions:update_subscription_plan' data.id %}" class="badge bg-warning">Edit</a>
+                    <a href="{% url 'subscriptions:update_subscription_plan' data.id %}"
+                      class="badge bg-warning">Edit</a>
                     {% if data.is_active %}
                     <a href="{% url 'subscriptions:deactivate_subscription_plan' data.id %}"
                       class="badge bg-gradient-danger">Deactivate</a>
@@ -62,8 +98,8 @@
                     {% endif %}
                   </div>
                   {% if data.is_active == False %}
-                  <form class="d-inline" id="form-id" action="{% url 'subscriptions:delete_subscription_plan' data.id %}"
-                    method="post">
+                  <form class="d-inline" id="form-id"
+                    action="{% url 'subscriptions:delete_subscription_plan' data.id %}" method="post">
                     {% csrf_token %}
                     </a>
                     <button type="submit" class="badge btn-danger btn-flat show_confirm" data-toggle="tooltip"
@@ -77,6 +113,18 @@
           </table>
         </div>
       </div>
+      <div class="card-footer">
+        <div class="row">
+          <hr>
+          <div class="col-md-6">
+            <span>{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
+          </div>
+          <div class="col-md-6 text-end">
+            <span class="text-sm">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          </div>
+          <hr>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -84,24 +132,24 @@
 
 {% block inline_javascript %}
 <script type="text/javascript">
-    $('.show_confirm').click(function (event) {
-        var form = $(this).closest("form");
-        var name = $(this).data("name");
-        event.preventDefault();
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        })
-            .then((willDelete) => {
-                if (willDelete.isConfirmed) {
-                    form.submit();
-                }
-            });
-    });
+  $('.show_confirm').click(function (event) {
+    var form = $(this).closest("form");
+    var name = $(this).data("name");
+    event.preventDefault();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    })
+      .then((willDelete) => {
+        if (willDelete.isConfirmed) {
+          form.submit();
+        }
+      });
+  });
 </script>
 {% endblock inline_javascript %}

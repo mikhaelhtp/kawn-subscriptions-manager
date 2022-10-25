@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block menu-title %}List Client{% endblock %}
+{% block menu-title %}List Outlet Client{% endblock %}
+
+{% load bootstrap_pagination %}
 
 {% block content %}
 <div class="row">
@@ -21,69 +23,69 @@
                 </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
+                <div class="row">
+                    <div class="col">
+                        <form action="" method="get" class="mx-3 form-inline justify-content-center">
+                            {{ myFilter.form }}
+                            <button type="submit">Filter</button>
+                            <button><a href="{% url 'clients:list_client' %}">Clear Filter</a></button>
+                        </form>
+                    </div>
+                </div>
                 <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
+                    <table class="table sortable align-items-center mb-0">
                         <thead>
-                            <tr class="text-center">
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Client
-                                    Name</th>
-                                <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Sales Name
-                                </th>
-                                <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Status</th>
-                                <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Action
-                                </th>
+                            <tr>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Name</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Address</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end">Phone</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Brand Name</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Facebook</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Twitter</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Instagram</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Website</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Sales Name</th>
+                                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for data in object_list %}
-                            <tr class="text-center">
-                                <td class="align-middle text-center text-sm">
-                                    <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
+                            <tr>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.name }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.address }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-xs font-weight-bold mb-0 text-end">{{ data.phone }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.brand_name }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_facebook }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_twitter }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_instagram }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.website }}</p>
+                                </td>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.user.name }}</p>
                                 </td>
                                 <td class="align-middle text-center text-sm">
-                                    <p class="text-xs font-weight-bold mb-0">{{ data.user.name }}</p>
-                                </td>
-                                <td class="align-middle text-center text-sm">
-                                    {% if data.is_active %}
-                                    <p class="text-xs font-weight-bold mb-0">Active</p>
-                                    {% else %}
-                                    <p class="text-xs font-weight-bold mb-0">Not Active</p>
-                                    {% endif %}
-                                </td>
-                                <td class="align-middle text-center text-sm">
-                                    <div class="d-inline">
-                                        <a href="{% url 'clients:list_outlet_client' data.id %}"
-                                            class="badge bg-primary">Outlet</a>
-                                        <a href="{% url 'clients:update_client' data.id %}"
-                                            class="badge bg-warning">Edit</a>
-                                        {% if data.is_active %}
-                                        <a href="{% url 'clients:deactivate_client' data.id %}"
-                                            class="badge bg-gradient-danger">Deactivate</a>
-                                        {% else %}
-                                        <a href="{% url 'clients:activate_client' data.id %}"
-                                            class="badge bg-gradient-info">Activate</a>
-                                        {% endif %}
-                                    </div>
-                                    {% if data.is_active == False %}
-                                    <form class="d-inline" id="form-id"
-                                        action="{% url 'clients:delete_client' data.id %}" method="post">
-                                        {% csrf_token %}
-                                        <input name="_method" type="hidden" value="Delete">
-                                        <button type="submit" class="badge btn-danger btn-flat show_confirm"
-                                            data-toggle="tooltip" title='Delete'>Delete</button>
-                                    </form>
-                                    {% endif %}
+                                    <a href="{% url 'clients:list_outlet_client' data.id %}" class="badge bg-info">Outlet</a>
+                                    <a href="{% url 'clients:update_client' data.id %}" class="badge bg-warning">Edit</a>
                                 </td>
                             </tr>
                             {% empty %}
                             <tr class="text-center">
-                                <td colspan="5" class="align-middle text-center text-sm">
+                                <td colspan="10" class="align-middle text-center text-sm">
                                     <p class="text-xs font-weight-bold mb-0">No Item in List</p>
                                 </td>
                             </tr>
@@ -91,6 +93,14 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="card-footer row">
+                <hr>
+                <span class="col-lg-6">{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
+                <span class="col-lg-6 text-end text-sm">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                <hr>
             </div>
         </div>
     </div>

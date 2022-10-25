@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% load static %}
+{% load bootstrap_pagination %}
+{% load humanize %}
+{% load django_tables2 %}
 
 {% block menu-title %}List User Subscriptions{% endblock %}
 {% block listclientsubscriptions-active %}active{% endblock %}
@@ -18,65 +22,64 @@
           {% endfor %}
           <div class="align-middle">
             <h6>Client Susbcriptions</h6>
-            <a href="{% url 'subscriptions:add_subscription' %}"
-              class="btn bg-gradient-info col-md-2 mt-2">Add Subscription</a>
+            <a href="{% url 'subscriptions:add_subscription' %}" class="btn bg-gradient-info col-md-2 mt-2">Add
+              Subscription</a>
+            <div class="pull-right">
+              {% if export_formats %}
+              {% for format in export_formats %}
+              <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
+                download <code>.{{ format }}</code>
+              </a>
+              {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-lg-12">
+              <form method="get" class="form-inline justify-content-center">
+                {{ subscription_filter.form }}
+                <button type="submit">Filter</button>
+                <button><a href="{% url 'subscriptions:list_subscription' %}">Clear Filter</a></button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
       <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
-          <table class="table align-items-center mb-0">
+          <table class="table sortable align-items-center mb-0">
             <thead>
-              <tr class="text-center">
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Outlet Name</th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sales Name</th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subscription Plan
-                </th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start Date
-                </th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">End Date
-                </th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                  RemainingDate</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+              <tr>
+                <th class="text-uppercase text-dark text-xs font-weight-bolder ps-4">Outlet Name</th>
+                <th class="text-uppercase text-dark text-xs font-weight-bolder ps-4">Subscription Plan</th>
+                <th class="text-uppercase text-dark text-xs font-weight-bolder ps-4 text-end">Expired Date</th>
+                <th class="text-uppercase text-dark text-xs font-weight-bolder ps-4">Status</th>
+                <th class="text-center text-uppercase text-dark text-xs font-weight-bolder ps-4">Action</th>
               </tr>
             </thead>
             <tbody>
-              {% for data in results %}
-              <tr class="text-center">
-                <td class="align-middle text-center text-sm">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.0 }}</p>
+              {% for data in object_list %}
+              <tr>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.outlet.name }}</p>
                 </td>
-                <td class="align-middle text-center text-sm">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.1 }}</p>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.subscriptionplan.name }}</p>
                 </td>
-                <td class="align-middle text-center text-sm">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.2 }}</p>
+                <td data-sort="{{data.expires | date:'Ymd'}}" class="align-middle text-sm px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-end ">{{ data.expires|date:'D, d M Y' }}</p>
                 </td>
-                <td class="align-middle text-center text-sm">
-                  <span class="badge badge-sm bg-gradient-info">{{ data.3|date:'Y M d' }}</span>
-                </td>
-                <td class="align-middle text-center text-sm">
-                  <span class="badge badge-sm bg-danger">{{ data.4|date:'Y M d' }}</span>
-                </td>
-                <td class="align-middle text-center text-sm">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.5|floatformat }} days</p>
-                </td>
-                <td class="align-middle text-center text-sm">
-                  {% if data.6 %}
+                <td class="px-4">
+                  {% if data.active == True %}
                   <p class="text-xs font-weight-bold mb-0">Active</p>
                   {% else %}
                   <p class="text-xs font-weight-bold mb-0">Not Active</p>
-                  {% endif %}
+                  {% endif%}
                 </td>
                 <td class="align-middle text-center text-sm">
-                  {% if data.6 %}
-                  <a href="{% url 'subscriptions:deactivate_subscription' data.7 %}"
-                    class="badge bg-gradient-danger">Deactivate</a>
+                  {% if data.active == True %}
+                  <a href="{% url 'subscriptions:deactivate_subscription' data.id %}"
+                    class="badge bg-danger">Deactivate</a>
                   {% else %}
-                  <a href="{% url 'subscriptions:update_subscription' data.7 %}"
-                    class="badge bg-gradient-info">Activate</a>
+                  <a href="{% url 'subscriptions:activate_subscription' data.id %}" class="badge bg-info">Activate</a>
                   {% endif %}
                 </td>
               </tr>
@@ -91,7 +94,23 @@
           </table>
         </div>
       </div>
+      <div class="card-footer">
+        <div class="row">
+          <hr>
+          <div class="col-md-6">
+            <span>{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
+          </div>
+          <div class="col-md-6 text-end">
+            <span class="text-sm">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          </div>
+          <hr>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 {% endblock content %}
+
+{% block inline_javascript %}
+<script></script>
+{% endblock inline_javascript %}
