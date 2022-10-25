@@ -47,9 +47,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "kawn_subscriptions_manager",
         "USER": "postgres",
-        "PASSWORD": "root",
+        "PASSWORD": "iloveyou3000",
         "HOST": "localhost",
-        "PORT": "5433",
+        "PORT": "5432",
     }
 }
 
@@ -76,6 +76,7 @@ DJANGO_APPS = [
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
+    "django.contrib.humanize",
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
@@ -84,8 +85,13 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "fontawesomefree",
-    "requests_http_signature",
+    "widget_tweaks",
     "bootstrap_pagination",
+    "django_bootstrap5",
+    "bootstrap4",
+    "django_tables2",
+    "django_filters",
+    "phonenumber_field",
     # "django_celery_beat",
 ]
 
@@ -93,9 +99,9 @@ LOCAL_APPS = [
     "kawn_subscriptions_manager.users",
     # Your stuff: custom apps go here
     "kawn_subscriptions_manager.subscriptions",
-    "kawn_subscriptions_manager.api",
     "kawn_subscriptions_manager.dashboard",
     "kawn_subscriptions_manager.clients",
+    "kawn_subscriptions_manager.api",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
