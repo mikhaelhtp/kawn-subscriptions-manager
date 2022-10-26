@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% load bootstrap_pagination %}
-{% load django_tables2 %}
 {% load humanize %}
 {% load crispy_forms_tags %}
 
@@ -20,27 +19,33 @@
               aria-hidden="true">&times;</span></button>
         </div>
         {% endfor %}
-        <div class="align-middle">
-          <h6>Susbcriptions Plan</h6>
+        <div>
+          <h6>Susbcription Plans</h6>
+          <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info mt-2">Add</a>
         </div>
-        <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info ms-3 w-20 mt-2">Add
-          Subscription Plans</a>
-      </div>
-      <div class="pull-right">
-        {% if view.export_formats %}
-        {% for format in view.export_formats %}
-        <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
-          download <code>.{{ format }}</code>
-        </a>
-        {% endfor %}
-        {% endif %}
-      </div>
-      <div class="col-lg-6">
-        <form method="get">
-          {{ subscription_plan_filter.form }}
-          <button type="submit">Filter</button>
-          <button><a href="{% url 'subscriptions:list_subscription_plan' %}">Clear Filter</a></button>
-        </form>
+        <div class="col-lg-12 mb-4 mt-2">
+          <form method="get">
+            <div class="row">
+              <div class="col-md-2">
+                {{ subscription_plan_filter.form.trial_unit|as_crispy_field }}
+              </div>
+              <div class="col-md-2">
+                {{ subscription_plan_filter.form.recurrence_unit|as_crispy_field }}
+              </div>
+              <div class="col-md-2">
+                {{ subscription_plan_filter.form.is_active|as_crispy_field }}
+              </div>
+              <div class="col-md-4 mt-4">
+                <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
+                <button class="btn bg-gradient-info mt-2 mb-0">
+                  <a href="{% url 'subscriptions:list_subscription_plan' %}" class="text-white">
+                    Clear Filter
+                  </a>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
       <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
@@ -48,7 +53,7 @@
             <thead>
               <tr>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Name</th>
-                <th class="text-uppercase text-xs text-dark font-weight-bolder">Duration</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Trial Period</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Price</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Trial Unit</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Recurrence Period</th>
@@ -63,22 +68,22 @@
                 <td class="text-start px-4">
                   <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
                 </td>
-                <td class="align-middle">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.trial_period }} Month</p>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-end">{{ data.trial_period }} Month</p>
                 </td>
-                <td class="align-middle">
-                  <p class="text-xs font-weight-bold mb-0">Rp {{ data.price|intcomma }}</p>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-end">Rp {{ data.price|intcomma }}</p>
                 </td>
-                <td class="align-middle">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.trial_unit }}</p>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.get_trial_unit_display }}</p>
                 </td>
-                <td class="align-middle">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.recurrence_period }}</p>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-end">{{ data.recurrence_period }}</p>
                 </td>
-                <td class="align-middle">
-                  <p class="text-xs font-weight-bold mb-0">{{ data.recurrence_unit }}</p>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.get_recurrence_unit_display }}</p>
                 </td>
-                <td class="align-middle">
+                <td class="px-4">
                   {% if data.is_active %}
                   <p class="text-xs font-weight-bold mb-0">Active</p>
                   {% else %}

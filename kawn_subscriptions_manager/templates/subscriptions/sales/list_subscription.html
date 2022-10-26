@@ -3,6 +3,7 @@
 {% load bootstrap_pagination %}
 {% load humanize %}
 {% load django_tables2 %}
+{% load crispy_forms_tags %}
 
 {% block menu-title %}List User Subscriptions{% endblock %}
 {% block listclientsubscriptions-active %}active{% endblock %}
@@ -24,22 +25,29 @@
             <h6>Client Susbcriptions</h6>
             <a href="{% url 'subscriptions:add_subscription' %}" class="btn bg-gradient-info col-md-2 mt-2">Add
               Subscription</a>
-            <div class="pull-right">
-              {% if export_formats %}
-              {% for format in export_formats %}
-              <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
-                download <code>.{{ format }}</code>
-              </a>
-              {% endfor %}
-              {% endif %}
-            </div>
-            <div class="col-lg-12">
-              <form method="get" class="form-inline justify-content-center">
-                {{ subscription_filter.form }}
-                <button type="submit">Filter</button>
-                <button><a href="{% url 'subscriptions:list_subscription' %}">Clear Filter</a></button>
-              </form>
-            </div>
+              <div class="col-lg-12 mb-4 mt-2">
+                <form method="get">
+                  <div class="row">
+                    <div class="col-md-2">
+                      {{ subscription_filter.form.subscriptionplan|as_crispy_field }}
+                    </div>
+                    <div class="col-md-2">
+                      {{ subscription_filter.form.expires|as_crispy_field }}
+                    </div>
+                    <div class="col-md-2">
+                      {{ subscription_filter.form.active|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4 mt-4">
+                      <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
+                      <button class="btn bg-gradient-info mt-2 mb-0">
+                        <a href="{% url 'subscriptions:list_subscription' %}" class="text-white">
+                          Clear Filter
+                        </a>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
           </div>
         </div>
       </div>

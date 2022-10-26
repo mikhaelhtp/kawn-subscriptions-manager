@@ -20,19 +20,29 @@
         </div>
         {% endfor %}
         <div class="align-middle">
-          <h6>Susbcriptions Plan</h6>
+          <h6>Susbcription Plans</h6>
         </div>
-        <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info ms-3 w-20 mt-2">Add
-          Subscription Plans</a>
-        <div class="col-lg-6">
-          {% crispy subscription_plan_filter.form %}
-          <form method="get" class="form-group">
-            <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
-            <button class="btn bg-gradient-info mt-2 mb-0">
-              <a href="{% url 'subscriptions:list_subscription_plan' %}">
-                Clear Filter
-              </a>
-            </button>
+        <div class="col-lg-12 mb-4 mt-2">
+          <form method="get">
+            <div class="row">
+              <div class="col-md-2">
+                {{ subscription_plan_filter.form.trial_unit|as_crispy_field }}
+              </div>
+              <div class="col-md-2">
+                {{ subscription_plan_filter.form.recurrence_unit|as_crispy_field }}
+              </div>
+              <div class="col-md-2">
+                {{ subscription_plan_filter.form.is_active|as_crispy_field }}
+              </div>
+              <div class="col-md-4 mt-4">
+                <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
+                <button class="btn bg-gradient-info mt-2 mb-0">
+                  <a href="{% url 'subscriptions:list_subscription_plan' %}" class="text-white">
+                    Clear Filter
+                  </a>
+                </button>
+              </div>
+            </div>
           </form>
         </div>
       </div>
@@ -42,10 +52,10 @@
             <thead>
               <tr>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Name</th>
-                <th class="text-uppercase text-xs text-dark font-weight-bolder">Duration</th>
-                <th class="text-uppercase text-end text-xs text-dark font-weight-bolder">Price</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Trial Period</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Price</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Trial Unit</th>
-                <th class="text-uppercase text-xs text-dark font-weight-bolder">Recurrence Period</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Recurrence Period</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Recurrence Unit</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
               </tr>
@@ -56,20 +66,20 @@
                 <td class="px-4">
                   <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
                 </td>
-                <td>
-                  <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.trial_period }} Month</p>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-end">{{ data.trial_period }} Month</p>
                 </td>
-                <td>
+                <td class="px-4">
                   <p class="text-xs text-end font-weight-bold mb-0">Rp {{ data.price|intcomma }}</p>
                 </td>
                 <td>
-                  <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.trial_unit }}</p>
+                  <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.get_trial_unit_display }}</p>
                 </td>
-                <td>
+                <td class="px-4">
                   <p class="text-xs font-weight-bold mb-0 ps-3 text-end">{{ data.recurrence_period }}</p>
                 </td>
                 <td>
-                  <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.recurrence_unit }}</p>
+                  <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.get_recurrence_unit_display }}</p>
                 </td>
                 <td>
                   {% if data.is_active %}
