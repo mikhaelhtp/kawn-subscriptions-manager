@@ -7,10 +7,12 @@ import django_filters as filters
 class OutletFilter(django_filters.FilterSet):
     class Meta:
         model = Outlet
-        fields = ["city_read", "province_read"]
+        fields = ["name", "city_read", "province_read"]
 
     def __init__(self, *args, **kwargs):
         super(OutletFilter, self).__init__(*args, **kwargs)
+        self.filters['name'].label="Outlet Name"
+        self.filters['name'].lookup_expr="icontains"
         self.filters['city_read'].label="City:"
         self.filters['city_read'].lookup_expr="icontains"
         self.filters['province_read'].label="Province:"
