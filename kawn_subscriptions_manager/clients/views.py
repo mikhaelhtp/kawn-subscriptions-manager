@@ -1,3 +1,4 @@
+from lib2to3.pytree import Base
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.decorators import method_decorator
 from django.contrib import messages
@@ -5,6 +6,7 @@ from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin
@@ -17,8 +19,8 @@ from .forms import AddOutletForm, AddClientForm, UpdateClientForm, AddClientOutl
 from .filters import OutletFilter, AccountFilter
 
 
-#CLIENT
-class ListClient(ListView):
+# CLIENT
+class ListClient(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView):
     model = Outlet
     paginate_by = 10
 
@@ -33,14 +35,18 @@ class ListClient(ListView):
     def get_context_data(self, object_list=None):
         account = AccountFilter(self.request.GET, queryset=self.get_queryset())
         queryset = object_list if object_list is not None else account.qs
+        export_formats = ("csv", "tsv", "xlsx", "json")
         page_size = self.paginate_by
-        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
+        paginator, page, queryset, is_paginated = self.paginate_queryset(
+            queryset, page_size
+        )
         context = {
-            'myFilter' : account,
-            'object_list' : queryset,
-            'paginator': paginator,
-            'page_obj': page,
-            'is_paginated': is_paginated,
+            "myFilter": account,
+            "object_list": queryset,
+            "export_formats": export_formats,
+            "paginator": paginator,
+            "page_obj": page,
+            "is_paginated": is_paginated,
         }
         return context
 
@@ -52,9 +58,13 @@ class ListClient(ListView):
 
 
 @method_decorator([sales_only], name="dispatch")
-class AddClient(SuccessMessageMixin, CreateView):
+class AddClient(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
     model = Account
     form_class = AddClientForm
+    crumbs = [
+        ("Client", reverse_lazy("clients:list_client")),
+        ("Add Client", reverse_lazy("clients:add_client")),
+    ]
     success_message = _("Client successfully added")
     template_name = "clients/sales/form_client.html"
     success_url = reverse_lazy("clients:list_client")
@@ -70,17 +80,32 @@ class AddClient(SuccessMessageMixin, CreateView):
 #         return redirect("clients:list_outlet")
 
 
-class UpdateClient(SuccessMessageMixin, UpdateView):
+# class DeleteOutlet(View, SuccessMessageMixin):
+#     model = APIOutlet
+#     success_url = reverse_lazy("clients:list_outlet")
+#     success_message = _("Outlet successfully deleted")
+
+#     def _init_(self, pk):
+#         APIOutlet.objects.filter(id=pk).update(user_id="")
+#         return redirect("clients:list_outlet")
+
+
+class UpdateClient(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     model = Account
     form_class = UpdateClientForm
+    crumbs = [
+        ("Client", reverse_lazy("clients:list_client")),
+        ("Update Client", reverse_lazy("clients:update_client")),
+    ]
     template_name = "clients/sales/form_client.html"
     success_url = reverse_lazy("clients:list_client")
     success_message = "Client successfully updated!"
 
 
 @method_decorator([sales_only], name="dispatch")
-class DeleteClient(SuccessMessageMixin, DeleteView):
+class DeleteClient(SuccessMessageMixin, BaseBreadcrumbMixin, DeleteView):
     model = Account
+    crumbs = [("Delete Client", reverse_lazy("clients:delete_client"))]
     success_url = reverse_lazy("clients:list_client")
 
     def delete(self, request, *args, **kwargs):
@@ -88,8 +113,8 @@ class DeleteClient(SuccessMessageMixin, DeleteView):
         return super(DeleteClient, self).delete(request, *args, **kwargs)
 
 
-#Outlet
-class ListOutletClient(ListView):
+# Outlet
+class ListOutletClient(ListBreadcrumbMixin, ListView):
     model = Outlet
     paginate_by = 10
 
@@ -122,7 +147,9 @@ class AddClientOutlet(CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        Outlet.objects.filter(id=form.cleaned_data["name"]).update(account_id=self.kwargs["pk"])
+        Outlet.objects.filter(id=form.cleaned_data["name"]).update(
+            account_id=self.kwargs["pk"]
+        )
         return redirect("clients:list_outlet_client", pk=self.kwargs["pk"])
 
 
@@ -130,10 +157,12 @@ def DeleteClientOutlet(request, pk):
     Outlet.objects.filter(id=pk).update(account_id="")
     messages.success(request, "Outlet successfully deleted")
     # return redirect("clients:list_outlet_client", pk=2)
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect(request.META.get("HTTP_REFERER"))
 
 
-class ListOutlet(ListView, SingleTableMixin, ExportMixin, FilterView):
+class ListOutlet(
+    ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
+):
     model = Outlet
     template_name = "clients/list_outlet.html"
     queryset = Outlet.objects.all().order_by("-id")
@@ -165,24 +194,33 @@ class ListOutlet(ListView, SingleTableMixin, ExportMixin, FilterView):
         queryset = object_list if object_list is not None else outlets.qs
         export_formats = ("csv", "tsv", "xlsx", "json")
         page_size = self.paginate_by
-        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
+        paginator, page, queryset, is_paginated = self.paginate_queryset(
+            queryset, page_size
+        )
         context = {
-            'myFilter' : outlets,
-            'object_list' : queryset,
+            "myFilter": outlets,
+            "object_list": queryset,
             "export_formats": export_formats,
-            'paginator': paginator,
-            'page_obj': page,
-            'is_paginated': is_paginated,
+            "paginator": paginator,
+            "page_obj": page,
+            "is_paginated": is_paginated,
         }
         return context
     
-    def get_table_kwargs(self):
-        return {"template_name": "clients/list_outlet.html"}
+    def get_template_names(self):
+        if self.request.user.type == "SALES":
+            return ["clients/sales/list_outlet.html"]
+        else:
+            return ["clients/list_outlet.html"]
 
 
-class AddOutlet(CreateView):
+class AddOutlet(BaseBreadcrumbMixin, CreateView):
     model = Outlet
     form_class = AddOutletForm
+    crumbs = [
+        ("Outlet", reverse_lazy("clients:list_outlet")),
+        ("Add Outlet", reverse_lazy("clients:add_outlet")),
+    ]
     success_message = _("Outlet successfully added")
     template_name = "clients/form_outlet.html"
 
@@ -191,14 +229,18 @@ class AddOutlet(CreateView):
         top = Outlet.objects.order_by("-id")[0]
         outlet = form.save(commit=False)
         outlet.province_read = dict(form.fields['province'].choices)[int(self.request.POST.get('province'))]
-        outlet.id = top.id+1
+        outlet.id = top.id + 1
         outlet.save()
         return redirect("clients:list_outlet")
 
 
-class UpdateOutlet(SuccessMessageMixin, UpdateView):
+class UpdateOutlet(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     model = Outlet
     form_class = AddOutletForm
+    crumbs = [
+        ("Outlet", reverse_lazy("clients:list_outlet")),
+        ("Update Outlet", reverse_lazy("clients:update_outlet")),
+    ]
     success_message = _("Outlet successfully updated")
     template_name = "clients/form_outlet.html"
 
