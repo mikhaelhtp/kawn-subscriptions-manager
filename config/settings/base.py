@@ -47,9 +47,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "kawn_subscriptions_manager",
         "USER": "postgres",
-        "PASSWORD": "iloveyou3000",
+        "PASSWORD": "root",
         "HOST": "localhost",
-        "PORT": "5432",
+        "PORT": "5433",
     }
 }
 
@@ -92,6 +92,7 @@ THIRD_PARTY_APPS = [
     "django_tables2",
     "django_filters",
     "phonenumber_field",
+    "view_breadcrumbs",
     # "django_celery_beat",
 ]
 
@@ -162,6 +163,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware"
     # "kawn_subscriptions_manager.users.middleware.RestrictUserMiddleware",
 ]
 
@@ -346,3 +348,6 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# Crispy form
+# CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+# CRISPY_TEMPLATE_PACK = "bootstrap5"
