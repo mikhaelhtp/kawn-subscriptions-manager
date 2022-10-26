@@ -37,3 +37,8 @@ account = requests.get(
     headers=headers,
 ).json()
 
+subscription_plan = requests.get(
+    "https://indev.kawn.co.id/api/v2.1/internal-application/subscription-plan/",
+    auth=auth,
+    headers=headers,
+).json()
