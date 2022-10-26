@@ -12,14 +12,12 @@ from django_tables2.export.views import ExportMixin
 
 from .models import Subscription, SubscriptionPlan
 from .forms import AddSubscriptionForm
-from .tables import SubscriptionTable
-from kawn_subscriptions_manager.decorators import allowed_users, sales_only
-from kawn_subscriptions_manager.clients.models import Outlet
-from kawn_subscriptions_manager.api import api_subscription_plans, api_subscriptions
-from kawn_subscriptions_manager.filters import (
+from .filters import (
     SubscriptionPlanFilter,
     SubscriptionFilter,
 )
+from kawn_subscriptions_manager.decorators import allowed_users, sales_only
+from kawn_subscriptions_manager.api import api_subscription_plans, api_subscriptions
 
 
 class ListSubscriptionPlan(ListView, SingleTableMixin, ExportMixin, FilterView):
@@ -47,7 +45,6 @@ class ListSubscriptionPlan(ListView, SingleTableMixin, ExportMixin, FilterView):
             "is_paginated": is_paginated,
         }
         return context
-        
 
     def get_template_names(self):
         if self.request.user.type == "SALES":
@@ -123,20 +120,7 @@ def activate_subscription_plan(request, id):
 class ListSubscription(ListView, SingleTableMixin, ExportMixin, FilterView):
     model = Subscription
     filterset_class = SubscriptionFilter
-    # table_class = SubscriptionTable
     paginate_by = 10
-
-    # def get_queryset(self):
-    #     userid = self.request.user.id
-    #     user_role = self.request.user.type
-    #     if user_role == "SALES":
-    #         subscription = Subscription.objects.values_list("outlet_id")
-    #         outlet = Outlet.objects.filter(
-    #             id__in=subscription, user_id=self.request.user.id
-    #         ).values_list("id") 
-    #         return Subscription.objects.filter(outlet_id__in=outlet).order_by("id")
-    #     else:
-    #         return Subscription.objects.all().order_by("id")
 
     def get_context_data(self, object_list=None):
         subscription_filter = SubscriptionFilter(
@@ -163,9 +147,6 @@ class ListSubscription(ListView, SingleTableMixin, ExportMixin, FilterView):
             return ["subscriptions/sales/list_subscription.html"]
         else:
             return ["subscriptions/list_subscription.html"]
-    
-    def get_table_kwargs(self):
-        return {"template_name": "subscriptions/sales/list_subscription.html"}
 
     now = timezone.now()
     Subscription.objects.filter(expires__lte=now).update(active=False)
@@ -186,7 +167,7 @@ class AddSubscription(CreateView):
         messages.success(self.request, "Subscriptions successfully added!")
         top = Subscription.objects.order_by("-id")[0]
         subscription = form.save(commit=False)
-        subscription.id = top.id+1
+        subscription.id = top.id + 1
         subscription.save()
         return redirect("subscriptions:list_subscription")
 
