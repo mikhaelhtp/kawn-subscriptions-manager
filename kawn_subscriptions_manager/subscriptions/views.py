@@ -6,11 +6,13 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import UpdateView, CreateView, ListView, DeleteView
+from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin
 
-from .models import Subscription, SubscriptionPlan
+from kawn_subscriptions_manager.api import api_subscription_plans, api_subscriptions
+from .models import SubscriptionPlan, Subscription
 from .forms import AddSubscriptionForm
 from .filters import (
     SubscriptionPlanFilter,
@@ -20,7 +22,7 @@ from kawn_subscriptions_manager.decorators import allowed_users, sales_only
 from kawn_subscriptions_manager.api import api_subscription_plans, api_subscriptions
 
 
-class ListSubscriptionPlan(ListView, SingleTableMixin, ExportMixin, FilterView):
+class ListSubscriptionPlan(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView):
     model = SubscriptionPlan
     filterset_class = SubscriptionPlanFilter
     queryset = SubscriptionPlan.objects.all().order_by("id")
@@ -56,7 +58,7 @@ class ListSubscriptionPlan(ListView, SingleTableMixin, ExportMixin, FilterView):
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
-class AddSubscriptionPlan(SuccessMessageMixin, CreateView):
+class AddSubscriptionPlan(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
     model = SubscriptionPlan
     fields = [
         "name",
@@ -67,13 +69,17 @@ class AddSubscriptionPlan(SuccessMessageMixin, CreateView):
         "recurrence_unit",
         "recurrence_period",
     ]
+    crumbs = [
+        ("Subscription Plans", reverse_lazy("subscriptions:list_subscription_plan")),
+        ("Add Subscription Plans", reverse_lazy("subscriptions:add_subscription_plan")),
+    ]
     template_name = "subscriptions/subscription_plans/form_subscription_plan.html"
     success_url = reverse_lazy("subscriptions:list_subscription_plan")
     success_message = "Subscription plans successfully added!"
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
-class UpdateSubscriptionPlan(SuccessMessageMixin, UpdateView):
+class UpdateSubscriptionPlan(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     model = SubscriptionPlan
     fields = [
         "name",
@@ -83,6 +89,10 @@ class UpdateSubscriptionPlan(SuccessMessageMixin, UpdateView):
         "trial_period",
         "recurrence_unit",
         "recurrence_period",
+    ]
+    crumbs = [
+        ("Subscription Plans", reverse_lazy("subscriptions:list_subscription_plan")),
+        ("Update Subscription Plans", reverse_lazy("subscriptions:update_subscription_plan")),
     ]
     template_name = "subscriptions/subscription_plans/form_subscription_plan.html"
     success_url = reverse_lazy("subscriptions:list_subscription_plan")
@@ -102,7 +112,7 @@ class DeleteSubscriptionPlan(DeleteView):
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def deactivate_subscription_plan(request, id):
     subscriptionplan = SubscriptionPlan.objects.get(pk=id)
-    subscriptionplan.is_active = False
+    subscriptionplan.active = False
     subscriptionplan.save()
     messages.success(request, "Subscription plans has been successfully deactivated!")
     return redirect("subscriptions:list_subscription_plan")
@@ -111,13 +121,13 @@ def deactivate_subscription_plan(request, id):
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def activate_subscription_plan(request, id):
     subscriptionplan = SubscriptionPlan.objects.get(pk=id)
-    subscriptionplan.is_active = True
+    subscriptionplan.active = True
     subscriptionplan.save()
     messages.success(request, "Subscription plans has been successfully activated!")
     return redirect("subscriptions:list_subscription_plan")
 
 
-class ListSubscription(ListView, SingleTableMixin, ExportMixin, FilterView):
+class ListSubscription(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView):
     model = Subscription
     filterset_class = SubscriptionFilter
     paginate_by = 10
@@ -153,8 +163,12 @@ class ListSubscription(ListView, SingleTableMixin, ExportMixin, FilterView):
 
 
 @method_decorator([sales_only], name="dispatch")
-class AddSubscription(CreateView):
+class AddSubscription(BaseBreadcrumbMixin, CreateView):
     model = Subscription
+    crumbs = [
+        ("Subscription", reverse_lazy("subscriptions:list_subscription")),
+        ("Add Subscription", reverse_lazy("subscriptions:add_subscription")),
+    ]
     template_name = "subscriptions/form_subscription.html"
 
     def get_form(self):
@@ -172,10 +186,14 @@ class AddSubscription(CreateView):
         return redirect("subscriptions:list_subscription")
 
 
-class ActivateSubscription(SuccessMessageMixin, UpdateView):
+class ActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     model = Subscription
     success_message = _("Subscription successfully updated!")
     fields = ["expires"]
+    crumbs = [
+        ("Subscription", reverse_lazy("subscriptions:list_subscription")),
+        ("Activate Subscription", reverse_lazy("subscriptions:activate_subscription")),
+    ]
     template_name = "subscriptions/form_subscription.html"
     success_url = reverse_lazy("subscriptions:list_subscription")
 
