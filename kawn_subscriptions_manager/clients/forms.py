@@ -18,6 +18,7 @@ class AddOutletForm(ModelForm):
         provinces = [(i["id"], i["name"]) for i in province]
 
         self.fields["province"] = forms.ChoiceField(choices=provinces, label="Province")
+        self.fields['display_name'].required = False
 
 
 class AddClientForm(ModelForm):

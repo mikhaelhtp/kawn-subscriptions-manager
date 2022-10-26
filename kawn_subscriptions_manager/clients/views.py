@@ -1,7 +1,7 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.decorators import method_decorator
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
@@ -52,28 +52,22 @@ class ListClient(ListView):
 
 
 @method_decorator([sales_only], name="dispatch")
-class AddClient(CreateView):
+class AddClient(SuccessMessageMixin, CreateView):
     model = Account
     form_class = AddClientForm
     success_message = _("Client successfully added")
     template_name = "clients/sales/form_client.html"
+    success_url = reverse_lazy("clients:list_client")
+    
 
-    def form_valid(self, form):
-        messages.success(self.request, self.success_message)
-        account = form.save(commit=False)
-        account.user_id = self.request.user.id
-        if form.cleaned_data["brand_name"] == None:
-            account.brand_name = "-"
-        if form.cleaned_data["social_facebook"] == None:
-            account.social_facebook = "-"
-        if form.cleaned_data["social_instagram"] == None:
-            account.social_instagram = "-"
-        if form.cleaned_data["social_twitter"] == None:
-            account.social_twitter = "-"
-        if form.cleaned_data["website"] == None:
-            account.website = "-"
-        account.save()
-        return redirect("clients:list_client")
+# class DeleteOutlet(View, SuccessMessageMixin):
+#     model = APIOutlet
+#     success_url = reverse_lazy("clients:list_outlet")
+#     success_message = _("Outlet successfully deleted")
+
+#     def __init__(self, pk):
+#         APIOutlet.objects.filter(id=pk).update(user_id="")
+#         return redirect("clients:list_outlet")
 
 
 class UpdateClient(SuccessMessageMixin, UpdateView):
@@ -97,13 +91,19 @@ class DeleteClient(SuccessMessageMixin, DeleteView):
 #Outlet
 class ListOutletClient(ListView):
     model = Outlet
-    # paginate_by = 10
+    paginate_by = 10
 
-    def get_context_data(self):
+    def get_context_data(self, object_list=None):
+        queryset = object_list if object_list is not None else Outlet.objects.filter(account_id=self.kwargs["pk"]).order_by("-id")
+        page_size = self.paginate_by
+        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
         context = {
-            "object_list": Outlet.objects.filter(account_id=self.kwargs["pk"]),
+            "object_list": queryset,
             "name": Account.objects.filter(id=self.kwargs["pk"])[0],
             "pk": self.kwargs["pk"],
+            'paginator': paginator,
+            'page_obj': page,
+            'is_paginated': is_paginated,
         }
         return context
 
@@ -190,6 +190,7 @@ class AddOutlet(CreateView):
         messages.success(self.request, self.success_message)
         top = Outlet.objects.order_by("-id")[0]
         outlet = form.save(commit=False)
+        outlet.province_read = dict(form.fields['province'].choices)[int(self.request.POST.get('province'))]
         outlet.id = top.id+1
         outlet.save()
         return redirect("clients:list_outlet")
@@ -200,6 +201,10 @@ class UpdateOutlet(SuccessMessageMixin, UpdateView):
     form_class = AddOutletForm
     success_message = _("Outlet successfully updated")
     template_name = "clients/form_outlet.html"
-    success_url = reverse_lazy("clients:list_outlet")
 
-
+    def form_valid(self, form):
+        messages.success(self.request, self.success_message)
+        outlet = form.save(commit=False)
+        outlet.province_read = dict(form.fields['province'].choices)[int(self.request.POST.get('province'))]
+        outlet.save()
+        return redirect("clients:list_outlet")
