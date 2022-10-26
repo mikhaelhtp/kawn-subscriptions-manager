@@ -3,6 +3,7 @@
 {% block menu-title %}List Outlet Client{% endblock %}
 {% load django_tables2 %}
 {% load bootstrap_pagination %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="row">
@@ -19,30 +20,31 @@
           {% endfor %}
           <div class="align-middle">
             <h5 class="font-weight-bolder">Outlets</h5>
-            <a href="{% url 'clients:add_outlet' %}" class="btn bg-gradient-info col-md-2 mt-2">Add
-              New Outlet</a>
+            <a href="{% url 'clients:add_outlet' %}" class="btn bg-gradient-info mt-2">Add</a>
           </div>
-        </div>
-        <div class="pull-right">
-          {% if export_formats %}
-            {% for format in export_formats %}
-            <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
-              download <code>.{{ format }}</code>
-            </a>
-            {% endfor %}
-          {% endif %}
-        </div>
-      </div>
-      <div class="card-body px-0 pt-0 pb-2">
-        <div class="row">
-          <div class="col">
-            <form action="" method="get" class="mx-3 form-inline justify-content-center">
-              {{ myFilter.form }}
-              <button type="submit">Filter</button>
-              <button><a href="{% url 'clients:list_outlet' %}">Clear Filter</a></button>
+          <div class="col-lg-12 mb-4 mt-2">
+            <form method="get">
+              <div class="row">
+                <div class="col-md-2">
+                  {{ myFilter.form.city_read|as_crispy_field }}
+                </div>
+                <div class="col-md-2">
+                  {{ myFilter.form.province_read|as_crispy_field }}
+                </div>
+                <div class="col-md-4 mt-4">
+                  <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
+                  <button class="btn bg-gradient-info mt-2 mb-0">
+                    <a href="{% url 'clients:list_outlet' %}" class="text-white">
+                      Clear Filter
+                    </a>
+                  </button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
+      </div>
+      <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
           <table class="table sortable align-items-center mb-0">
             <thead>

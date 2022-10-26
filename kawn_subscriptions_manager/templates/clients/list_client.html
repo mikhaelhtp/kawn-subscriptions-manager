@@ -3,6 +3,7 @@
 {% block menu-title %}List Outlet Client{% endblock %}
 
 {% load bootstrap_pagination %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="row">
@@ -20,18 +21,30 @@
                     <div class="align-middle">
                         <h5 class="font-weight-bolder">Clients</h5>
                     </div>
-                </div>
-            </div>
-            <div class="card-body px-0 pt-0 pb-2">
-                <div class="row">
-                    <div class="col">
-                        <form action="" method="get" class="mx-3 form-inline justify-content-center">
-                            {{ myFilter.form }}
-                            <button type="submit">Filter</button>
-                            <button><a href="{% url 'clients:list_client' %}">Clear Filter</a></button>
+                    <div class="col-lg-12 mb-4 mt-2">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    {{ myFilter.form.name|as_crispy_field }}
+                                </div>
+                                <div class="col-md-2">
+                                    {{ myFilter.form.address|as_crispy_field }}
+                                </div>
+                                <div class="col-md-4 mt-4">
+                                    <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
+                                    <button class="btn bg-gradient-info mt-2 mb-0">
+                                        <a href="{% url 'clients:list_outlet' %}" class="text-white">
+                                            Clear Filter
+                                        </a>
+                                    </button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+        
                 <div class="table-responsive p-0">
                     <table class="table sortable align-items-center mb-0">
                         <thead>
@@ -79,8 +92,10 @@
                                     <p class="text-xs font-weight-bold mb-0 text-start">{{ data.user.name }}</p>
                                 </td>
                                 <td class="align-middle text-center text-sm">
-                                    <a href="{% url 'clients:list_outlet_client' data.id %}" class="badge bg-info">Outlet</a>
-                                    <a href="{% url 'clients:update_client' data.id %}" class="badge bg-warning">Edit</a>
+                                    <a href="{% url 'clients:list_outlet_client' data.id %}"
+                                        class="badge bg-info">Outlet</a>
+                                    <a href="{% url 'clients:update_client' data.id %}"
+                                        class="badge bg-warning">Edit</a>
                                 </td>
                             </tr>
                             {% empty %}

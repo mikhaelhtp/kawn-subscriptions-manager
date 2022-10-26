@@ -20,7 +20,7 @@
         </div>
         {% endfor %}
         <div class="align-middle">
-          <h6>Susbcription Plans</h6>
+          <h5 class="font-weight-bolder">Susbcription Plans</h5>
         </div>
         <div class="col-lg-12 mb-4 mt-2">
           <form method="get">
@@ -67,19 +67,19 @@
                   <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
                 </td>
                 <td class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-end">{{ data.trial_period }} Month</p>
+                  <p class="text-xs font-weight-bold mb-0 text-end">{{ data.trial_period|default_if_none:"-" }} Month</p>
                 </td>
                 <td class="px-4">
                   <p class="text-xs text-end font-weight-bold mb-0">Rp {{ data.price|intcomma }}</p>
                 </td>
                 <td>
-                  <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.get_trial_unit_display }}</p>
+                  <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.get_trial_unit_display|default_if_none:"-" }}</p>
                 </td>
                 <td class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 ps-3 text-end">{{ data.recurrence_period }}</p>
+                  <p class="text-xs font-weight-bold mb-0 ps-3 text-end">{{ data.recurrence_period|default_if_none:"-" }}</p>
                 </td>
                 <td>
-                  <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.get_recurrence_unit_display }}</p>
+                  <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.get_recurrence_unit_display|default_if_none:"-" }}</p>
                 </td>
                 <td>
                   {% if data.is_active %}
