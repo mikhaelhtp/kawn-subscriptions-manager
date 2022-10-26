@@ -26,3 +26,7 @@ django-filter
 django-tables2
 tablib[xlsx]
 django-phonenumber-field[phonenumberslite]
+django-widget-tweaks
+django-bootstrap5
+django-bootstrap4
+django-view-breadcrumbs
