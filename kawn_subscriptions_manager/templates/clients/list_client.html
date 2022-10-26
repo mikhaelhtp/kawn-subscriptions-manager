@@ -56,7 +56,6 @@
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Facebook</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Twitter</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Instagram</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Website</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Sales Name</th>
                                 <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder">Action</th>
                             </tr>
@@ -74,19 +73,16 @@
                                     <p class="text-xs font-weight-bold mb-0 text-end">{{ data.phone }}</p>
                                 </td>
                                 <td class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.brand_name }}</p>
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.brand_name|default_if_none:"-" }}</p>
                                 </td>
                                 <td class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_facebook }}</p>
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_facebook|default_if_none:"-" }}</p>
                                 </td>
                                 <td class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_twitter }}</p>
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_twitter|default_if_none:"-" }}</p>
                                 </td>
                                 <td class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_instagram }}</p>
-                                </td>
-                                <td class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.website }}</p>
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_instagram|default_if_none:"-" }}</p>
                                 </td>
                                 <td class="px-4">
                                     <p class="text-xs font-weight-bold mb-0 text-start">{{ data.user.name }}</p>
@@ -124,24 +120,24 @@
 
 {% block inline_javascript %}
 <script type="text/javascript">
-    $('.show_confirm').click(function (event) {
-        var form = $(this).closest("form");
-        var name = $(this).data("name");
-        event.preventDefault();
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        })
-            .then((willDelete) => {
-                if (willDelete.isConfirmed) {
-                    form.submit();
-                }
-            });
-    });
+  $('.show_confirm').click(function (event) {
+    var form = $(this).closest("form");
+    var name = $(this).data("name");
+    event.preventDefault();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    })
+      .then((willDelete) => {
+        if (willDelete.isConfirmed) {
+          form.submit();
+        }
+      });
+  });
 </script>
 {% endblock inline_javascript %}

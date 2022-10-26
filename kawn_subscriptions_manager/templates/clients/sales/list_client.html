@@ -72,20 +72,22 @@
                                     <p class="text-xs font-weight-bold mb-0 text-end">{{ data.phone }}</p>
                                 </td>
                                 <td class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.brand_name }}</p>
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.brand_name|default_if_none:"-" }}</p>
                                 </td>
                                 <td class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_facebook }}</p>
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_facebook|default_if_none:"-" }}</p>
                                 </td>
                                 <td class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_twitter }}</p>
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_twitter|default_if_none:"-" }}</p>
                                 </td>
-                                <td class="px-4"> 
-                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_instagram }}</p>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.social_instagram|default_if_none:"-" }}</p>
                                 </td>
                                 <td>
-                                    <a href="{% url 'clients:list_outlet_client' data.id %}" class="badge bg-info">Outlet</a>
-                                    <a href="{% url 'clients:update_client' data.id %}" class="badge bg-warning">Edit</a>
+                                    <a href="{% url 'clients:list_outlet_client' data.id %}"
+                                        class="badge bg-info">Outlet</a>
+                                    <a href="{% url 'clients:update_client' data.id %}"
+                                        class="badge bg-warning">Edit</a>
                                     <form class="d-inline" id="form-id"
                                         action="{% url 'clients:delete_client' data.id %}" method="post">
                                         {% csrf_token %}
