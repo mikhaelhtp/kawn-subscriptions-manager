@@ -5,6 +5,18 @@
 {% block menu-title %}Add Outlet{% endblock %}
 {% block listsubscriptionplan-active %}active{% endblock %}
 
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'clients:list_client' %}">Client</a></li>
+        <li class="breadcrumb-item"><a type="button" onclick="javascript:history.back()">Outlet-Client</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Add Outlet-Client</a></li>
+    </ol>
+</nav>
+{% endblock breadcrumbs %}
+
 {% block content %}
 <div class="row">
     <div class="col-lg-12 mb-lg-0 mb-4">

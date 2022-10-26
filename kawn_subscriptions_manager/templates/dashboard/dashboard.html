@@ -3,6 +3,14 @@
 {% block menu-title %}Dashboard{% endblock %}
 {% block dashboard-active %}active{% endblock %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+    </ol>
+</nav>
+{% endblock breadcrumbs %}
+
 {% block content %}
 <div class="row">
     {% for message in messages %}

@@ -5,6 +5,16 @@
 {% load bootstrap_pagination %}
 {% load crispy_forms_tags %}
 
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Client</a></li>
+    </ol>
+</nav>
+{% endblock breadcrumbs %}
+
 {% block content %}
 <div class="row">
     <div class="col-12">
@@ -20,7 +30,7 @@
                     {% endfor %}
                     <div class="align-middle">
                         <h5 class="font-weight-bolder">Clients</h5>
-                        <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info mt-2">Add</a>
+                        <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info mt-2">Add Client</a>
                     </div>
                     <div class="col-lg-12 mb-4 mt-2">
                         <form method="get">

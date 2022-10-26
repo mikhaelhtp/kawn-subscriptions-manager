@@ -30,32 +30,36 @@
                 aria-hidden="true">&times;</span></button>
           </div>
           {% endfor %}
-          <div class="align-middle">
-            <h5 class="font-weight-bolder">Outlets</h5>
-            <a href="{% url 'clients:add_outlet' %}" class="btn bg-gradient-info mt-2">Add Outlet</a>
+          <h5 class="font-weight-bolder">Outlets</h5>
+          <div class="row">
+            <div class="col-md-2 align-middle">
+              <a href="{% url 'clients:add_outlet' %}" class="btn bg-gradient-info mt-2">Add Outlet</a>
+            </div>
           </div>
-          <div class="col-lg-12 mb-4 mt-2">
-            <form method="get">
-              <div class="row">
-                <div class="col-md-2">
-                  {{ myFilter.form.city_read|as_crispy_field }}
-                </div>
-                <div class="col-md-2">
-                  {{ myFilter.form.province_read|as_crispy_field }}
-                </div>
-                <div class="col-md-4 mt-4">
-                  <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
-                  <button class="btn bg-gradient-info mt-2 mb-0">
-                    <a href="{% url 'clients:list_outlet' %}" class="text-white">
-                      Clear Filter
-                    </a>
-                  </button>
-                </div>
-              </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-2">
+            {{ myFilter.form.name|as_crispy_field }}
+          </div>
+          <div class="col-md-2">
+            {{ myFilter.form.city_read|as_crispy_field }}
+          </div>
+          <div class="col-md-2">
+            {{ myFilter.form.province_read|as_crispy_field }}
+          </div>
+          <div class="col-md-4 mt-4">
+            <form action="" method="get">
+              <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
+              <button class="btn bg-gradient-info mt-2 mb-0">
+                <a href="{% url 'clients:list_outlet' %}" class="text-white">
+                  Clear Filter
+                </a>
+              </button>
             </form>
           </div>
         </div>
       </div>
+
       <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
           <table class="table sortable align-items-center mb-0">

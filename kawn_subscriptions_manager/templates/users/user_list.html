@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 
+{% load django_tables2 %}
+{% load bootstrap_pagination %}
+{% load static %}
+{% load static i18n compress%}
+
 {% block menu-title %}Users List{% endblock %}
 {% block listsubscriptionplan-active %}active{% endblock %}
+
 
 {% block content %}
 <div class="row">
@@ -16,13 +22,35 @@
                                 aria-hidden="true">&times;</span></button>
                     </div>
                     {% endfor %}
-                    <div class="col-md-10 align-middle">
-                        <h4 class="font-weight-bolder mb-4">Users</h4>
+                    <h5 class="font-weight-bolder">Users</h5>
+                    <div class="row">
+                        <div class="col-md-2 align-middle">
+                        <a href="{% url 'users:add_users' %}" class="btn bg-gradient-info mt-2">Add User</a>
+                        </div>
+                        <div class="col-md-10 align-middle mt-2">
+                        {% if view.export_formats %}
+                            {% for format in view.export_formats %}
+                            <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
+                            download <code>.{{ format }}</code>
+                            </a>
+                            {% endfor %}
+                        {% endif %}
+                        </div>
                     </div>
                 </div>
-                <a href="{% url 'users:add_users' %}" class="btn bg-gradient-info col-md-2">Add User</a>
+                {% comment %} <a href="{% url 'users:add_users' %}" class="btn bg-gradient-info col-md-2">Add User</a>
+                <div class="col-sm-10 mt-4">
+                    <div class="pull-right">
+                        {% if view.export_formats %}
+                            {% for format in view.export_formats %}
+                            <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
+                                download  <code>.{{ format }}</code>
+                            </a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div> {% endcomment %}
             </div>
-            
             <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive p-0">
                     <table class="table sortable align-items-center mb-0">
@@ -60,9 +88,6 @@
                                     {% else %}
                                     <p class="text-xs mb-0">Unverified</p>
                                     {% endif %}
-                                    <!-- ''' -->
-                                    <!-- <p class="text-xs mb-0">{{ user.verified }}</p> -->
-                                    <!-- ''' -->
                                 </td>
                                 <td class="align-middle text-center text-sm">
                                     <p class="text-xs mb-0">{{ user.type }}</p>
@@ -81,6 +106,14 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    <div class="card-footer row">
+                        <hr>
+                        <span class="col-lg-6">{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
+                        <span class="col-lg-6 text-end text-sm">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                        <hr>
+                    </div>
                 </div>
             </div>
         </div>

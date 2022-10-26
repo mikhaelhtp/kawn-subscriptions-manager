@@ -7,6 +7,16 @@
 {% block menu-title %}List Subscriptions Plan{% endblock %}
 {% block listsubscriptionplan-active %}active{% endblock %}
 
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Subscription Plans</a></li>
+    </ol>
+</nav>
+{% endblock breadcrumbs %}
+
 {% block content %}
 <div class="row">
   <div class="col-12">
@@ -21,7 +31,7 @@
         {% endfor %}
         <div>
           <h5 class="font-weight-bolder">Susbcription Plans</h5>
-          <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info mt-2">Add</a>
+          <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info mt-2">Add Subscriptions Plan</a>
         </div>
         <div class="col-lg-12 mb-4 mt-2">
           <form method="get">
@@ -87,7 +97,7 @@
                   {% if data.is_active %}
                   <p class="text-xs font-weight-bold mb-0">Active</p>
                   {% else %}
-                  <p class="text-xs font-weight-bold mb-0">Not Active</p>
+                  <p class="text-xs mb-0">Ongoing</p>
                   {% endif %}
                 </td>
                 <td class="align-middle">

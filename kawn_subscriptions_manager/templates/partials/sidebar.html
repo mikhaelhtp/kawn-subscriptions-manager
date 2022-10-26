@@ -71,10 +71,10 @@
                 </a>
             </li>
             {% if request.user.type == "ADMIN" %}
-            {% url 'users:list_users' as list_users %}
+            {% url 'users:user_list' as user_list %}
             <li class="nav-item">
-                <a class="nav-link  {% if request.get_full_path == list_users %}active{% endif %}"
-                    href="{% url 'users:list_users'%}">
+                <a class="nav-link  {% if request.get_full_path == user_list %}active{% endif %}"
+                    href="{% url 'users:user_list'%}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-people-group"></i>

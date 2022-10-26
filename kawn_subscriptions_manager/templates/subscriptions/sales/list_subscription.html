@@ -8,6 +8,16 @@
 {% block menu-title %}List User Subscriptions{% endblock %}
 {% block listclientsubscriptions-active %}active{% endblock %}
 
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Subscription</a></li>
+    </ol>
+</nav>
+{% endblock breadcrumbs %}
+
 {% block content %}
 <div class="row">
   <div class="col-12">
@@ -22,8 +32,9 @@
           </div>
           {% endfor %}
           <div class="align-middle">
-            <h5 class="font-weight-bolder">Client Susbcriptions</h5>
-            <a href="{% url 'subscriptions:add_subscription' %}" class="btn bg-gradient-info mt-2">Add</a>
+            <h5 class="font-weight-bolder">Susbcriptions</h5>
+            <a href="{% url 'subscriptions:add_subscription' %}" class="btn bg-gradient-info col-md-2 mt-2">Add
+              Subscription</a>
               <div class="col-lg-12 mb-4 mt-2">
                 <form method="get">
                   <div class="row">

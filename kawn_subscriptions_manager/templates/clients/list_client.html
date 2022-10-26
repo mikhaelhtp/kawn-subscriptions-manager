@@ -4,6 +4,18 @@
 
 {% load bootstrap_pagination %}
 {% load crispy_forms_tags %}
+{% load django_tables2 %}
+{% load crispy_forms_tags %}
+
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Client</a></li>
+    </ol>
+</nav>
+{% endblock breadcrumbs %}
 
 {% block content %}
 <div class="row">

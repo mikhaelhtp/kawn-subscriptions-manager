@@ -5,6 +5,17 @@
 
 {% block head_title %}{% translate "Account" %}{% endblock %}
 
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'users:profile_users' %}">My Profile</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Update Email</a></li>
+    </ol>
+</nav>
+{% endblock breadcrumbs %}
+
 {% block inner %}
 <div class="row">
   <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
