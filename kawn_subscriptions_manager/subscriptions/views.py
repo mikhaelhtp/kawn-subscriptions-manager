@@ -1,5 +1,3 @@
-from multiprocessing import context
-from symbol import subscript, subscriptlist
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -57,7 +55,7 @@ class ListSubscriptionPlan(ListView, SingleTableMixin, ExportMixin, FilterView):
                 "subscriptions/subscription_plans/sales/list_subscription_plan.html"
             ]
         else:
-            return ["subscriptions/subscription_plans/sales/list_subscription_plan.html"]
+            return ["subscriptions/subscription_plans/list_subscription_plan.html"]
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
@@ -67,7 +65,6 @@ class AddSubscriptionPlan(SuccessMessageMixin, CreateView):
         "name",
         "price",
         "description",
-        "plan_type",
         "trial_unit",
         "trial_period",
         "recurrence_unit",
@@ -85,7 +82,6 @@ class UpdateSubscriptionPlan(SuccessMessageMixin, UpdateView):
         "name",
         "price",
         "description",
-        "plan_type",
         "trial_unit",
         "trial_period",
         "recurrence_unit",
@@ -127,7 +123,7 @@ def activate_subscription_plan(request, id):
 class ListSubscription(ListView, SingleTableMixin, ExportMixin, FilterView):
     model = Subscription
     filterset_class = SubscriptionFilter
-    table_class = SubscriptionTable
+    # table_class = SubscriptionTable
     paginate_by = 10
 
     # def get_queryset(self):

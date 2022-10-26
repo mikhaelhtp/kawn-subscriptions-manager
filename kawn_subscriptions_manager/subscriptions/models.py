@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from email.policy import default
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -7,15 +8,21 @@ from kawn_subscriptions_manager.clients.models import Outlet
 
 
 class SubscriptionPlan(models.Model):
+
+    class Unit(models.TextChoices):
+        D = "D", "Day"
+        W = "W", "Week"
+        M = "M", "Month"
+        Y = "Y", "Year"
+
+
     name = models.CharField(max_length=255, null=True)
     slug = models.SlugField(max_length=255, null=True, editable=False)
     price = models.FloatField(null=True)
     description = models.TextField(null=True)
-    is_public = models.BooleanField(default=True)
-    plan_type = models.CharField(max_length=255, null=True)
-    trial_unit = models.CharField(max_length=255, null=True)
+    trial_unit = models.CharField(max_length=255, choices=Unit.choices, null=True)
     trial_period = models.SmallIntegerField(null=True)
-    recurrence_unit = models.CharField(max_length=255, null=True, blank=True)
+    recurrence_unit = models.CharField(max_length=255, choices=Unit.choices, null=True)
     recurrence_period = models.SmallIntegerField(null=True)
     is_active = models.BooleanField(null=True, default=True)
     created = models.DateTimeField(auto_now_add=True)
