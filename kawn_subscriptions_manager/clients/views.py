@@ -95,7 +95,7 @@ class DeleteClient(SuccessMessageMixin, DeleteView):
 
 
 #Outlet
-class ListClientOutlet(ListView):
+class ListOutletClient(ListView):
     model = Outlet
     # paginate_by = 10
 
