@@ -1,6 +1,7 @@
 import requests
 import datetime
 from httpsig.requests_auth import HTTPSignatureAuth
+from kawn_subscriptions_manager.clients.models import Province
 
 KEY_ID = "a206c5980f385ba96ff3f1b5979986c0d11a058e"
 SECRET = "33d1ac21bec6cae44c2d7bedcb521938b9b3d436"
@@ -27,6 +28,12 @@ reqoutlet = requests.get(
 
 prov = requests.get(
     "https://indev.kawn.co.id/api/v2.1/provinces/",
+    auth=auth,
+    headers=headers,
+).json()
+
+city = requests.get(
+    "https://indev.kawn.co.id/api/v2.1/provinces/"+ "34" +"/cities/",
     auth=auth,
     headers=headers,
 ).json()
