@@ -3,42 +3,54 @@ from django import forms
 import requests
 from phonenumber_field.formfields import PhoneNumberField
 
-from .models import Outlet, Account
+from .models import Outlet, Account, Province, City
 from kawn_subscriptions_manager.signature import prov
 
 
 class AddOutletForm(ModelForm):
     class Meta:
         model = Outlet
-        fields = ["name", "display_name", "phone", "province", "address"]
+        fields = ["name", "display_name", "phone", "province", "city", "address"]
 
     def __init__(self, *args, **kwargs):
         super(AddOutletForm, self).__init__(*args, **kwargs)
-        province = tuple(prov["results"])
-        provinces = [(i["id"], i["name"]) for i in province]
+        self.fields["city"].queryset = City.objects.none()
 
-        self.fields["province"] = forms.ChoiceField(choices=provinces, label="Province")
-        self.fields['display_name'].required = False
+        if "province" in self.data:
+            try:
+                province_id = int(self.data.get("province"))
+                self.fields["city"].queryset = City.objects.filter(
+                    province_id=province_id
+                ).order_by("name")
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty City queryset
+        # elif self.instance.pk:
+        #     self.fields['city'].queryset = self.instance.province.city_set.order_by('name')
+
+        province = Province.objects.all()
+        provinces = [(i.id, i.name) for i in province]
+        PROV = [("", "--------")] + provinces
+
+        city = City.objects.all()
+        cities = [(i.id, i.name) for i in city]
+        CTY = [("", "--------")] + cities
+
+        self.fields["province"] = forms.ChoiceField(choices=PROV, label="Province")
+        self.fields["city"] = forms.ChoiceField(choices=CTY, label="City")
 
 
 class AddClientForm(ModelForm):
     class Meta:
         model = Account
         fields = "__all__"
-        exclude = ["user", "business_code", "brand_logo"]
-        # exclude = ["branch_id", "subscription_plan_read", "province_read", "outlet_code", "outlet_image", "is_expired", "transaction_code_prefix", "account_id"]
-
-    # def __init__(self, *args, **kwargs):
-    #     super(AddClientForm, self).__init__(*args, **kwargs)
-
-    #     self.fields["phone"] = PhoneNumberField()
+        exclude = ["user", "business_code", "brand_logo", "registered_via"]
 
 
 class UpdateClientForm(ModelForm):
     class Meta:
         model = Account
         fields = "__all__"
-        exclude = ["user", "business_code", "brand_logo"]
+        exclude = ["user", "business_code", "brand_logo", "registered_via"]
 
 
 class AddClientOutletForm(ModelForm):

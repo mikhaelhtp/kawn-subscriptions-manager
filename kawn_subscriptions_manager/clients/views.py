@@ -1,3 +1,4 @@
+from email import message
 from lib2to3.pytree import Base
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.decorators import method_decorator
@@ -12,9 +13,9 @@ from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin
 
 from kawn_subscriptions_manager.decorators import sales_only
-from .models import Outlet, Account
+from .models import Outlet, Account, Province, City
 from kawn_subscriptions_manager.users.models import User
-from kawn_subscriptions_manager.api import api_outlet, api_outlet1
+from kawn_subscriptions_manager.api import api_outlet, api_outlet1, api_province, api_city
 from .forms import AddOutletForm, AddClientForm, UpdateClientForm, AddClientOutletForm
 from .filters import OutletFilter, AccountFilter
 
@@ -58,16 +59,21 @@ class ListClient(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, F
 
 
 @method_decorator([sales_only], name="dispatch")
-class AddClient(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
+class AddClient(BaseBreadcrumbMixin, CreateView):
     model = Account
     form_class = AddClientForm
     crumbs = [
         ("Client", reverse_lazy("clients:list_client")),
         ("Add Client", reverse_lazy("clients:add_client")),
     ]
-    success_message = _("Client successfully added")
     template_name = "clients/sales/form_client.html"
-    success_url = reverse_lazy("clients:list_client")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Client successfully added")
+        account = form.save(commit = False)
+        account.user_id = self.request.user.id
+        account.save()
+        return redirect("clients:list_client")
     
 
 # class DeleteOutlet(View, SuccessMessageMixin):
@@ -229,7 +235,8 @@ class AddOutlet(BaseBreadcrumbMixin, CreateView):
         top = Outlet.objects.order_by("-id")[0]
         outlet = form.save(commit=False)
         outlet.province_read = dict(form.fields['province'].choices)[int(self.request.POST.get('province'))]
-        outlet.id = top.id + 1
+        outlet.city_read = dict(form.fields['city'].choices)[int(self.request.POST.get('city'))]
+        outlet.id = top.id+1
         outlet.save()
         return redirect("clients:list_outlet")
 
@@ -243,10 +250,17 @@ class UpdateOutlet(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     ]
     success_message = _("Outlet successfully updated")
     template_name = "clients/form_outlet.html"
+    success_url = reverse_lazy("clients:list_outlet")
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         outlet = form.save(commit=False)
         outlet.province_read = dict(form.fields['province'].choices)[int(self.request.POST.get('province'))]
+        outlet.city_read = dict(form.fields['city'].choices)[int(self.request.POST.get('city'))]
         outlet.save()
         return redirect("clients:list_outlet")
+
+def load_cities(request):
+    province_id = request.GET.get('province')
+    cities = City.objects.filter(province_id=province_id).order_by('name')
+    return render(request, 'clients/city_dropdown_list_options.html', {'cities': cities})

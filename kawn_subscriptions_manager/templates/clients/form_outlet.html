@@ -26,12 +26,13 @@
                     <div class="col-lg-12">
                         <div class="d-flex flex-column h-100">
                             <h5 class="font-weight-bolder">Form Outlet</h5>
-                            <form method="post" novalidate>
+                            <form method="post" id="outletForm" data-cities-url="{% url 'clients:ajax_load_cities' %}" novalidate>
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{{ next }}">
                                 {{ form|crispy }}
                                 <button type="submit" class="btn bg-gradient-info col-md-2 mt-4 mb-0">SAVE</button>
-                                <a href="{% url 'clients:list_outlet'  %}" class="btn bg-gradient-danger col-md-2 mt-4 mb-0">CANCEL</a> 
+                                <a href="{% url 'clients:list_outlet'  %}"
+                                    class="btn bg-gradient-danger col-md-2 mt-4 mb-0">CANCEL</a>
                             </form>
                         </div>
                     </div>
@@ -42,6 +43,27 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script>
+    $("#id_province").change(function () {
+        var url = $("#outletForm").attr("data-cities-url");
+        var provinceId = $(this).val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'province': provinceId
+            },
+            success: function (data) {
+                $("#id_city").html(data);
+            }
+        });
+
+    });
+</script>
+
 {% endblock %}
 
 {% block inline_javascript %}

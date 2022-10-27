@@ -1,4 +1,5 @@
 from django.urls import path
+from . import views
 
 from .views import (
     ListClient,
@@ -10,7 +11,8 @@ from .views import (
     DeleteClientOutlet,
     ListOutlet,
     AddOutlet,
-    UpdateOutlet
+    UpdateOutlet,
+    load_cities,
 )
 
 
@@ -26,4 +28,5 @@ urlpatterns = [
     path("outlet/list/", ListOutlet.as_view(), name="list_outlet"),
     path("outlets/add/", AddOutlet.as_view(), name="add_outlet"),
     path("outlet/update/<int:pk>/", UpdateOutlet.as_view(), name="update_outlet"),
+    path('ajax/load-cities/', views.load_cities, name='ajax_load_cities'),
 ]
