@@ -80,7 +80,7 @@
                 <td class="px-4">
                   <p class="text-xs font-weight-bold mb-0">{{ data.subscriptionplan.name }}</p>
                 </td>
-                <td class="px-4">
+                <td data-sort="{{data.expires | date:'Ymd'}}" class="align-middle text-sm px-4">
                   <p class="text-xs font-weight-bold mb-0 text-end">{{ data.expires|date:'D, d M Y' }}</p>
                 </td>
                 <td class="px-4">

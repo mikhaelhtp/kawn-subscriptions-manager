@@ -13,15 +13,6 @@
         <div class="row">
           <div class="col-lg-10">
             <div class="d-flex flex-column h-100">
-              <div class="row">
-                {% for message in messages %}
-                <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
-                  <strong class="text-white">{{ message }}</strong>
-                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
-                      aria-hidden="true">&times;</span></button>
-                </div>
-                {% endfor %}
-              </div>
               <h4 class="font-weight-bolder mb-4">Add User</h4>
               <form method="post" novalidate>
                 {% csrf_token %}
