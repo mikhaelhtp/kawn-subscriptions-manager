@@ -1,8 +1,8 @@
 from django.db import connection
-from kawn_subscriptions_manager.signature import city
+from kawn_subscriptions_manager.signature import city, cities
 
 
-data = tuple(city["results"])
+data = cities
 list_data = []
 for edata in data:
     list_data.append(
@@ -19,7 +19,7 @@ data = list_data
 try:
     cursor.executemany(query, data)
     connection.commit()
-    print("Data province stored to database")
+    print("Data city stored to database")
 except connection.DatabaseError as message:
     if connection:
         connection.rollback()

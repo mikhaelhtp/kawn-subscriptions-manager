@@ -32,11 +32,15 @@ prov = requests.get(
     headers=headers,
 ).json()
 
-city = requests.get(
-    "https://indev.kawn.co.id/api/v2.1/provinces/"+ "34" +"/cities/",
-    auth=auth,
-    headers=headers,
-).json()
+p = Province.objects.all().order_by("id")
+cities = tuple()
+for i in p:
+    city = requests.get(
+        "https://indev.kawn.co.id/api/v2.1/provinces/"+ str(i.id) +"/cities/",
+        auth=auth,
+        headers=headers,
+    ).json()
+    cities += tuple(city["results"])
 
 account = requests.get(
     "https://indev.kawn.co.id/api/v2.1/account/",
