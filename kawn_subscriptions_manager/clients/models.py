@@ -7,13 +7,21 @@ from phonenumber_field.modelfields import PhoneNumberField
 from kawn_subscriptions_manager.users.models import User
 
 
+class Province(models.Model):
+    name = models.CharField(_("Province"), max_length=255, null=True)
+
+    def __str__(self):
+        return self.name
+
+class City(models.Model):
+    province  = models.ForeignKey(Province,  on_delete=models.CASCADE, null=True)
+    name = models.CharField(_("City"), max_length=255, null=True)
+
+    def __str__(self):
+        return self.name
+
 
 class Account(models.Model):
-
-
-    class Registered_Via(models.TextChoices):
-        WEB = "web", "Web"
-        MOBILE_LITE = "mobile_lite", "Mobile Lite"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -28,7 +36,7 @@ class Account(models.Model):
     social_twitter = models.CharField(_("Twitter"), max_length=255, null=True, blank=True)
     social_instagram = models.CharField(_("Instagram"), max_length=255, null=True, blank=True)
     website = models.CharField(_("Website"), max_length=255, null=True, blank=True)
-    registered_via = models.CharField(_("Registered Via"), max_length=255, choices=Registered_Via.choices, null=True)
+    registered_via = models.CharField(max_length=255, default="Kawn Subscriptions Manager")
 
 
 class Outlet(models.Model):
