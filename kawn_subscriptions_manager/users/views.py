@@ -15,7 +15,6 @@ from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
 from django_tables2.export.views import ExportMixin
 from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
-from django.core.paginator import Paginator, EmptyPage
 from django_filters.views import FilterView
 from django.views.generic import (
     DetailView,
@@ -27,9 +26,9 @@ from django.views.generic import (
 )
 
 from .tables import UserTable
-from .filters import UserFilter, UserUniversalFilter
+from .filters import UserFilter
 from .models import User
-from .forms import UsersAddForm, UsersEditForm
+from .forms import UsersEditForm
 from kawn_subscriptions_manager.decorators import (
     admin_only,
 )
@@ -112,7 +111,7 @@ class ListUsers(
 @method_decorator([admin_only], name="dispatch")
 class AddUsers(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
     model = User
-    form_class = UsersAddForm
+    fields = ["username", "name", "email", "type"]
     template_name = "users/admin/add_users.html"
     crumbs = [
         ("Users", reverse_lazy("users:user_list")),
@@ -121,7 +120,7 @@ class AddUsers(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
     success_message = _(
         "Account has been created successfully! <br/>Account details have been sent to the respective email."
     )
-    success_url = reverse_lazy("users:add_user")
+    success_url = reverse_lazy("users:user_list")
 
     def form_valid(self, form):
         user = form.save()
@@ -137,12 +136,13 @@ class AddUsers(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
 
         send_mail(
             "[Kawn Subscriptions Manager] Account Creation",
+            "[Kawn Subscriptions Manager] Account Creation",
             self.request.user.email,
             [form.cleaned_data["email"]],
             html_message=html,
             fail_silently=False,
         )
-        return redirect("users:add_users")
+        return redirect("users:user_list")
 
 
 @method_decorator([admin_only], name="dispatch")
