@@ -5,12 +5,18 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
 from django.shortcuts import redirect, render
 from django.core.mail import send_mail
-from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
+from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin
+from django_tables2.export.views import ExportMixin
+from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
+from django.core.paginator import Paginator, EmptyPage
+from django_filters.views import FilterView
 from django.views.generic import (
     DetailView,
     RedirectView,
@@ -20,6 +26,8 @@ from django.views.generic import (
     DeleteView,
 )
 
+from .tables import UserTable
+from .filters import UserFilter, UserUniversalFilter
 from .models import User
 from .forms import UsersAddForm, UsersEditForm
 from kawn_subscriptions_manager.decorators import (
@@ -50,9 +58,7 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = _("Information successfully updated")
 
     def get_success_url(self):
-        assert (
-            self.request.user.is_authenticated
-        )  # for mypy to know that the user is authenticated
+        assert self.request.user.is_authenticated
         return self.request.user.get_absolute_url()
 
     def get_object(self):
@@ -67,11 +73,51 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
         return redirect("users:update")
 
 
-@method_decorator([login_required, admin_only], name="dispatch")
-class AddUsers(SuccessMessageMixin, CreateView):
+@method_decorator([admin_only], name="dispatch")
+class ListUsers(
+    SuccessMessageMixin, ListBreadcrumbMixin,ListView, ExportMixin, SingleTableMixin, FilterView
+):
+    model = User
+    filterset_class = UserFilter
+    table_class = UserTable
+    context_object_name = "results"
+    template_name = "users/user_list.html"
+    export_formats = ("csv", "tsv", "xlsx", "json")
+    paginate_by = 10
+    exclude_columns = (
+        "id",
+        "password",
+        "first_name",
+        "last_name",
+        "last_login",
+        "date_joined",
+        "is_superuser",
+        "is_staff",
+        "is_active",
+        "is_active",
+    )
+
+    def get_queryset(self):
+        return User.objects.raw(
+            """SELECT b.id, b.username, b.email, b.name, b.is_active, b.type, am.verified 
+                                FROM account_emailaddress AS am 
+                                INNER JOIN users_user AS b ON am.user_id = b.id
+                                ORDER BY b.type"""
+        )
+        
+    def get_table_kwargs(self):
+        return {"template_name": "users/user_list.html"}
+
+
+@method_decorator([admin_only], name="dispatch")
+class AddUsers(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
     model = User
     form_class = UsersAddForm
     template_name = "users/admin/add_users.html"
+    crumbs = [
+        ("Users", reverse_lazy("users:user_list")),
+        ("Add User", reverse_lazy("users:add_users")),
+    ]
     success_message = _(
         "Account has been created successfully! <br/>Account details have been sent to the respective email."
     )
@@ -85,15 +131,12 @@ class AddUsers(SuccessMessageMixin, CreateView):
             "account/email_account_creation.html",
             {
                 "email": form.cleaned_data["email"],
-                "username": form.cleaned_data["username"],
-                "password": form.cleaned_data["password1"],
                 "access": form.cleaned_data["type"],
             },
         )
 
         send_mail(
             "[Kawn Subscriptions Manager] Account Creation",
-            "This is the message",
             self.request.user.email,
             [form.cleaned_data["email"]],
             html_message=html,
@@ -102,39 +145,28 @@ class AddUsers(SuccessMessageMixin, CreateView):
         return redirect("users:add_users")
 
 
-@method_decorator([login_required, admin_only], name="dispatch")
-class EditUsers(SuccessMessageMixin, UpdateView):
+@method_decorator([admin_only], name="dispatch")
+class EditUsers(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     model = User
     form_class = UsersEditForm
     template_name = "users/admin/edit_users.html"
+    crumbs = [
+        ("Users", reverse_lazy("users:user_list")),
+        ("Edit User", reverse_lazy("users:edit_users")),
+    ]
     success_message = _("User successfully updated")
-    success_url = reverse_lazy("users:list_users")
+    success_url = reverse_lazy("users:user_list")
 
 
-@method_decorator([login_required, admin_only], name="dispatch")
+@method_decorator([admin_only], name="dispatch")
 class DeleteUsers(SuccessMessageMixin, DeleteView):
     model = User
-    success_url = reverse_lazy("users:list_users")
+    success_url = reverse_lazy("users:user_list")
     success_message = _("User successfully deleted")
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(DeleteUsers, self).delete(request, *args, **kwargs)
-
-
-@method_decorator([login_required, admin_only], name="dispatch")
-class ListUsers(SuccessMessageMixin, ListView):
-    model = User
-    template_name = "users/user_list.html"
-    # queryset = User.objects.all().order_by('type')
-
-    def get_queryset(self):
-        return User.objects.raw(
-            """SELECT b.id, b.username, b.email, b.name, b.is_staff, b.is_active, b.type, am.verified 
-                                FROM account_emailaddress AS am 
-                                INNER JOIN users_user AS b ON am.user_id = b.id
-                                ORDER BY b.type"""
-        )
 
 
 # @login_required
