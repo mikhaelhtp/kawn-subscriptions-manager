@@ -10,7 +10,7 @@ from .models import (
 class SubscriptionPlanFilter(django_filters.FilterSet):
     # model = SubscriptionPlan
     STATUS_CHOICES = (
-        (0, "Nonactive"),
+        (0, "Not Active"),
         (1, "Active"),
     )
 
@@ -32,7 +32,7 @@ class SubscriptionPlanFilter(django_filters.FilterSet):
 
 class SubscriptionFilter(django_filters.FilterSet):
     STATUS_CHOICES = (
-        (0, "Nonactive"),
+        (0, "Not Active"),
         (1, "Active"),
     )
 
