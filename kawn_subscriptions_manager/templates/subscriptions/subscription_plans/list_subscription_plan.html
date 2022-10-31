@@ -75,13 +75,13 @@
             <tbody>
               {% for data in object_list %}
               <tr>
-                <td class="text-start px-4">
+                <td data-sort="{{ data.name }}" sort="multi" class="text-start px-4">
                   <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
                 </td>
-                <td class="px-4">
+                <td data-sort="{{ data.trial_period }}" class="px-4">
                   <p class="text-xs font-weight-bold mb-0 text-end">{{ data.trial_period|default_if_none:"-" }} Month</p>
                 </td>
-                <td class="px-4">
+                <td data-sort="{{ data.price }}" class="px-4">
                   <p class="text-xs font-weight-bold mb-0 text-end">Rp {{ data.price|intcomma }}</p>
                 </td>
                 <td class="px-4">
