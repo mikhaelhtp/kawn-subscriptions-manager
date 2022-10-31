@@ -8,13 +8,11 @@ from kawn_subscriptions_manager.clients.models import Outlet
 
 
 class SubscriptionPlan(models.Model):
-
     class Unit(models.TextChoices):
         D = "D", "Day"
         W = "W", "Week"
         M = "M", "Month"
         Y = "Y", "Year"
-
 
     name = models.CharField(max_length=255, null=True)
     slug = models.SlugField(max_length=255, null=True, editable=False)

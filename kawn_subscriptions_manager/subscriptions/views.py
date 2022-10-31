@@ -11,18 +11,20 @@ from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin
 
-from kawn_subscriptions_manager.api import api_subscription_plans, api_subscriptions
 from .models import SubscriptionPlan, Subscription
 from .forms import AddSubscriptionForm
 from .filters import (
     SubscriptionPlanFilter,
     SubscriptionFilter,
 )
+from kawn_subscriptions_manager.clients.models import Account, Outlet
 from kawn_subscriptions_manager.decorators import allowed_users, sales_only
 from kawn_subscriptions_manager.api import api_subscription_plans, api_subscriptions
 
 
-class ListSubscriptionPlan(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView):
+class ListSubscriptionPlan(
+    ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
+):
     model = SubscriptionPlan
     filterset_class = SubscriptionPlanFilter
     queryset = SubscriptionPlan.objects.all().order_by("id")
@@ -92,7 +94,10 @@ class UpdateSubscriptionPlan(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateVie
     ]
     crumbs = [
         ("Subscription Plans", reverse_lazy("subscriptions:list_subscription_plan")),
-        ("Update Subscription Plans", reverse_lazy("subscriptions:update_subscription_plan")),
+        (
+            "Update Subscription Plans",
+            reverse_lazy("subscriptions:update_subscription_plan"),
+        ),
     ]
     template_name = "subscriptions/subscription_plans/form_subscription_plan.html"
     success_url = reverse_lazy("subscriptions:list_subscription_plan")
@@ -112,7 +117,7 @@ class DeleteSubscriptionPlan(DeleteView):
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def deactivate_subscription_plan(request, id):
     subscriptionplan = SubscriptionPlan.objects.get(pk=id)
-    subscriptionplan.active = False
+    subscriptionplan.is_active = False
     subscriptionplan.save()
     messages.success(request, "Subscription plans has been successfully deactivated!")
     return redirect("subscriptions:list_subscription_plan")
@@ -127,7 +132,9 @@ def activate_subscription_plan(request, id):
     return redirect("subscriptions:list_subscription_plan")
 
 
-class ListSubscription(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView):
+class ListSubscription(
+    ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
+):
     model = Subscription
     filterset_class = SubscriptionFilter
     paginate_by = 10
@@ -151,6 +158,20 @@ class ListSubscription(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMi
             "is_paginated": is_paginated,
         }
         return context
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        account = Account.objects.filter(user_id=user_id).values_list("id")
+        outlet = Outlet.objects.filter(account_id__in=account)
+        user_role = self.request.user.type
+        # subscription = Subscription.objects.values_list("outlet_id")
+        # outlet = Outlet.objects.exclude(id__in=subscription).filter(
+        #     account_id__in=account
+        # )
+        if user_role == "SALES":
+            return Subscription.objects.filter(outlet_id__in=outlet).order_by("-id")
+        else:
+            return Subscription.objects.all().order_by("-id")
 
     def get_template_names(self):
         if self.request.user.type == "SALES":
