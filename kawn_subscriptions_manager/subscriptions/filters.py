@@ -8,15 +8,12 @@ from .models import (
 
 
 class SubscriptionPlanFilter(django_filters.FilterSet):
-    # model = SubscriptionPlan
     STATUS_CHOICES = (
         (0, "Not Active"),
         (1, "Active"),
     )
 
     is_active = ChoiceFilter(choices=STATUS_CHOICES, label="Status:", empty_label="All")
-    # trial_unit = ChoiceFilter(label = "Trial Unit", lookup_expr = "icontains", empty_label="All")
-    # recurrence_unit = ChoiceFilter(label = "Recurrence Unit", lookup_expr = "icontains", empty_label="All")
 
     class Meta:
         model = SubscriptionPlan
