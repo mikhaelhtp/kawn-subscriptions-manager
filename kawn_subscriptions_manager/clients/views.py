@@ -1,5 +1,3 @@
-from email import message
-from lib2to3.pytree import Base
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.decorators import method_decorator
 from django.contrib import messages
@@ -15,13 +13,20 @@ from django_tables2.export.views import ExportMixin
 from kawn_subscriptions_manager.decorators import sales_only
 from .models import Outlet, Account, Province, City
 from kawn_subscriptions_manager.users.models import User
-from kawn_subscriptions_manager.api import api_outlet, api_outlet1, api_province, api_city
+from kawn_subscriptions_manager.api import (
+    api_outlet,
+    api_outlet1,
+    api_province,
+    api_city,
+)
 from .forms import AddOutletForm, AddClientForm, UpdateClientForm, AddClientOutletForm
 from .filters import OutletFilter, AccountFilter
 
 
 # CLIENT
-class ListClient(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView):
+class ListClient(
+    ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
+):
     model = Outlet
     paginate_by = 10
 
@@ -70,30 +75,10 @@ class AddClient(BaseBreadcrumbMixin, CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Client successfully added")
-        account = form.save(commit = False)
+        account = form.save(commit=False)
         account.user_id = self.request.user.id
         account.save()
         return redirect("clients:list_client")
-    
-
-# class DeleteOutlet(View, SuccessMessageMixin):
-#     model = APIOutlet
-#     success_url = reverse_lazy("clients:list_outlet")
-#     success_message = _("Outlet successfully deleted")
-
-#     def __init__(self, pk):
-#         APIOutlet.objects.filter(id=pk).update(user_id="")
-#         return redirect("clients:list_outlet")
-
-
-# class DeleteOutlet(View, SuccessMessageMixin):
-#     model = APIOutlet
-#     success_url = reverse_lazy("clients:list_outlet")
-#     success_message = _("Outlet successfully deleted")
-
-#     def _init_(self, pk):
-#         APIOutlet.objects.filter(id=pk).update(user_id="")
-#         return redirect("clients:list_outlet")
 
 
 class UpdateClient(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
@@ -119,22 +104,27 @@ class DeleteClient(SuccessMessageMixin, BaseBreadcrumbMixin, DeleteView):
         return super(DeleteClient, self).delete(request, *args, **kwargs)
 
 
-# Outlet
 class ListOutletClient(ListBreadcrumbMixin, ListView):
     model = Outlet
     paginate_by = 10
 
     def get_context_data(self, object_list=None):
-        queryset = object_list if object_list is not None else Outlet.objects.filter(account_id=self.kwargs["pk"]).order_by("-id")
+        queryset = (
+            object_list
+            if object_list is not None
+            else Outlet.objects.filter(account_id=self.kwargs["pk"]).order_by("-id")
+        )
         page_size = self.paginate_by
-        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
+        paginator, page, queryset, is_paginated = self.paginate_queryset(
+            queryset, page_size
+        )
         context = {
             "object_list": queryset,
             "name": Account.objects.filter(id=self.kwargs["pk"])[0],
             "pk": self.kwargs["pk"],
-            'paginator': paginator,
-            'page_obj': page,
-            'is_paginated': is_paginated,
+            "paginator": paginator,
+            "page_obj": page,
+            "is_paginated": is_paginated,
         }
         return context
 
@@ -162,7 +152,6 @@ class AddClientOutlet(CreateView):
 def DeleteClientOutlet(request, pk):
     Outlet.objects.filter(id=pk).update(account_id="")
     messages.success(request, "Outlet successfully deleted")
-    # return redirect("clients:list_outlet_client", pk=2)
     return redirect(request.META.get("HTTP_REFERER"))
 
 
@@ -212,7 +201,7 @@ class ListOutlet(
             "is_paginated": is_paginated,
         }
         return context
-    
+
     def get_template_names(self):
         if self.request.user.type == "SALES":
             return ["clients/sales/list_outlet.html"]
@@ -234,9 +223,13 @@ class AddOutlet(BaseBreadcrumbMixin, CreateView):
         messages.success(self.request, self.success_message)
         top = Outlet.objects.order_by("-id")[0]
         outlet = form.save(commit=False)
-        outlet.province_read = dict(form.fields['province'].choices)[int(self.request.POST.get('province'))]
-        outlet.city_read = dict(form.fields['city'].choices)[int(self.request.POST.get('city'))]
-        outlet.id = top.id+1
+        outlet.province_read = dict(form.fields["province"].choices)[
+            int(self.request.POST.get("province"))
+        ]
+        outlet.city_read = dict(form.fields["city"].choices)[
+            int(self.request.POST.get("city"))
+        ]
+        outlet.id = top.id + 1
         outlet.save()
         return redirect("clients:list_outlet")
 
@@ -255,12 +248,19 @@ class UpdateOutlet(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         outlet = form.save(commit=False)
-        outlet.province_read = dict(form.fields['province'].choices)[int(self.request.POST.get('province'))]
-        outlet.city_read = dict(form.fields['city'].choices)[int(self.request.POST.get('city'))]
+        outlet.province_read = dict(form.fields["province"].choices)[
+            int(self.request.POST.get("province"))
+        ]
+        outlet.city_read = dict(form.fields["city"].choices)[
+            int(self.request.POST.get("city"))
+        ]
         outlet.save()
         return redirect("clients:list_outlet")
 
+
 def load_cities(request):
-    province_id = request.GET.get('province')
-    cities = City.objects.filter(province_id=province_id).order_by('name')
-    return render(request, 'clients/city_dropdown_list_options.html', {'cities': cities})
+    province_id = request.GET.get("province")
+    cities = City.objects.filter(province_id=province_id).order_by("name")
+    return render(
+        request, "clients/city_dropdown_list_options.html", {"cities": cities}
+    )

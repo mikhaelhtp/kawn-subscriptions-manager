@@ -13,8 +13,9 @@ class Province(models.Model):
     def __str__(self):
         return self.name
 
+
 class City(models.Model):
-    province  = models.ForeignKey(Province,  on_delete=models.CASCADE, null=True)
+    province = models.ForeignKey(Province, on_delete=models.CASCADE, null=True)
     name = models.CharField(_("City"), max_length=255, null=True)
 
     def __str__(self):
@@ -28,15 +29,25 @@ class Account(models.Model):
     modified = models.DateTimeField(auto_now=True)
     name = models.CharField(_("Name"), max_length=255, null=True)
     address = models.CharField(_("Address"), max_length=255, null=True)
-    phone = PhoneNumberField(_("Phone Number"),null=True, unique=True)
-    business_code =  models.CharField(_("Business Code"), max_length=255, null=True)
-    brand_name = models.CharField(_("Brand Name"), max_length=255, null=True, blank=True)
+    phone = PhoneNumberField(_("Phone Number"), null=True, unique=True)
+    business_code = models.CharField(_("Business Code"), max_length=255, null=True)
+    brand_name = models.CharField(
+        _("Brand Name"), max_length=255, null=True, blank=True
+    )
     brand_logo = models.CharField(_("Brand logo"), max_length=255, null=True)
-    social_facebook = models.CharField(_("Facebook"), max_length=255, null=True, blank=True)
-    social_twitter = models.CharField(_("Twitter"), max_length=255, null=True, blank=True)
-    social_instagram = models.CharField(_("Instagram"), max_length=255, null=True, blank=True)
+    social_facebook = models.CharField(
+        _("Facebook"), max_length=255, null=True, blank=True
+    )
+    social_twitter = models.CharField(
+        _("Twitter"), max_length=255, null=True, blank=True
+    )
+    social_instagram = models.CharField(
+        _("Instagram"), max_length=255, null=True, blank=True
+    )
     website = models.CharField(_("Website"), max_length=255, null=True, blank=True)
-    registered_via = models.CharField(max_length=255, default="Kawn Subscriptions Manager")
+    registered_via = models.CharField(
+        max_length=255, default="Kawn Subscriptions Manager"
+    )
 
 
 class Outlet(models.Model):
