@@ -3986,7 +3986,7 @@ fieldset:disabled .btn {
 .btn-sm,
 .btn-group-sm>.btn {
   --bs-btn-padding-y: 0.5rem;
-  --bs-btn-padding-x: 2rem;
+  --bs-btn-padding-x: 0.8rem;
   --bs-btn-font-size: 0.75rem;
   --bs-btn-border-radius: 0.5rem;
 }
@@ -20285,7 +20285,6 @@ fieldset:disabled .btn {
 }
 
 .btn {
-  margin-bottom: 1rem;
   letter-spacing: -0.025rem;
   text-transform: uppercase;
   box-shadow: 0 4px 7px -1px rgba(0, 0, 0, 0.11), 0 2px 4px -1px rgba(0, 0, 0, 0.07);
