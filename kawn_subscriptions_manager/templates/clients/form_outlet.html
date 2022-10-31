@@ -10,9 +10,8 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'clients:list_client' %}">Client</a></li>
-        <li class="breadcrumb-item"><a type="button" onclick="javascript:history.back()">Outlet-Client</a></li>
-        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Add Outlet-Client</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'clients:list_outlet' %}">Outlet</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Add Outlet</a></li>
     </ol>
 </nav>
 {% endblock breadcrumbs %}
@@ -30,9 +29,9 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{{ next }}">
                                 {{ form|crispy }}
-                                <button type="submit" class="btn bg-gradient-info col-md-2 mt-4 mb-0">SAVE</button>
+                                <button type="submit" class="btn bg-info col-md-2 mt-4 mb-0 text-white">SAVE</button>
                                 <a href="{% url 'clients:list_outlet'  %}"
-                                    class="btn bg-gradient-danger col-md-2 mt-4 mb-0">CANCEL</a>
+                                    class="btn bg-danger col-md-2 mt-4 mb-0 text-white">CANCEL</a>
                             </form>
                         </div>
                     </div>

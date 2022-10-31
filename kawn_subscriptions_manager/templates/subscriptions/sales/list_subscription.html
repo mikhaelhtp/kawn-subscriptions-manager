@@ -68,6 +68,7 @@
               <tr>
                 <th class="text-uppercase text-dark text-xs font-weight-bolder ps-4">Outlet Name</th>
                 <th class="text-uppercase text-dark text-xs font-weight-bolder ps-4">Subscription Plan</th>
+                <th class="text-uppercase text-dark text-xs font-weight-bolder ps-4 text-end">Billing Date</th>
                 <th class="text-uppercase text-dark text-xs font-weight-bolder ps-4 text-end">Expired Date</th>
                 <th class="text-uppercase text-dark text-xs font-weight-bolder ps-4">Status</th>
                 <th class="text-center text-uppercase text-dark text-xs font-weight-bolder ps-4">Action</th>
@@ -83,6 +84,9 @@
                   <p class="text-xs font-weight-bold mb-0">{{ data.subscriptionplan.name }}</p>
                 </td>
                 <td data-sort="{{data.expires | date:'Ymd'}}" class="align-middle text-sm px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-end">{{ data.billing_date|date:'D, d M Y' }}</p>
+                </td>
+                <td data-sort="{{data.expires | date:'Ymd'}}" class="align-middle text-sm px-4">
                   <p class="text-xs font-weight-bold mb-0 text-end ">{{ data.expires|date:'D, d M Y' }}</p>
                 </td>
                 <td class="px-4">
@@ -95,9 +99,9 @@
                 <td class="align-middle text-center text-sm">
                   {% if data.active == True %}
                   <a href="{% url 'subscriptions:deactivate_subscription' data.id %}"
-                    class="badge bg-danger">Deactivate</a>
+                    class="btn btn-sm bg-danger text-white text-xs">Deactivate</a>
                   {% else %}
-                  <a href="{% url 'subscriptions:activate_subscription' data.id %}" class="badge bg-info">Activate</a>
+                  <a href="{% url 'subscriptions:activate_subscription' data.id %}" class="btn btn-sm bg-info text-white text-xs">Activate</a>
                   {% endif %}
                 </td>
               </tr>

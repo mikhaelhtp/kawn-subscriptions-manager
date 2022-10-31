@@ -69,7 +69,7 @@
                 <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Recurrence Period</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Recurrence Unit</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
-                <th class="text-uppercase text-xs text-dark font-weight-bolder">Action</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -103,13 +103,13 @@
                 <td class="align-middle">
                   <div class="d-inline">
                     <a href="{% url 'subscriptions:update_subscription_plan' data.id %}"
-                      class="badge bg-warning">Edit</a>
+                      class="btn btn-sm bg-warning text-white text-xs" title='Edit'>Edit</a>
                     {% if data.is_active %}
                     <a href="{% url 'subscriptions:deactivate_subscription_plan' data.id %}"
-                      class="badge bg-gradient-danger">Deactivate</a>
+                      class="btn btn-sm bg-danger text-white text-xs" title='Deactivate'>Deactivate</a>
                     {% else %}
                     <a href="{% url 'subscriptions:activate_subscription_plan' data.id %}"
-                      class="badge bg-gradient-info">Activate</a>
+                      class="btn btn-sm bg-info text-white text-xs" title='Activate'>Activate</a>
                     {% endif %}
                   </div>
                   {% if data.is_active == False %}
@@ -117,7 +117,7 @@
                     action="{% url 'subscriptions:delete_subscription_plan' data.id %}" method="post">
                     {% csrf_token %}
                     </a>
-                    <button type="submit" class="badge btn-danger btn-flat show_confirm" data-toggle="tooltip"
+                    <button type="submit" class="btn btn-sm bg-danger show_confirm text-white" data-toggle="tooltip"
                       title='Delete'>Delete</button>
                   </form>
                   {% endif %}

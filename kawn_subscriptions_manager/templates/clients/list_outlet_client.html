@@ -62,7 +62,6 @@
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Address</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">City</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Province</th>
-                                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,9 +81,6 @@
                                 </td>
                                 <td class="px-4">
                                     <p class="text-xs font-weight-bold mb-0">{{ data.province_read }}</p>
-                                </td>
-                                <td class="px-4">
-                                    <a href="{% url 'clients:update_outlet' data.id %}" class="badge bg-info">Edit</a>
                                 </td>
                             </tr>
                             {% empty %}
