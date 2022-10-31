@@ -28,7 +28,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if 'clients/l' in request.get_full_path %} active {% endif %}"
+                <a class="nav-link {% if request.resolver_match.view_name == 'clients:list_client' %}active{% endif %}"
                     href="{% url 'clients:list_client'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -38,7 +38,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if 'outlet/' in request.get_full_path %} active {% endif %}"
+                <a class="nav-link {% if request.resolver_match.view_name == 'clients:list_outlet' %}active{% endif %}"
                     href="{% url 'clients:list_outlet' %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -47,27 +47,27 @@
                     <span class="nav-link-text ms-1">Outlets</span>
                 </a>
             </li>
-            <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase font-weight-bolder">Settings</h6>
-            </li>
             <li class="nav-item">
-                <a class="nav-link  {% if 'subscription_plan/' in request.get_full_path %} active {% endif %}"
-                    href="{% url 'subscriptions:list_subscription_plan'  %}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-diagram-next"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Subscription Plans</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link  {% if 'subscription/' in request.get_full_path %} active {% endif %}"
+                <a class="nav-link  {% if request.resolver_match.view_name == 'subscriptions:list_subscription' %}active{% endif %}"
                     href="{% url 'subscriptions:list_subscription'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-list"></i>
                     </div>
                     <span class="nav-link-text ms-1">Subscriptions</span>
+                </a>
+            </li>
+            <li class="nav-item mt-3">
+                <h6 class="ps-4 ms-2 text-uppercase font-weight-bolder">Settings</h6>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link  {% if request.resolver_match.view_name == 'subscriptions:list_subscription_plan' %}active{% endif %}"
+                    href="{% url 'subscriptions:list_subscription_plan'  %}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-diagram-next"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Subscription Plans</span>
                 </a>
             </li>
             {% if request.user.type == "ADMIN" %}
