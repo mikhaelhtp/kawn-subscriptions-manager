@@ -43,10 +43,11 @@ class SubscriptionFilter(django_filters.FilterSet):
 
     class Meta:
         model = Subscription
-        fields = ["subscriptionplan"]
+        fields = ["subscriptionplan", "outlet"]
 
     def __init__(self, *args, **kwargs):
         super(SubscriptionFilter, self).__init__(*args, **kwargs)
         subscription_plan = SubscriptionPlan.objects.all()
         subscription_plans = [(i.id, i.name) for i in subscription_plan]
         self.filters["subscriptionplan"].extra["choices"] = subscription_plans
+        self.filters["outlet"].lookup_expr = "icontains"
