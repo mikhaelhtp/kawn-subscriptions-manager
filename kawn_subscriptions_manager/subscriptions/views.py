@@ -171,7 +171,6 @@ class ListSubscription(
 ):
     model = Subscription
     filterset_class = SubscriptionFilter
-    paginate_by = 10
 
     def get_context_data(self, object_list=None):
         subscription_filter = SubscriptionFilter(
@@ -179,17 +178,10 @@ class ListSubscription(
         )
         queryset = object_list if object_list is not None else subscription_filter.qs
         export_formats = ("csv", "tsv", "xlsx", "json")
-        page_size = self.paginate_by
-        paginator, page, queryset, is_paginated = self.paginate_queryset(
-            queryset, page_size
-        )
         context = {
             "subscription_filter": subscription_filter,
             "object_list": queryset,
             "export_formats": export_formats,
-            "paginator": paginator,
-            "page_obj": page,
-            "is_paginated": is_paginated,
         }
         return context
 
