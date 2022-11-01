@@ -43,6 +43,8 @@
   <link href="{% static 'css/nucleo-svg.css' %}" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="{% static 'css/soft-ui-dashboard.css' %}" rel="stylesheet" />
+  <link href="{% static 'extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" >
+  <link href="{% static 'css/datatables.css' %}" rel="stylesheet" >
 
   {% endcompress %}
   {% endblock %}
@@ -110,6 +112,9 @@
   <script src="{% static 'js/soft-ui-dashboard.min.js' %}"></script>
   {% endblock inline_javascript %}
 
+  <script src="{% static 'js/core/jquery.min.js' %}"></script>
+  <script src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
+  <script src="{% static 'js/plugins/datatables.js' %}"></script>
   <script>
     // Toggle Sidenav
     const iconNavbarSidenav = document.getElementById('iconNavbarSidenav');

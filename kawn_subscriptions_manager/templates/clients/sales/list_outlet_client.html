@@ -66,19 +66,19 @@
                         <tbody>
                             {% for data in object_list %}
                             <tr>
-                                <td class="px-4">
+                                <td data-sort="{{ data.name }}"class="px-4">
                                     <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
                                 </td>
-                                <td>
+                                <td data-sort="{{ data.phone }}">
                                     <p class="text-xs font-weight-bold mb-0  text-end">{{ data.phone }}</p>
                                 </td>
-                                <td class="px-4">
+                                <td data-sort="{{ data.address }}" class="px-4">
                                     <p class="text-xs font-weight-bold mb-0">{{ data.address }}</p>
                                 </td>
-                                <td class="px-4">
+                                <td data-sort="{{ data.city_read }}" class="px-4">
                                     <p class="text-xs font-weight-bold mb-0">{{ data.city_read }}</p>
                                 </td>
-                                <td class="px-4">
+                                <td data-sort="{{ data.province_read }}" class="px-4">
                                     <p class="text-xs font-weight-bold mb-0">{{ data.province_read }}</p>
                                 </td>
                                 <td class="align-middle text-center text-sm">
