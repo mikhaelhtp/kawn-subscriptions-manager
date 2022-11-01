@@ -66,6 +66,7 @@
             <thead>
               <tr>
                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Outlet Name</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Client Name</th>
                 <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end">Phone</th>
                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Address</th>
                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">City</th>
@@ -78,6 +79,9 @@
               <tr>
                 <td class="px-4">
                   <p class="text-xs font-weight-bold mb-0 text-start">{{ data.name }}</p>
+                </td>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.client.name }}</p>
                 </td>
                 <td>
                   <p class="text-xs font-weight-bold mb-0 text-end">{{ data.phone }}</p>

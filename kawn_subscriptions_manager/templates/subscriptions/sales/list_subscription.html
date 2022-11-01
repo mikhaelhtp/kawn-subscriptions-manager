@@ -39,6 +39,9 @@
                 <form method="get">
                   <div class="row">
                     <div class="col-md-2">
+                      {{ subscription_filter.form.outlet|as_crispy_field }}
+                    </div>
+                    <div class="col-md-2">
                       {{ subscription_filter.form.subscriptionplan|as_crispy_field }}
                     </div>
                     <div class="col-md-2">

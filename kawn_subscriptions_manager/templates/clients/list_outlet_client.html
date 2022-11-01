@@ -94,6 +94,14 @@
                     </table>
                 </div>
             </div>
+            <div class="card-footer row">
+                <hr>
+                <span class="col-lg-6">{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
+                <span class="col-lg-6 text-end text-sm">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                <hr>
+            </div>
         </div>
     </div>
 </div>
