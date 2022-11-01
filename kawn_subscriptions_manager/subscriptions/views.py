@@ -17,7 +17,8 @@ from .filters import (
     SubscriptionPlanFilter,
     SubscriptionFilter,
 )
-from kawn_subscriptions_manager.clients.models import Account, Outlet
+from kawn_subscriptions_manager.clients.models import Client, Outlet
+from kawn_subscriptions_manager.users.models import User
 from kawn_subscriptions_manager.decorators import allowed_users, sales_only
 from kawn_subscriptions_manager.api import api_subscription_plans, api_subscriptions
 
@@ -114,6 +115,39 @@ class DeleteSubscriptionPlan(DeleteView):
         return super(DeleteSubscriptionPlan, self).delete(request, *args, **kwargs)
 
 
+# @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
+# class LogActivity(ListView):
+#     model = User
+#     template_name = "subscriptions/log_activity.html"
+
+#     # def form_valid(self, form):
+#     #     user = form.save()
+#     #     log_username = self.request.user.username
+#     #     log_access = self.request.user.type
+
+#     #     return super().form_valid(form)
+
+
+#     def deactivate_subscription_plan(self, form, request, id):
+#         user = form.save()
+#         subscriptionplan = SubscriptionPlan.objects.get(pk=id)
+#         subscriptionplan.is_active = False
+#         self.request.user.username.save()
+#         subscriptionplan.save()
+#         messages.success(request, "Subscription plans has been successfully deactivated!")
+#         return redirect("subscriptions:list_subscription_plan")
+
+
+#     def activate_subscription_plan(self, form, request, id):
+#         user = form.save()
+#         subscriptionplan = SubscriptionPlan.objects.get(pk=id)
+#         subscriptionplan.active = True
+#         self.request.user.username.save()
+#         subscriptionplan.save()
+#         messages.success(request, "Subscription plans has been successfully activated!")
+#         return redirect("subscriptions:list_subscription_plan")
+
+
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def deactivate_subscription_plan(request, id):
     subscriptionplan = SubscriptionPlan.objects.get(pk=id)
@@ -161,13 +195,9 @@ class ListSubscription(
 
     def get_queryset(self):
         user_id = self.request.user.id
-        account = Account.objects.filter(user_id=user_id).values_list("id")
-        outlet = Outlet.objects.filter(account_id__in=account)
+        client = Client.objects.filter(user_id=user_id).values_list("id")
+        outlet = Outlet.objects.filter(client_id__in=client)
         user_role = self.request.user.type
-        # subscription = Subscription.objects.values_list("outlet_id")
-        # outlet = Outlet.objects.exclude(id__in=subscription).filter(
-        #     account_id__in=account
-        # )
         if user_role == "SALES":
             return Subscription.objects.filter(outlet_id__in=outlet).order_by("-id")
         else:
