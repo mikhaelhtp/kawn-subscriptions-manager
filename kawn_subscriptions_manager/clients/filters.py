@@ -1,6 +1,6 @@
 import django_filters
 
-from .models import Outlet, Account
+from .models import Outlet, Client
 import django_filters as filters
 
 
@@ -19,13 +19,13 @@ class OutletFilter(django_filters.FilterSet):
         self.filters["province_read"].lookup_expr = "icontains"
 
 
-class AccountFilter(django_filters.FilterSet):
+class ClientFilter(django_filters.FilterSet):
     class Meta:
-        model = Account
+        model = Client
         fields = ["name", "address"]
 
     def __init__(self, *args, **kwargs):
-        super(AccountFilter, self).__init__(*args, **kwargs)
+        super(ClientFilter, self).__init__(*args, **kwargs)
         self.filters["name"].label = "Name:"
         self.filters["name"].lookup_expr = "icontains"
         self.filters["address"].label = "Address:"

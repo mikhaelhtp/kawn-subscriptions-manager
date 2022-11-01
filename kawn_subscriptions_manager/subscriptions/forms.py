@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django import forms
 from django.forms import ModelForm
 
-from kawn_subscriptions_manager.clients.models import Account, Outlet
+from kawn_subscriptions_manager.clients.models import Client, Outlet
 from .models import SubscriptionPlan, Subscription
 
 
@@ -18,10 +18,10 @@ class AddSubscriptionForm(ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(AddSubscriptionForm, self).__init__(*args, **kwargs)
-        account = Account.objects.values_list("id").filter(user_id=user.id)
+        client = Client.objects.values_list("id").filter(user_id=user.id)
         subscription = Subscription.objects.values_list("outlet_id")
         outlet = Outlet.objects.exclude(id__in=subscription).filter(
-            account_id__in=account
+            client_id__in=client
         )
         outlets = [(i.id, i.name) for i in outlet]
 

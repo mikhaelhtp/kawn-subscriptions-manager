@@ -1,3 +1,4 @@
+from http import client
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.decorators import method_decorator
 from django.contrib import messages
@@ -9,9 +10,8 @@ from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin
-
 from kawn_subscriptions_manager.decorators import sales_only
-from .models import Outlet, Account, Province, City
+from .models import Outlet, Client, Province, City
 from kawn_subscriptions_manager.users.models import User
 from kawn_subscriptions_manager.api import (
     api_outlet,
@@ -20,7 +20,7 @@ from kawn_subscriptions_manager.api import (
     api_city,
 )
 from .forms import AddOutletForm, AddClientForm, UpdateClientForm, AddClientOutletForm
-from .filters import OutletFilter, AccountFilter
+from .filters import OutletFilter, ClientFilter
 
 
 # CLIENT
@@ -34,20 +34,20 @@ class ListClient(
         user_id = self.request.user.id
         user_role = self.request.user.type
         if user_role == "SALES":
-            return Account.objects.filter(user_id=user_id).order_by("-id")
+            return Client.objects.filter(user_id=user_id).order_by("-id")
         else:
-            return Account.objects.all().order_by("-id")
+            return Client.objects.all().order_by("-id")
 
     def get_context_data(self, object_list=None):
-        account = AccountFilter(self.request.GET, queryset=self.get_queryset())
-        queryset = object_list if object_list is not None else account.qs
+        client = ClientFilter(self.request.GET, queryset=self.get_queryset())
+        queryset = object_list if object_list is not None else client.qs
         export_formats = ("csv", "tsv", "xlsx", "json")
         page_size = self.paginate_by
         paginator, page, queryset, is_paginated = self.paginate_queryset(
             queryset, page_size
         )
         context = {
-            "myFilter": account,
+            "myFilter": client,
             "object_list": queryset,
             "export_formats": export_formats,
             "paginator": paginator,
@@ -65,7 +65,7 @@ class ListClient(
 
 @method_decorator([sales_only], name="dispatch")
 class AddClient(BaseBreadcrumbMixin, CreateView):
-    model = Account
+    model = Client
     form_class = AddClientForm
     crumbs = [
         ("Client", reverse_lazy("clients:list_client")),
@@ -75,14 +75,14 @@ class AddClient(BaseBreadcrumbMixin, CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Client successfully added")
-        account = form.save(commit=False)
-        account.user_id = self.request.user.id
-        account.save()
+        client = form.save(commit=False)
+        client.user_id = self.request.user.id
+        client.save()
         return redirect("clients:list_client")
 
 
 class UpdateClient(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
-    model = Account
+    model = Client
     form_class = UpdateClientForm
     crumbs = [
         ("Client", reverse_lazy("clients:list_client")),
@@ -95,7 +95,7 @@ class UpdateClient(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
 
 @method_decorator([sales_only], name="dispatch")
 class DeleteClient(SuccessMessageMixin, BaseBreadcrumbMixin, DeleteView):
-    model = Account
+    model = Client
     crumbs = [("Delete Client", reverse_lazy("clients:delete_client"))]
     success_url = reverse_lazy("clients:list_client")
 
@@ -112,7 +112,7 @@ class ListOutletClient(ListBreadcrumbMixin, ListView):
         queryset = (
             object_list
             if object_list is not None
-            else Outlet.objects.filter(account_id=self.kwargs["pk"]).order_by("-id")
+            else Outlet.objects.filter(client_id=self.kwargs["pk"]).order_by("-id")
         )
         page_size = self.paginate_by
         paginator, page, queryset, is_paginated = self.paginate_queryset(
@@ -120,7 +120,7 @@ class ListOutletClient(ListBreadcrumbMixin, ListView):
         )
         context = {
             "object_list": queryset,
-            "name": Account.objects.filter(id=self.kwargs["pk"])[0],
+            "name": Client.objects.filter(id=self.kwargs["pk"])[0],
             "pk": self.kwargs["pk"],
             "paginator": paginator,
             "page_obj": page,
@@ -143,14 +143,14 @@ class AddClientOutlet(CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        Outlet.objects.filter(id=form.cleaned_data["name"]).update(
-            account_id=self.kwargs["pk"]
-        )
+        client = form.save() 
+        client.client_id = self.kwargs["pk"]
+        client.save()
         return redirect("clients:list_outlet_client", pk=self.kwargs["pk"])
 
 
 def DeleteClientOutlet(request, pk):
-    Outlet.objects.filter(id=pk).update(account_id="")
+    Outlet.objects.filter(id=pk).update(client_id="")
     messages.success(request, "Outlet successfully deleted")
     return redirect(request.META.get("HTTP_REFERER"))
 
@@ -159,7 +159,6 @@ class ListOutlet(
     ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
 ):
     model = Outlet
-    template_name = "clients/list_outlet.html"
     queryset = Outlet.objects.all().order_by("-id")
     paginate_by = 10
     exclude_columns = (

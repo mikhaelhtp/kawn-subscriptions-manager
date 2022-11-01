@@ -22,12 +22,11 @@ class City(models.Model):
         return self.name
 
 
-class Account(models.Model):
-
+class Client(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    name = models.CharField(_("Name"), max_length=255, null=True)
+    name = models.CharField(_("Client Name"), max_length=255, null=True)
     address = models.CharField(_("Address"), max_length=255, null=True)
     phone = PhoneNumberField(_("Phone Number"), null=True, unique=True)
     business_code = models.CharField(_("Business Code"), max_length=255, null=True)
@@ -51,10 +50,11 @@ class Account(models.Model):
 
 
 class Outlet(models.Model):
-    name = models.CharField(max_length=255, null=True)
-    display_name = models.CharField(max_length=255, null=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
+    name = models.CharField(_("Outlet Name"), max_length=255, null=True)
+    display_name = models.CharField(_("Display Name"),max_length=255, null=True)
     subscription_plan_read = models.CharField(max_length=255, null=True)
-    phone = PhoneNumberField(null=True)
+    phone = PhoneNumberField(_("Phone Number"),null=True)
     province_read = models.CharField(max_length=255, null=True)
     city_read = models.CharField(max_length=255, null=True)
     address = models.CharField(max_length=255, null=True)
@@ -72,6 +72,5 @@ class Outlet(models.Model):
     device_users = models.CharField(max_length=255, null=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     province = models.IntegerField(null=True)
     city = models.IntegerField(null=True)
