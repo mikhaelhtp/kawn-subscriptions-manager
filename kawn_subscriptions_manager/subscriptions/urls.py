@@ -46,22 +46,22 @@ urlpatterns = [
         name="deactivate_subscription_plan",
     ),
     path(
-        "subscription/list/",
+        "list/",
         view=ListSubscription.as_view(),
         name="list_subscription",
     ),
     path(
-        "subscription/add/",
+        "add/",
         view=AddSubscription.as_view(),
         name="add_subscription",
     ),
     path(
-        "subscription/activate/<int:pk>",
+        "activate/<int:pk>",
         view=ActivateSubscription.as_view(),
         name="activate_subscription",
     ),
     path(
-        "subscription/deactivate/<int:id>",
+        "deactivate/<int:id>",
         view=deactivate_subscription,
         name="deactivate_subscription",
     ),
