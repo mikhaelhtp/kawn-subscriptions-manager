@@ -52,9 +52,9 @@ class Client(models.Model):
 class Outlet(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     name = models.CharField(_("Outlet Name"), max_length=255, null=True)
-    display_name = models.CharField(_("Display Name"),max_length=255, null=True)
+    display_name = models.CharField(_("Display Name"), max_length=255, null=True)
     subscription_plan_read = models.CharField(max_length=255, null=True)
-    phone = PhoneNumberField(_("Phone Number"),null=True)
+    phone = PhoneNumberField(_("Phone Number"), null=True)
     province_read = models.CharField(max_length=255, null=True)
     city_read = models.CharField(max_length=255, null=True)
     address = models.CharField(max_length=255, null=True)
