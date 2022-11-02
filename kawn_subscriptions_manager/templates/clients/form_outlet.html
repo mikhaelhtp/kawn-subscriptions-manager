@@ -11,7 +11,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item"><a href="{% url 'clients:list_outlet' %}">Outlet</a></li>
-        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Add Outlet</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Form Outlet</a></li>
     </ol>
 </nav>
 {% endblock breadcrumbs %}
@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="d-flex flex-column h-100">
-                            <h5 class="font-weight-bolder">Form Outlet</h5>
+                            <h5 class="font-weight-bolder">Form Outlet S</h5>
                             <form method="post" id="outletForm" data-cities-url="{% url 'clients:ajax_load_cities' %}" novalidate>
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{{ next }}">

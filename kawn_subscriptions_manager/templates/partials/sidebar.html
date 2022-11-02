@@ -60,6 +60,19 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase font-weight-bolder">Settings</h6>
             </li>
+            {% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
+            {% url 'subscriptions:list_approval' as list_approval %}
+            <li class="nav-item">
+                <a class="nav-link  {% if request.get_full_path == list_approval %}active{% endif %}"
+                    href="{% url 'subscriptions:list_approval'%}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-table"></i>
+                    </div>
+                    <span class="nav-link-popeo ms-1">Approval Subscriptions</span>
+                </a>
+            </li>
+            {% endif %}
             <li class="nav-item">
                 <a class="nav-link  {% if request.resolver_match.view_name == 'subscriptions:list_subscription_plan' %}active{% endif %}"
                     href="{% url 'subscriptions:list_subscription_plan'  %}">

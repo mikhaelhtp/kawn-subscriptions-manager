@@ -62,7 +62,7 @@
 
       <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
-          <table class="table sortable align-items-center mb-0">
+          <table class="table table-sm sortable align-items-center mb-0">
             <thead>
               <tr>
                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Outlet Name</th>
@@ -105,6 +105,12 @@
                 </td>
                 <td class="align-middle text-center text-sm">
                   <a href="{% url 'clients:update_outlet' data.id %}" class="btn btn-sm bg-warning text-white text-xs">Edit</a>
+                  <form class="d-inline" id="form-id" action="{% url 'clients:delete_outlet' data.id %}" method="post">
+                    {% csrf_token %}
+                    </a>
+                    <button type="submit" class="btn btn-sm bg-danger btn-flat show_confirm text-white"
+                        data-toggle="tooltip" title='Delete'>Delete</button>
+                </form>
                 </td>
               </tr>
               {% empty %}

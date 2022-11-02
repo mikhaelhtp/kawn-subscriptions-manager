@@ -32,6 +32,7 @@
                     {% endfor %}
                     <div class="align-middle">
                         <h5 class="font-weight-bolder">Clients</h5>
+                        <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info mt-2">Add Client</a>
                     </div>
                     <div class="col-lg-12 mb-4 mt-2">
                         <form method="get">
@@ -58,10 +59,10 @@
             <div class="card-body px-0 pt-0 pb-2">
         
                 <div class="table-responsive p-0">
-                    <table class="table sortable align-items-center mb-0">
+                    <table class="table table-sm sortable align-items-center mb-0">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Name</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Client Name</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Address</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end">Phone</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Brand Name</th>
@@ -104,6 +105,12 @@
                                         class="btn btn-sm bg-info text-white text-xs">Outlet</a>
                                     <a href="{% url 'clients:update_client' data.id %}"
                                         class="btn btn-sm bg-warning text-white text-xs">Edit</a>
+                                    <form class="d-inline" id="form-id" action="{% url 'clients:delete_client' data.id %}" method="post">
+                                        {% csrf_token %}
+                                        </a>
+                                        <button type="submit" class="btn btn-sm bg-danger btn-flat show_confirm text-white"
+                                            data-toggle="tooltip" title='Delete'>Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                             {% empty %}

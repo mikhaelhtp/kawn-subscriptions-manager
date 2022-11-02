@@ -32,12 +32,12 @@
                     <div class="row">
                         <div class="d-inline">
                             <a href="{% url 'clients:list_client'  %}" class="d-inline"><i class="fa fa-arrow-left"
-                                    aria-hidden="true"></i></a>
+                                aria-hidden="true"></i></a>
                             <h5 class="font-weight-bolder d-inline p-lg-2">{{ name.name }}'s Outlets</h5>
                         </div>
-                        <div>
-                            <a href="{% url 'clients:add_outlet_client' pk %}" class="btn bg-gradient-info mt-2">Add</a>
-                        </div>
+                        <div class="d-inline">
+                            <a href="{% url 'clients:add_outlet_client' pk %}" class="btn bg-gradient-info mt-2">Add Outlet</a>
+                        </div> 
                     </div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                     </div>
                 </div> -->
                 <div class="table-responsive p-0">
-                    <table class="table sortable align-items-center mb-0">
+                    <table class="table table-sm sortable align-items-center mb-0">
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Outlet Name</th>
@@ -81,13 +81,12 @@
                                 <td data-sort="{{ data.province_read }}" class="px-4">
                                     <p class="text-xs font-weight-bold mb-0">{{ data.province_read }}</p>
                                 </td>
-                                <td class="align-middle text-center text-sm">
-                                    <form class="d-inline" id="form-id"
-                                        action="{% url 'clients:delete_outlet_client' data.id %}" method="post">
+                                <td>
+                                    <a href="{% url 'clients:update_outlet_client' data.id %}" class="btn btn-sm bg-warning text-white text-xs">Edit</a>
+                                    <form class="d-inline" id="form-id" action="{% url 'clients:delete_outlet' data.id %}" method="post">
                                         {% csrf_token %}
                                         </a>
-                                        <button type="submit"
-                                            class="btn btn-sm bg-danger btn-flat show_confirm text-white"
+                                        <button type="submit" class="btn btn-sm bg-danger btn-flat show_confirm text-white"
                                             data-toggle="tooltip" title='Delete'>Delete</button>
                                     </form>
                                 </td>

@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% load humanize %}
-{% load crispy_forms_tags %}
 
-{% block menu-title %}List User Subscriptions{% endblock %}
+{% block menu-title %}List Approval Subscriptions{% endblock %}
 {% block listclientsubscriptions-active %}active{% endblock %}
 
 
@@ -11,7 +10,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Subscription</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Approval Subscription</a></li>
     </ol>
 </nav>
 {% endblock breadcrumbs %}
@@ -30,55 +29,14 @@
           </div>
           {% endfor %}
           <div class="align-middle">
-            <h5 class="font-weight-bolder">Subcriptions</h5>
-          </div>
-
-          <div class="col-lg-12 mb-4 mt-2">
-            <button type="button" class="btn bg-gradient-dark align-middle col-md-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
-              Advanced Search
-            </button>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Advanced Search</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="col-lg-12">
-                      <form method="get">
-                        <div class="row">
-                          <div>
-                            {{ subscription_filter.form.subscriptionplan|as_crispy_field }}
-                          </div>
-                          <div>
-                            {{ subscription_filter.form.expires|as_crispy_field }}
-                          </div>
-                          <div>
-                            {{ subscription_filter.form.active|as_crispy_field }}
-                          </div>
-                          <div class="modal-footer">
-                            <button class="btn bg-secondary">
-                              <a href="{% url 'subscriptions:list_subscription' %}" class="text-white">
-                                Clear Filter
-                              </a>
-                            </button>
-                            <button class="btn bg-gradient-info" type="submit">Filter</button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <h5 class="font-weight-bolder">Approval Subcriptions</h5>
           </div>
         </div>
       </div>
       <section class="section">
         <div class="card">
           <div class="card-body">
-            <table class="table table-sm" id="table1">
+            <table class="table table-sm " id="table1">
               <thead>
                 <tr>
                   <th class="text-uppercase text-xs text-dark font-weight-bolder">Outlet Name</th>
@@ -106,19 +64,18 @@
                   </td>
                   <td class="align-middle text-sm px-4">
                     {% if data.active == True %}
-                    <p class="text-xs font-weight-bold mb-0 text-start">Active</p>
+                    <p class="text-xs font-weight-bold mb-0 text-start">Request Deactivation</p>
                     {% else %}
-                    <p class="text-xs font-weight-bold mb-0 text-start">Not Active</p>
+                    <p class="text-xs font-weight-bold mb-0 text-start">Request Activation</p>
                     {% endif%}
                   </td>
                   <td class="align-middle text-center px-4">
-                    {% if data.active == True %}
-                    <a href="{% url 'subscriptions:deactivate_subscription' data.id %}"
-                      class="btn btn-sm bg-danger text-white text-xs">Deactivate</a>
-                    {% else %}
-                    <a href="{% url 'subscriptions:activate_subscription' data.id %}" class="btn btn-sm bg-info text-white text-xs">Activate</a>
-                    {% endif %}
-                  </td>
+                    {% if data.is_approved == None %}
+                    <a href="{% url 'subscriptions:accept_subscription' data.id %}"
+                      class="btn btn-sm bg-success text-white text-xs">Accept</a>
+                    <a href="{% url 'subscriptions:decline_subscription' data.id %}" class="btn btn-sm bg-danger text-white text-xs">Decline</a>
+                    {% endif%}
+                </td>
                 </tr>
                 {% empty %}
                 <tr class="text-center">
