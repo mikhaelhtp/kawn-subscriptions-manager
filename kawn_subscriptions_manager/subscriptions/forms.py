@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django import forms
@@ -6,15 +7,25 @@ from django.forms import ModelForm
 from kawn_subscriptions_manager.clients.models import Client, Outlet
 from .models import SubscriptionPlan, Subscription
 
+today = datetime.date.today() + datetime.timedelta(days=1)
+
 
 class AddSubscriptionForm(ModelForm):
+    billing_date = forms.DateField(
+        widget=forms.DateTimeInput(attrs={"type": "date", "value": today}),
+        required=True,
+    )
+    expires = forms.DateField(
+        widget=forms.DateTimeInput(
+            attrs={"min": today, "value": today, "type": "date"}
+        ),
+        required=True,
+    )
+
     class Meta:
         model = Subscription
+        input_type = "date"
         fields = ["subscriptionplan", "outlet", "billing_date", "expires"]
-        widgets = {
-            "billing_date": forms.DateTimeInput({"type": "date"}),
-            "expires": forms.DateTimeInput({"type": "date"}),
-        }
 
     def __init__(self, user, *args, **kwargs):
         super(AddSubscriptionForm, self).__init__(*args, **kwargs)

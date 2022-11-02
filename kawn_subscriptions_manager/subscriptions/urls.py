@@ -9,8 +9,13 @@ from kawn_subscriptions_manager.subscriptions.views import (
     deactivate_subscription_plan,
     ListSubscription,
     AddSubscription,
+    SalesActivateSubscription,
+    sales_deactivate_subscription,
     ActivateSubscription,
     deactivate_subscription,
+    ListApprovalRequest,
+    accept_subscription,
+    decline_subscription,
 )
 
 app_name = "subscriptions"
@@ -57,6 +62,16 @@ urlpatterns = [
     ),
     path(
         "activate/<int:pk>",
+        view=SalesActivateSubscription.as_view(),
+        name="sales_activate_subscription",
+    ),
+    path(
+        "deactivate/<int:id>",
+        view=sales_deactivate_subscription,
+        name="sales_deactivate_subscription",
+    ),
+    path(
+        "activate/<int:pk>",
         view=ActivateSubscription.as_view(),
         name="activate_subscription",
     ),
@@ -64,5 +79,20 @@ urlpatterns = [
         "deactivate/<int:id>",
         view=deactivate_subscription,
         name="deactivate_subscription",
+    ),
+    path(
+        "approval/list/",
+        view=ListApprovalRequest.as_view(),
+        name="list_approval",
+    ),
+    path(
+        "approval/accept/<int:id>",
+        view=accept_subscription,
+        name="accept_subscription",
+    ),
+    path(
+        "approval/decline/<int:id>",
+        view=decline_subscription,
+        name="decline_subscription",
     ),
 ]

@@ -1,3 +1,5 @@
+from django.utils import timezone
+from django.core.exceptions import ValidationError
 from asyncio.windows_events import NULL
 from email.policy import default
 from django.db import models
@@ -38,9 +40,19 @@ class Subscription(models.Model):
     )
     expires = models.DateTimeField(null=True)
     billing_date = models.DateTimeField(null=True)
-    active = models.BooleanField(null=True, default=True)
     cancelled = models.BooleanField(null=True)
     voucher = models.IntegerField(null=True)
+    active = models.BooleanField(null=True, default=False)
+    is_approved = models.BooleanField(null=True, default=None)
     created = models.DateTimeField(auto_now_add=True)
+    created_by = models.IntegerField(null=True)
     deleted = models.DateTimeField(null=True)
+    deleted_by = models.IntegerField(null=True)
     modified = models.DateTimeField(auto_now=True)
+    modified_by = models.IntegerField(null=True)
+
+    def clean(self, *args, **kwargs):
+        super(Subscription, self).clean(*args, **kwargs)
+
+        if self.expires < timezone.now():
+            raise ValidationError("Expires date must be greater than today.")
