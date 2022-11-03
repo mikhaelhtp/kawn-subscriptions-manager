@@ -2,6 +2,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -160,6 +161,7 @@ class ListApprovalRequest(ListView, SingleTableMixin, FilterView):
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def accept_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
+    name_type = dict({"name":request.user.name, "type":request.user.type})
     # subscription.active = False
     if subscription.active is not True:
         subscription.active = True
@@ -168,6 +170,7 @@ def accept_subscription(request, id):
         subscription.active = False
         subscription.save()
     subscription.is_approved = True
+    subscription.modified_by = name_type
     subscription.save()
     messages.success(request, "Subscriptions have been approved!")
     return redirect("subscriptions:list_approval")
@@ -176,6 +179,7 @@ def accept_subscription(request, id):
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def decline_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
+    name_type = dict({"name":request.user.name, "type":request.user.type})
     # subscription.active = True
     if subscription.active is not True:
         subscription.active = False
@@ -184,9 +188,19 @@ def decline_subscription(request, id):
         subscription.active == True
         subscription.save()
     subscription.is_approved = False
+    subscription.modified_by = name_type
     subscription.save()
     messages.success(request, "Subscriptions have been rejected!")
     return redirect("subscriptions:list_approval")
+
+
+@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
+class SubscriptionLogs(ListView):
+    model = Subscription
+    queryset = Subscription.objects.all().order_by("-modified")
+
+    def get_template_names(self):
+        return "subscriptions/subscription_logs.html"
 
 
 class ListSubscription(
@@ -246,8 +260,9 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
     def form_valid(self, form):
         messages.success(self.request, "Subscriptions successfully added!")
         top = Subscription.objects.order_by("-id")[0]
+        name_type = dict({"name":self.request.user.name, "type":self.request.user.type})
         subscription = form.save(commit=False)
-        subscription.created_by = self.request.user.id
+        subscription.created_by = name_type
         subscription.id = top.id + 1
         subscription.save()
         return redirect("subscriptions:list_subscription")
@@ -256,7 +271,7 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
 @method_decorator([sales_only], name="dispatch")
 class SalesActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     model = Subscription
-    success_message = _("Subscription successfully updated!")
+    success_message = _(mark_safe("Subscription activation request has been successful! <br/>Please wait for the activation process."))
     fields = ["expires"]
     crumbs = [
         ("Subscription", reverse_lazy("subscriptions:list_subscription")),
@@ -267,11 +282,12 @@ class SalesActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, Update
     ]
     template_name = "subscriptions/form_subscription.html"
     success_url = reverse_lazy("subscriptions:list_subscription")
-
+    
     def form_valid(self, form):
+        name_type = dict({"name":self.request.user.name, "type":self.request.user.type})
         subscription = form.save()
         subscription.active = False
-        subscription.modified_by = self.request.user.id
+        subscription.modified_by = name_type
         subscription.is_approved = ""
         subscription.save()
 
@@ -281,11 +297,12 @@ class SalesActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, Update
 @allowed_users(allowed_roles=["SALES"])
 def sales_deactivate_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
+    name_type = dict({"name":request.user.name, "type":request.user.type})
     subscription.active = True
-    subscription.modified_by = request.user.id
+    subscription.modified_by = name_type
     subscription.is_approved = ""
     subscription.save()
-    messages.success(request, "Subscriptions successfully deactivated!")
+    messages.success(request, mark_safe("Subscription deactivation request has been successful! <br/>Please wait for the deactivation process."))
     return redirect("subscriptions:list_subscription")
 
 
@@ -303,7 +320,9 @@ class ActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView)
 
     def form_valid(self, form):
         subscription = form.save()
+        name_type = dict({"name":self.request.user.name, "type":self.request.user.type})
         subscription.active = True
+        subscription.modified_by = name_type
         subscription.is_approved = True
         subscription.save()
 
@@ -313,7 +332,9 @@ class ActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView)
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def deactivate_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
+    name_type = dict({"name":request.user.name, "type":request.user.type})
     subscription.active = False
+    subscription.modified_by = name_type
     subscription.is_approved = False
     subscription.save()
     messages.success(request, "Subscriptions successfully deactivated!")

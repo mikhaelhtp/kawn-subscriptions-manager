@@ -45,11 +45,11 @@ class Subscription(models.Model):
     active = models.BooleanField(null=True, default=False)
     is_approved = models.BooleanField(null=True, default=None)
     created = models.DateTimeField(auto_now_add=True)
-    created_by = models.IntegerField(null=True)
+    created_by = models.JSONField(max_length=255, null=True)
     deleted = models.DateTimeField(null=True)
-    deleted_by = models.IntegerField(null=True)
+    deleted_by = models.JSONField(max_length=255, null=True)
     modified = models.DateTimeField(auto_now=True)
-    modified_by = models.IntegerField(null=True)
+    modified_by = models.JSONField(null=True)
 
     def clean(self, *args, **kwargs):
         super(Subscription, self).clean(*args, **kwargs)

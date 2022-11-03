@@ -13,6 +13,7 @@ from kawn_subscriptions_manager.subscriptions.views import (
     sales_deactivate_subscription,
     ActivateSubscription,
     deactivate_subscription,
+    SubscriptionLogs,
     ListApprovalRequest,
     accept_subscription,
     decline_subscription,
@@ -49,6 +50,11 @@ urlpatterns = [
         "subscription_plan/deactivate/<int:id>",
         view=deactivate_subscription_plan,
         name="deactivate_subscription_plan",
+    ),
+    path(
+        "logs/",
+        view=SubscriptionLogs.as_view(),
+        name="subscription_logs",
     ),
     path(
         "list/",
