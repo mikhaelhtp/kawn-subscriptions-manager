@@ -52,11 +52,24 @@
                     href="{% url 'subscriptions:list_subscription'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-list"></i>
+                        <i class="fa-solid fa-table-list"></i>
                     </div>
                     <span class="nav-link-text ms-1">Subscriptions</span>
                 </a>
             </li>
+            {% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
+            {% url 'subscriptions:subscription_logs' as subscription_logs %}
+            <li class="nav-item">
+                <a class="nav-link  {% if request.get_full_path == subscription_logs %}active{% endif %}"
+                    href="{% url 'subscriptions:subscription_logs'%}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-box-archive"></i>
+                    </div>
+                    <span class="nav-link-popeo ms-1">Subscription Logs</span>
+                </a>
+            </li>
+            {% endif %}
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase font-weight-bolder">Settings</h6>
             </li>
@@ -67,7 +80,7 @@
                     href="{% url 'subscriptions:list_approval'%}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-table"></i>
+                        <i class="fa-solid fa-clipboard-check"></i>
                     </div>
                     <span class="nav-link-popeo ms-1">Approval Subscriptions</span>
                 </a>
