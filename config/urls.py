@@ -5,12 +5,18 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required, permission_required
+from kawn_subscriptions_manager.dashboard.views import SubscriptionLogsCreated, SubscriptionLogsModified
 
 urlpatterns = [
     path(
         "",
-        login_required(TemplateView.as_view(template_name="dashboard/dashboard.html")),
-        name="home",
+        login_required(SubscriptionLogsCreated.as_view()),
+        name="home1",
+    ),
+    path(
+        "",
+        login_required(SubscriptionLogsModified.as_view()),
+        name="home2",
     ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
