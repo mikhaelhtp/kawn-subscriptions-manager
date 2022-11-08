@@ -67,12 +67,12 @@ urlpatterns = [
         name="add_subscription",
     ),
     path(
-        "activate/<int:pk>",
+        "sales/activate/<int:pk>",
         view=SalesActivateSubscription.as_view(),
         name="sales_activate_subscription",
     ),
     path(
-        "deactivate/<int:id>",
+        "sales/deactivate/<int:id>",
         view=sales_deactivate_subscription,
         name="sales_deactivate_subscription",
     ),

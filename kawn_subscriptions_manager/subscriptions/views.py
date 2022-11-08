@@ -35,7 +35,6 @@ class ListSubscriptionPlan(
     model = SubscriptionPlan
     filterset_class = SubscriptionPlanFilter
     queryset = SubscriptionPlan.objects.all().order_by("id")
-    paginate_by = 10
 
     def get_context_data(self, object_list=None):
         subscription_plan_filter = SubscriptionPlanFilter(
@@ -44,16 +43,9 @@ class ListSubscriptionPlan(
         queryset = (
             object_list if object_list is not None else subscription_plan_filter.qs
         )
-        page_size = self.get_paginate_by(self.queryset)
-        paginator, page, queryset, is_paginated = self.paginate_queryset(
-            queryset, page_size
-        )
         context = {
             "subscription_plan_filter": subscription_plan_filter,
             "object_list": queryset,
-            "paginator": paginator,
-            "page_obj": page,
-            "is_paginated": is_paginated,
         }
         return context
 
@@ -139,70 +131,6 @@ def activate_subscription_plan(request, id):
     return redirect("subscriptions:list_subscription_plan")
 
 
-@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
-class ListApprovalRequest(ListView, SingleTableMixin, FilterView):
-    model = Subscription
-    queryset = Subscription.objects.filter(is_approved=None)
-
-    def get_template_names(self):
-        return "subscriptions/list_approval.html"
-
-
-# @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
-# class RejectedSubscription(DeleteView):
-#     model = Subscription
-#     success_url = reverse_lazy("subscriptions:list_approval")
-
-#     def delete(self, request, *args, **kwargs):
-#         messages.success(request, "Subscriptions have been deleted!")
-#         return super(RejectedSubscription, self).delete(request, *args, **kwargs)
-
-
-@allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
-def accept_subscription(request, id):
-    subscription = Subscription.objects.get(pk=id)
-    name_type = dict({"name":request.user.name, "type":request.user.type})
-    # subscription.active = False
-    if subscription.active is not True:
-        subscription.active = True
-        subscription.save()
-    else:
-        subscription.active = False
-        subscription.save()
-    subscription.is_approved = True
-    subscription.modified_by = name_type
-    subscription.save()
-    messages.success(request, "Subscriptions have been approved!")
-    return redirect("subscriptions:list_approval")
-
-
-@allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
-def decline_subscription(request, id):
-    subscription = Subscription.objects.get(pk=id)
-    name_type = dict({"name":request.user.name, "type":request.user.type})
-    # subscription.active = True
-    if subscription.active is not True:
-        subscription.active = False
-        subscription.save()
-    elif subscription.active is not False:
-        subscription.active == True
-        subscription.save()
-    subscription.is_approved = False
-    subscription.modified_by = name_type
-    subscription.save()
-    messages.success(request, "Subscriptions have been rejected!")
-    return redirect("subscriptions:list_approval")
-
-
-@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
-class SubscriptionLogs(ListView):
-    model = Subscription
-    queryset = Subscription.objects.all().order_by("-modified")
-
-    def get_template_names(self):
-        return "subscriptions/subscription_logs.html"
-
-
 class ListSubscription(
     ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
 ):
@@ -268,6 +196,41 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
         return redirect("subscriptions:list_subscription")
 
 
+@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
+class ActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
+    model = Subscription
+    success_message = _("Subscription successfully activated!")
+    fields = ["expires"]
+    crumbs = [
+        ("Subscription", reverse_lazy("subscriptions:list_subscription")),
+        ("Activate Subscription", reverse_lazy("subscriptions:activate_subscription")),
+    ]
+    template_name = "subscriptions/form_subscription.html"
+    success_url = reverse_lazy("subscriptions:list_subscription")
+
+    def form_valid(self, form):
+        subscription = form.save()
+        name_type = dict({"name":self.request.user.name, "type":self.request.user.type})
+        subscription.active = True
+        subscription.modified_by = name_type
+        subscription.is_approved = True
+        subscription.save()
+
+        return super().form_valid(form)
+
+
+@allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
+def deactivate_subscription(request, id):
+    subscription = Subscription.objects.get(pk=id)
+    name_type = dict({"name":request.user.name, "type":request.user.type})
+    subscription.active = False
+    subscription.modified_by = name_type
+    subscription.is_approved = False
+    subscription.save()
+    messages.success(request, "Subscriptions successfully deactivated!")
+    return redirect("subscriptions:list_subscription")
+
+
 @method_decorator([sales_only], name="dispatch")
 class SalesActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     model = Subscription
@@ -307,35 +270,64 @@ def sales_deactivate_subscription(request, id):
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
-class ActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
+class ListApprovalRequest(ListView, SingleTableMixin, FilterView):
     model = Subscription
-    success_message = _("Subscription successfully activated!")
-    fields = ["expires"]
-    crumbs = [
-        ("Subscription", reverse_lazy("subscriptions:list_subscription")),
-        ("Activate Subscription", reverse_lazy("subscriptions:activate_subscription")),
-    ]
-    template_name = "subscriptions/form_subscription.html"
-    success_url = reverse_lazy("subscriptions:list_subscription")
+    queryset = Subscription.objects.filter(is_approved=None)
 
-    def form_valid(self, form):
-        subscription = form.save()
-        name_type = dict({"name":self.request.user.name, "type":self.request.user.type})
-        subscription.active = True
-        subscription.modified_by = name_type
-        subscription.is_approved = True
-        subscription.save()
+    def get_template_names(self):
+        return "subscriptions/list_approval.html"
 
-        return super().form_valid(form)
+
+# @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
+# class RejectedSubscription(DeleteView):
+#     model = Subscription
+#     success_url = reverse_lazy("subscriptions:list_approval")
+
+#     def delete(self, request, *args, **kwargs):
+#         messages.success(request, "Subscriptions have been deleted!")
+#         return super(RejectedSubscription, self).delete(request, *args, **kwargs)
 
 
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
-def deactivate_subscription(request, id):
+def accept_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     name_type = dict({"name":request.user.name, "type":request.user.type})
-    subscription.active = False
+    # subscription.active = False
+    if subscription.active is not True:
+        subscription.active = True
+        subscription.save()
+    else:
+        subscription.active = False
+        subscription.save()
+    subscription.is_approved = True
     subscription.modified_by = name_type
-    subscription.is_approved = False
     subscription.save()
-    messages.success(request, "Subscriptions successfully deactivated!")
-    return redirect("subscriptions:list_subscription")
+    messages.success(request, "Subscriptions have been approved!")
+    return redirect("subscriptions:list_approval")
+
+
+@allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
+def decline_subscription(request, id):
+    subscription = Subscription.objects.get(pk=id)
+    name_type = dict({"name":request.user.name, "type":request.user.type})
+    # subscription.active = True
+    if subscription.active is not True:
+        subscription.active = False
+        subscription.save()
+    elif subscription.active is not False:
+        subscription.active == True
+        subscription.save()
+    subscription.is_approved = False
+    subscription.modified_by = name_type
+    subscription.save()
+    messages.success(request, "Subscriptions have been rejected!")
+    return redirect("subscriptions:list_approval")
+
+
+@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
+class SubscriptionLogs(ListView):
+    model = Subscription
+    queryset = Subscription.objects.all().order_by("-modified")
+
+    def get_template_names(self):
+        return "subscriptions/subscription_logs.html"
