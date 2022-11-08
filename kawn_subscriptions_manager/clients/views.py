@@ -33,7 +33,6 @@ class ListClient(
     ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
 ):
     model = Client
-    paginate_by = 10
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -47,17 +46,10 @@ class ListClient(
         client = ClientFilter(self.request.GET, queryset=self.get_queryset())
         queryset = object_list if object_list is not None else client.qs
         export_formats = ("csv", "tsv", "xlsx", "json")
-        page_size = self.paginate_by
-        paginator, page, queryset, is_paginated = self.paginate_queryset(
-            queryset, page_size
-        )
         context = {
             "myFilter": client,
             "object_list": queryset,
             "export_formats": export_formats,
-            "paginator": paginator,
-            "page_obj": page,
-            "is_paginated": is_paginated,
         }
         return context
 
@@ -121,7 +113,6 @@ class DeleteClient(SuccessMessageMixin, BaseBreadcrumbMixin, DeleteView):
 
 class ListOutletClient(ListBreadcrumbMixin, ListView):
     model = Outlet
-    paginate_by = 10
 
     def get_context_data(self, object_list=None):
         queryset = (
@@ -129,17 +120,10 @@ class ListOutletClient(ListBreadcrumbMixin, ListView):
             if object_list is not None
             else Outlet.objects.filter(client_id=self.kwargs["pk"]).order_by("-id")
         )
-        page_size = self.paginate_by
-        paginator, page, queryset, is_paginated = self.paginate_queryset(
-            queryset, page_size
-        )
         context = {
             "object_list": queryset,
             "name": Client.objects.filter(id=self.kwargs["pk"])[0],
             "pk": self.kwargs["pk"],
-            "paginator": paginator,
-            "page_obj": page,
-            "is_paginated": is_paginated,
         }
         return context
 
@@ -195,7 +179,6 @@ class ListOutlet(
     ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
 ):
     model = Outlet
-    paginate_by = 10
     exclude_columns = (
         "id",
         "display_name",
@@ -230,17 +213,10 @@ class ListOutlet(
         outlets = OutletFilter(self.request.GET, queryset=self.get_queryset())
         queryset = object_list if object_list is not None else outlets.qs
         export_formats = ("csv", "tsv", "xlsx", "json")
-        page_size = self.paginate_by
-        paginator, page, queryset, is_paginated = self.paginate_queryset(
-            queryset, page_size
-        )
         context = {
             "myFilter": outlets,
             "object_list": queryset,
             "export_formats": export_formats,
-            "paginator": paginator,
-            "page_obj": page,
-            "is_paginated": is_paginated,
         }
         return context
 

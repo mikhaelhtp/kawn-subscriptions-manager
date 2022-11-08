@@ -28,35 +28,53 @@
                                 aria-hidden="true">&times;</span></button>
                     </div>
                     {% endfor %}
-                    <div class="align-middle">
-                        <h5 class="font-weight-bolder">Clients</h5>
-                        <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info mt-2">Add Client</a>
-                    </div>
                     <div class="col-lg-12 mb-4 mt-2">
-                        <form method="get">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    {{ myFilter.form.name|as_crispy_field }}
-                                </div>
-                                <div class="col-md-2">
-                                    {{ myFilter.form.address|as_crispy_field }}
-                                </div>
-                                <div class="col-md-4 mt-4">
-                                    <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
-                                    <button class="btn bg-gradient-info mt-2 mb-0">
-                                        <a href="{% url 'clients:list_client' %}" class="text-white">
-                                            Clear Filter
-                                        </a>
-                                    </button>
+                        <div class="align-middle">
+                            <h5 class="font-weight-bolder">Clients</h5>
+                            <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info mt-2">Add Client</a>
+                            <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">
+                                Advanced Search
+                            </button>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Advanced Search</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="col-lg-12">
+                                                <form method="get">
+                                                    <div class="row">
+                                                        <div>
+                                                            {{ myFilter.form.name|as_crispy_field }}
+                                                        </div>
+                                                        <div>
+                                                            {{ myFilter.form.address|as_crispy_field }}
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn bg-secondary">
+                                                                <a href="{% url 'clients:list_client' %}" class="text-white">
+                                                                    Clear Filter
+                                                                </a>
+                                                            </button>
+                                                            <button class="btn bg-gradient-info" type="submit">Filter</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="card-body px-0 pt-0 pb-2">
+            <div class="card-body">
                 <div class="table-responsive p-0">
-                    <table class="table table-sm sortable align-items-center mb-0">
+                    <table class="table table-sm" id="table1">
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Client Name</th>
@@ -117,14 +135,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div class="card-footer row">
-                <hr>
-                <span class="col-lg-6">{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
-                <span class="col-lg-6 text-end text-sm">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                </span>
-                <hr>
             </div>
         </div>
     </div>

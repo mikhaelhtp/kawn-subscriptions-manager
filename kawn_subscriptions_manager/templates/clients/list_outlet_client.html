@@ -40,28 +40,10 @@
                         </div> 
                     </div>
                 </div>
-                <!-- <div class="pull-right">
-                    {% if export_formats %}
-                    {% for format in export_formats %}
-                    <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
-                        download <code>.{{ format }}</code>
-                    </a>
-                    {% endfor %}
-                    {% endif %}
-                </div> -->
             </div>
-            <div class="card-body px-0 pt-0 pb-2">
-                <!-- <div class="row">
-                    <div class="col">
-                        <form action="" method="get" class="mx-3 form-inline justify-content-center">
-                            {{ myFilter.form }}
-                            <button type="submit">Filter</button>
-                            <button><a href="{% url 'clients:list_outlet' %}">Clear Filter</a></button>
-                        </form>
-                    </div>
-                </div> -->
+            <div class="card-body">
                 <div class="table-responsive p-0">
-                    <table class="table table-sm sortable align-items-center mb-0">
+                    <table class="table table-sm" id="table1">
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Outlet Name</th>
@@ -110,14 +92,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div class="card-footer row">
-                <hr>
-                <span class="col-lg-6">{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
-                <span class="col-lg-6 text-end text-sm">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                </span>
-                <hr>
             </div>
         </div>
     </div>

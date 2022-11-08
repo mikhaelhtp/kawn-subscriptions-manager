@@ -82,7 +82,6 @@ class ListUsers(
     context_object_name = "results"
     template_name = "users/user_list.html"
     export_formats = ("csv", "tsv", "xlsx", "json")
-    paginate_by = 10
     exclude_columns = (
         "id",
         "password",

@@ -39,9 +39,9 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body px-0 pt-0 pb-2">
+            <div class="card-body">
                 <div class="table-responsive p-0">
-                    <table class="table table-sm sortable align-items-center mb-0">
+                    <table class="table table-sm" id="table1">
                         <thead>
                             <tr class="text-center">
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name
@@ -81,27 +81,22 @@
                                     <p class="text-xs mb-0">{{ user.type }}</p>
                                 </td>
                                 <td class="align-middle text-sm">
-                                    <a href="{% url 'users:edit_users' user.id %}" class="badge bg-warning">Edit</a>
-                                    <form class="d-inline" id="form-id" action="{% url 'users:delete_users' user.id %}"
-                                        method="post">
-                                        {% csrf_token %}
-                                        <input name="_method" type="hidden" value="Delete">
-                                        <button type="submit" class="badge btn-danger btn-flat show_confirm"
-                                            data-toggle="tooltip" title='Delete'>Delete</button>
-                                    </form>
+                                    <div class="d-inline">
+                                        <a href="{% url 'users:edit_users' user.id %}"
+                                            class="btn btn-sm bg-warning text-white text-xs" title='Edit'>Edit</a>
+                                        <form class="d-inline" id="form-id" action="{% url 'users:delete_users' user.id %}"
+                                            method="post">
+                                            {% csrf_token %}
+                                            <input name="_method" type="hidden" value="Delete">
+                                            <button type="submit" class="btn btn-sm btn-danger btn-flat show_confirm"
+                                                data-toggle="tooltip" title='Delete'>Delete</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                    <div class="card-footer row">
-                        <hr>
-                        <span class="col-lg-6">{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
-                        <span class="col-lg-6 text-end text-sm">
-                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                        </span>
-                        <hr>
-                    </div>
                 </div>
             </div>
         </div>

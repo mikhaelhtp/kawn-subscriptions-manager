@@ -29,6 +29,52 @@
               aria-hidden="true">&times;</span></button>
         </div>
         {% endfor %}
+        <div class="col-lg-12 mb-4 mt-2">
+          <div class="align-middle">
+            <h5 class="font-weight-bolder">Susbcription Plans</h5>
+            <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info mt-2">Add Susbcription Plans</a>
+            <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Advanced Search
+            </button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Advanced Search</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="col-lg-12">
+                      <form method="get">
+                        <div class="row">
+                          <div>
+                            {{ subscription_plan_filter.form.trial_unit|as_crispy_field }}
+                          </div>
+                          <div>
+                            {{ subscription_plan_filter.form.recurrence_unit|as_crispy_field }}
+                          </div>
+                          <div>
+                            {{ subscription_plan_filter.form.is_active|as_crispy_field }}
+                          </div>
+                          <div class="modal-footer">
+                            <button class="btn bg-secondary">
+                              <a href="{% url 'subscriptions:list_subscription_plan' %}" class="text-white">
+                                Clear Filter
+                              </a>
+                            </button>
+                            <button class="btn bg-gradient-info" type="submit">Filter</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% comment %}
         <div>
           <h5 class="font-weight-bolder">Susbcription Plans</h5>
           <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info mt-2">Add Subscriptions Plan</a>
@@ -56,10 +102,12 @@
             </div>
           </form>
         </div>
+        {% endcomment %}
+        
       </div>
-      <div class="card-body px-0 pt-0 pb-2">
+      <div class="card-body">
         <div class="table-responsive p-0">
-          <table class="table table-sm sortable align-items-center mb-0">
+          <table class="table table-sm" id="table1">
             <thead>
               <tr>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Name</th>
@@ -82,7 +130,7 @@
                   <p class="text-xs font-weight-bold mb-0 text-end">{{ data.trial_period|default_if_none:"-" }} Month</p>
                 </td>
                 <td data-sort="{{ data.price }}" class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-end">Rp {{ data.price|intcomma }}</p>
+                  <p class="text-xs font-weight-bold mb-0 text-end">Rp{{ data.price|intcomma }}</p>
                 </td>
                 <td class="px-4">
                   <p class="text-xs font-weight-bold mb-0">{{ data.get_trial_unit_display|default_if_none:"-" }}</p>
@@ -117,7 +165,7 @@
                     action="{% url 'subscriptions:delete_subscription_plan' data.id %}" method="post">
                     {% csrf_token %}
                     </a>
-                    <button type="submit" class="btn btn-sm bg-danger show_confirm text-white" data-toggle="tooltip"
+                    <button type="submit" class="btn btn-sm bg-danger show_confirm text-white mt-1" data-toggle="tooltip"
                       title='Delete'>Delete</button>
                   </form>
                   {% endif %}
@@ -126,18 +174,6 @@
               {% endfor %}
             </tbody>
           </table>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="row">
-          <hr>
-          <div class="col-md-6">
-            <span>{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
-          </div>
-          <div class="col-md-6 text-end">
-            <span class="text-sm">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-          </div>
-          <hr>
         </div>
       </div>
     </div>
