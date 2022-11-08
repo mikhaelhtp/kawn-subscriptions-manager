@@ -29,6 +29,52 @@
               aria-hidden="true">&times;</span></button>
         </div>
         {% endfor %}
+        
+        <div class="col-lg-12 mb-4 mt-2">
+          <div class="align-middle">
+            <h5 class="font-weight-bolder">Susbcription Plans</h5>
+            <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Advanced Search
+            </button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Advanced Search</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="col-lg-12">
+                      <form method="get">
+                        <div class="row">
+                          <div>
+                            {{ subscription_plan_filter.form.trial_unit|as_crispy_field }}
+                          </div>
+                          <div>
+                            {{ subscription_plan_filter.form.recurrence_unit|as_crispy_field }}
+                          </div>
+                          <div>
+                            {{ subscription_plan_filter.form.is_active|as_crispy_field }}
+                          </div>
+                          <div class="modal-footer">
+                            <button class="btn bg-secondary">
+                              <a href="{% url 'subscriptions:list_subscription_plan' %}" class="text-white">
+                                Clear Filter
+                              </a>
+                            </button>
+                            <button class="btn bg-gradient-info" type="submit">Filter</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% comment %}
         <div class="align-middle">
           <h5 class="font-weight-bolder">Susbcription Plans</h5>
         </div>
@@ -55,10 +101,12 @@
             </div>
           </form>
         </div>
+        {% endcomment %}
+
       </div>
-      <div class="card-body px-0 pt-0 pb-2">
+      <div class="card-body">
         <div class="table-responsive p-0">
-          <table class="table table-sm sortable align-items-center mb-0">
+          <table class="table table-sm" id="table1">
             <thead>
               <tr>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Name</th>
@@ -67,11 +115,11 @@
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Trial Unit</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Recurrence Period</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Recurrence Unit</th>
-                <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
               </tr>
             </thead>
             <tbody>
               {% for data in object_list %}
+              {% if data.is_active == True %}
               <tr>
                 <td data-sort="{{ data.name }}" class="px-4">
                   <p class="text-xs font-weight-bold mb-0">{{ data.name }}</p>
@@ -91,29 +139,11 @@
                 <td>
                   <p class="text-xs font-weight-bold mb-0 ps-3">{{ data.get_recurrence_unit_display|default_if_none:"-" }}</p>
                 </td>
-                <td>
-                  {% if data.is_active %}
-                  <p class="text-xs font-weight-bold mb-0 ps-3">Active</p>
-                  {% else %}
-                  <p class="text-xs font-weight-bold mb-0 ps-3">Not Active</p>
-                  {% endif %}
-                </td>
               </tr>
+              {% endif %}
               {% endfor %}
             </tbody>
           </table>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="row">
-          <hr>
-          <div class="col-md-6">
-            <span>{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=1 %}</span>
-          </div>
-          <div class="col-md-6 text-end">
-            <span class="text-sm">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-          </div>
-          <hr>
         </div>
       </div>
     </div>

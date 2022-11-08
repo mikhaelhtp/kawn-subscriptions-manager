@@ -70,7 +70,7 @@
                     {% endif%}
                   </td>
                   <td class="align-middle text-center px-4">
-                    {% if data.is_approved == None %}
+                    {% if data.active is not None and data.is_approved == None %}
                     <a href="{% url 'subscriptions:accept_subscription' data.id %}"
                       class="btn btn-sm bg-success text-white text-xs">Accept</a>
                     <a href="{% url 'subscriptions:decline_subscription' data.id %}" class="btn btn-sm bg-danger text-white text-xs">Decline</a>

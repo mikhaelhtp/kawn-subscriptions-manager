@@ -35,62 +35,64 @@
       <section class="section">
         <div class="card">
           <div class="card-body">
-            <table class="table table-sm " id="table1">
-              <thead>
-                <tr>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder">Outlet Name</th>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder">Subscription Plan</th>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Billing Date</th>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Expired Date</th>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
-                  <th class="text-center text-uppercase text-xs text-dark font-weight-bolder">Created by</th>
-                  <th class="text-center text-uppercase text-xs text-dark font-weight-bolder">Modified by</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for data in object_list %}
-                <tr>
-                  <td class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0">{{ data.outlet.name }}</p>
-                  </td>
-                  <td class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0">{{ data.subscriptionplan.name }}</p>
-                  </td>
-                  <td data-sort="{{ data.billing_date | date:'Ymd' }}" class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0 text-end">{{ data.billing_date|date:'D, d M Y' }}</p>
-                  </td>
-                  <td data-sort="{{ data.expires | date:'Ymd' }}" class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0 text-end">{{ data.expires|date:'D, d M Y' }}</p>
-                  </td>
-                  <td class="align-middle text-sm px-4">
-                    {% if data.active == True %}
-                    <p class="text-xs font-weight-bold mb-0 text-start">Active</p>
-                    {% else %}
-                    <p class="text-xs font-weight-bold mb-0 text-start">Not Active</p>
-                    {% endif%}
-                  </td>
-                  <td class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.created_by.name }} ({{ data.created_by.type }})
-                      <br/>Date: {{ data.created|date:"D, d M Y" }}
-                      <br/>Time: {{ data.created|time:"H.i" }}
-                    </p>
-                  </td>
-                  <td class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0 text-start">{{ data.modified_by.name }} ({{ data.modified_by.type }})
-                      <br/>Date: {{ data.modified|date:"D, d M Y" }}
-                      <br/>Time: {{ data.modified|time:"H.i" }}
-                    </p>
-                  </td>
-                </tr>
-                {% empty %}
-                <tr class="text-center">
-                  <td colspan="8" class="align-middle text-center text-sm">
-                    <p class="text-xs font-weight-bold mb-0">No Item in List</p>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+            <div class="table-responsive p-0">
+              <table class="table table-sm align-middle" id="table1">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-xs text-dark font-weight-bolder">Outlet Name</th>
+                    <th class="text-uppercase text-xs text-dark font-weight-bolder">Subscription Plan</th>
+                    <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Billing Date</th>
+                    <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Expired Date</th>
+                    <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
+                    <th class="text-center text-uppercase text-xs text-dark font-weight-bolder">Created by</th>
+                    <th class="text-center text-uppercase text-xs text-dark font-weight-bolder">Modified by</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for data in object_list %}
+                  <tr>
+                    <td class="align-middle text-sm px-4">
+                      <p class="text-xs font-weight-bold mb-0">{{ data.outlet.name }}</p>
+                    </td>
+                    <td class="align-middle text-sm px-4">
+                      <p class="text-xs font-weight-bold mb-0">{{ data.subscriptionplan.name }}</p>
+                    </td>
+                    <td data-sort="{{ data.billing_date | date:'Ymd' }}" class="align-middle text-sm px-4">
+                      <p class="text-xs font-weight-bold mb-0 text-end">{{ data.billing_date|date:'D, d M Y' }}</p>
+                    </td>
+                    <td data-sort="{{ data.expires | date:'Ymd' }}" class="align-middle text-sm px-4">
+                      <p class="text-xs font-weight-bold mb-0 text-end">{{ data.expires|date:'D, d M Y' }}</p>
+                    </td>
+                    <td class="align-middle text-sm px-4">
+                      {% if data.active == True %}
+                      <p class="text-xs font-weight-bold mb-0 text-start">Active</p>
+                      {% else %}
+                      <p class="text-xs font-weight-bold mb-0 text-start">Not Active</p>
+                      {% endif%}
+                    </td>
+                    <td class="align-middle text-sm px-4">
+                      <p class="text-xs font-weight-bold mb-0 text-start">{{ data.created_by.name }} ({{ data.created_by.type }})
+                        <br/>Date: {{ data.created|date:"D, d M Y" }}
+                        <br/>Time: {{ data.created|time:"H.i" }}
+                      </p>
+                    </td>
+                    <td class="align-middle text-sm px-4">
+                      <p class="text-xs font-weight-bold mb-0 text-start">{{ data.modified_by.name }} ({{ data.modified_by.type }})
+                        <br/>Date: {{ data.modified|date:"D, d M Y" }}
+                        <br/>Time: {{ data.modified|time:"H.i" }}
+                      </p>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr class="text-center">
+                    <td colspan="8" class="align-middle text-center text-sm">
+                      <p class="text-xs font-weight-bold mb-0">No Item in List</p>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>

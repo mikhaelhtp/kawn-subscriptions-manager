@@ -1,5 +1,6 @@
 {% load static %}
 {% load static i18n compress%}
+{% load django_tables2 %}
 
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl bg-white fixed position-sticky blur shadow-blur mt-4 left-auto top-1 z-index-sticky"
     id="navbarBlur" navbar-scroll="true">
@@ -28,67 +29,146 @@
                     </a>
                 </li>
                 <li class="nav-item px-3 d-flex align-items-center"></li>
-                <!-- <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                    {% if bell != 0 %}
+                    <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-bell text-danger cursor-pointer"></i>
+                    </a>
+                    {% else %}
                     <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-bell cursor-pointer"></i>
                     </a>
+                    {% endif %}
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                        <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="text-sm font-weight-normal mb-1">
-                                            <span class="font-weight-bold">New message</span> from Laur
-                                        </h6>
-                                        <p class="text-xs text-secondary mb-0 ">
-                                            <i class="fa fa-clock me-1"></i>
-                                            13 minutes ago
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                        <img src="../assets/img/small-logos/logo-spotify.svg"
-                                            class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="text-sm font-weight-normal mb-1">
-                                            <span class="font-weight-bold">New album</span> by Travis Scott
-                                        </h6>
-                                        <p class="text-xs text-secondary mb-0 ">
-                                            <i class="fa fa-clock me-1"></i>
-                                            1 day
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
                         <li>
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex py-1">
-                                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                            {% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
+                                {% for data in notif|slice:":5" %}
+                                <a class="dropdown-item border-radius-md" href="#">
+                                    <div class="d-flex py-1">
+                                        {% if data.active == False and data.is_approved == None %}
+                                        <div class="avatar avatar-sm bg-gradient-success  me-3  my-auto">
+                                            <i class="fa-regular fa-circle-check fa-lg"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="text-sm font-weight-normal mb-1">Request Activation</h6>
+                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                            <p class="text-xs text-secondary mb-0 ">
+                                                <i class="fa fa-clock me-1"></i>
+                                                {{ data.modified|date:"d M Y | H.i e" }}
+                                            </p>
+                                        </div>
+                                        {% elif data.active == True and data.is_approved == None %}
+                                        <div class="avatar avatar-sm bg-gradient-danger  me-3  my-auto">
+                                            <i class="fa-regular fa-circle-xmark fa-lg"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="text-sm font-weight-normal mb-1">Request Deactivation</h6>
+                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                            <p class="text-xs text-secondary mb-0 ">
+                                                <i class="fa fa-clock me-1"></i>
+                                                {{ data.modified|date:"d M Y | H.i e" }}
+                                            </p>
+                                        </div>
+                                        {% endif%}
                                     </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="text-sm font-weight-normal mb-1">
-                                            Payment successfully completed
-                                        </h6>
-                                        <p class="text-xs text-secondary mb-0 ">
-                                            <i class="fa fa-clock me-1"></i>
-                                            2 days
-                                        </p>
-                                    </div>
+                                </a>
+                                {% endfor %}
+                                {% if notif_empty == 0 %}
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="text-sm text-center font-weight-normal mb-1">No Notification</h6>
                                 </div>
-                            </a>
+                                {% endif %}
+                                <div class="text-center mt-2">
+                                    <a href="{% url 'subscriptions:list_approval'  %}" class="btn btn-sm btn-outline-dark text-xxs col-12">View All</a>
+                                </div>
+
+                            {% elif request.user.type == "SALES" %}
+                                {% for data in sales_notif|slice:":5" %}
+                                <a class="dropdown-item border-radius-md" href="#">
+                                    <div class="d-flex py-1">
+                                        {% if data.active == False and data.is_approved == True %}
+                                        <div class="avatar avatar-sm bg-gradient-success  me-3  my-auto">
+                                            <i class="fa-regular fa-circle-check fa-lg"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="text-sm font-weight-normal mb-1">Your Deactivation Request Has Been Accepted</h6>
+                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                            <p class="text-xs text-secondary mb-0 ">
+                                                <i class="fa fa-clock me-1"></i>
+                                                Accepted Time:  {{ data.modified|date:"d M Y | H.i e" }}
+                                            </p>
+                                        </div>
+                                        {% elif data.active == False and data.is_approved == False %}
+                                        <div class="avatar avatar-sm bg-gradient-danger  me-3  my-auto">
+                                            <i class="fa-regular fa-circle-xmark fa-lg"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="text-sm font-weight-normal mb-1">Your Activation Request Has Been Declined</h6>
+                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                            <p class="text-xs text-secondary mb-0 ">
+                                                <i class="fa fa-clock me-1"></i>
+                                                Declined Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                            </p>
+                                        </div>
+                                        {% elif data.active == True and data.is_approved == True %}
+                                        <div class="avatar avatar-sm bg-gradient-success  me-3  my-auto">
+                                            <i class="fa-regular fa-circle-check fa-lg"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="text-sm font-weight-normal mb-1">Your Activation Request Has Been Accepted</h6>
+                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                            <p class="text-xs text-secondary mb-0 ">
+                                                <i class="fa fa-clock me-1"></i>
+                                                Accepted Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                            </p>
+                                        </div>
+                                        {% elif data.active == True and data.is_approved == False %}
+                                        <div class="avatar avatar-sm bg-gradient-danger  me-3  my-auto">
+                                            <i class="fa-regular fa-circle-xmark fa-lg"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="text-sm font-weight-normal mb-1">Your Deactivation Request Has Been Declined</h6>
+                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                            <p class="text-xs text-secondary mb-0 ">
+                                                <i class="fa fa-clock me-1"></i>
+                                                Declined Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                            </p>
+                                        </div>
+                                        {% elif data.active == True and data.is_approved == None %}
+                                        <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                                            <i class="fa-regular fa-circle-question fa-lg"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="text-sm font-weight-normal mb-1">Your Deactivation Request is being Reviewed</h6>
+                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                            <p class="text-xs text-secondary mb-0 ">
+                                                <i class="fa fa-clock me-1"></i>
+                                                Requested Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                            </p>
+                                        </div>
+                                        {% elif data.active == False and data.is_approved == None %}
+                                        <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                                            <i class="fa-regular fa-circle-question fa-lg"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="text-sm font-weight-normal mb-1">Your Activation Request is being Reviewed</h6>
+                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                            <p class="text-xs text-secondary mb-0 ">
+                                                <i class="fa fa-clock me-1"></i>
+                                                Requested Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                            </p>
+                                        </div>
+                                        {% endif%}
+                                    </div>
+                                </a>
+                                {% endfor %}
+                                <div class="text-center mt-2">
+                                    <a href="{% url 'subscriptions:list_subscription'  %}" class="btn btn-sm btn-outline-dark col-12">View All</a>
+                                </div>
+                            {% endif %}
                         </li>
                     </ul>
-                </li> -->
+                </li>
             </ul>
         </div>
     </div>
