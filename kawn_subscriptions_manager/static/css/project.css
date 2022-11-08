@@ -15,3 +15,12 @@
 th:hover {
   cursor: pointer;
 }
+
+td {
+  white-space: normal !important; 
+  word-wrap: break-word;  
+}
+
+table {
+  table-layout: auto;
+}
