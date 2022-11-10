@@ -18,7 +18,7 @@ data = list_data
 try:
     cursor.executemany(query, data)
     connection.commit()
-    print("Data province stored to database")
+    # print("Data province stored to database")
 except connection.DatabaseError as message:
     if connection:
         connection.rollback()

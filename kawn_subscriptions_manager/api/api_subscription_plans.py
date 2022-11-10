@@ -27,7 +27,7 @@ data = list_data
 try:
     cursor.executemany(query, data)
     connection.commit()
-    print("Data subscriptions plan stored to database")
+    # print("Data subscriptions plan stored to database")
 except connection.DatabaseError as message:
     if connection:
         connection.rollback()
