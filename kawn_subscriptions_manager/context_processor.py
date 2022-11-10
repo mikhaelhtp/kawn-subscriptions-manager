@@ -7,5 +7,8 @@ def notification(request):
         "bell": Subscription.objects.filter(is_approved=None).count(),
         "notif": Subscription.objects.filter(is_approved=None).order_by("-modified"),
         "notif_empty": Subscription.objects.filter(is_approved=None).count(),
-        "sales_notif": Subscription.objects.filter(Q(active__isnull=False) | Q(is_approved__isnull=False)).order_by("-modified"),
+        "sales_notif": Subscription.objects.filter(
+                (Q(active__isnull=False) | Q(is_approved__isnull=False)), 
+                outlet__client__user_id=request.user.id
+            ).order_by("-modified"),
     }
