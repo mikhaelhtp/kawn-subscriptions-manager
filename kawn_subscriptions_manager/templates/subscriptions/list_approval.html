@@ -33,62 +33,69 @@
           </div>
         </div>
       </div>
-      <section class="section">
-        <div class="card">
-          <div class="card-body">
-            <table class="table table-sm " id="table1">
-              <thead>
-                <tr>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder">Outlet Name</th>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder">Subscription Plan</th>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Billing Date</th>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Expired Date</th>
-                  <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
-                  <th class="text-center text-uppercase text-xs text-dark font-weight-bolder">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for data in object_list %}
-                <tr>
-                  <td class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0">{{ data.outlet.name }}</p>
-                  </td>
-                  <td class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0">{{ data.subscriptionplan.name }}</p>
-                  </td>
-                  <td data-sort="{{ data.billing_date | date:'Ymd' }}" class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0 text-end">{{ data.billing_date|date:'D, d M Y' }}</p>
-                  </td>
-                  <td data-sort="{{ data.expires | date:'Ymd' }}" class="align-middle text-sm px-4">
-                    <p class="text-xs font-weight-bold mb-0 text-end">{{ data.expires|date:'D, d M Y' }}</p>
-                  </td>
-                  <td class="align-middle text-sm px-4">
-                    {% if data.active == True %}
-                    <p class="text-xs font-weight-bold mb-0 text-start">Request Deactivation</p>
-                    {% else %}
-                    <p class="text-xs font-weight-bold mb-0 text-start">Request Activation</p>
-                    {% endif%}
-                  </td>
-                  <td class="align-middle text-center px-4">
-                    {% if data.active is not None and data.is_approved == None %}
-                    <a href="{% url 'subscriptions:accept_subscription' data.id %}"
-                      class="btn btn-sm bg-success text-white text-xs">Accept</a>
-                    <a href="{% url 'subscriptions:decline_subscription' data.id %}" class="btn btn-sm bg-danger text-white text-xs">Decline</a>
-                    {% endif%}
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-sm " id="table1">
+            <thead>
+              <tr>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Outlet Name</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Subscription Plan</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Billing Date</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Expired Date</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
+                <th class="text-center text-uppercase text-xs text-dark font-weight-bolder">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for data in object_list %}
+              <tr>
+                <td class="align-middle text-sm px-4">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.outlet.name }}</p>
                 </td>
-                </tr>
-                {% empty %}
-                <tr class="text-center">
-                  <td colspan="8" class="align-middle text-center text-sm">
-                    <p class="text-xs font-weight-bold mb-0">No Item in List</p>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+                <td class="align-middle text-sm px-4">
+                  <p class="text-xs font-weight-bold mb-0">{{ data.subscriptionplan.name }}</p>
+                </td>
+                <td data-sort="{{ data.billing_date | date:'Ymd' }}" class="align-middle text-sm px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-end">{{ data.billing_date|date:'D, d M Y' }}</p>
+                </td>
+                <td data-sort="{{ data.expires | date:'Ymd' }}" class="align-middle text-sm px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-end">{{ data.expires|date:'D, d M Y' }}</p>
+                </td>
+                <td class="align-middle text-sm px-4">
+                  {% if data.active == True %}
+                  <p class="text-xs font-weight-bold mb-0 text-start">Request Deactivation</p>
+                  {% else %}
+                  <p class="text-xs font-weight-bold mb-0 text-start">Request Activation</p>
+                  {% endif%}
+                </td>
+                <td class="align-middle text-center px-4">
+                  <a href="{% url 'subscriptions:detail_approval' data.id %}" class="btn btn-sm bg-gradient-faded-info text-white text-xs">
+                    Detail
+                  </a>
+                </td>
+
+                {% comment %}
+                <td class="align-middle text-center px-4">
+                  {% if data.active is not None and data.is_approved == None %}
+                  <a href="{% url 'subscriptions:accept_subscription' data.id %}"
+                    class="btn btn-sm bg-success text-white text-xs">Accept</a>
+                  <a href="{% url 'subscriptions:decline_subscription' data.id %}" class="btn btn-sm bg-danger text-white text-xs">Decline</a>
+                  {% endif%}
+                </td>
+                {% endcomment %}
+
+              </tr>
+              {% empty %}
+              <tr class="text-center">
+                <td colspan="8" class="align-middle text-center text-sm">
+                  <p class="text-xs font-weight-bold mb-0">No Item in List</p>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-      </section>
+      </div>
     </div>
   </div>
 </div>

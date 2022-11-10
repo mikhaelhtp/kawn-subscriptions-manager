@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="d-flex flex-column h-100">
-                            <h5 class="font-weight-bolder">Form Outlet S</h5>
+                            <h5 class="font-weight-bolder">Form Outlet</h5>
                             <form method="post" id="outletForm" data-cities-url="{% url 'clients:ajax_load_cities' %}" novalidate>
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{{ next }}">

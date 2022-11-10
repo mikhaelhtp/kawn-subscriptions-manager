@@ -58,6 +58,19 @@
                 </a>
             </li>
             {% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
+            {% url 'subscriptions:detail_billing' as detail_billing %}
+            <li class="nav-item">
+                <a class="nav-link  {% if request.get_full_path == detail_billing %}active{% endif %}"
+                    href="{% url 'subscriptions:detail_billing'%}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <span class="nav-link-popeo ms-1">Billing</span>
+                </a>
+            </li>
+            {% endif %}
+            {% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
             {% url 'subscriptions:subscription_logs' as subscription_logs %}
             <li class="nav-item">
                 <a class="nav-link  {% if request.get_full_path == subscription_logs %}active{% endif %}"
