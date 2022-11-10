@@ -14,7 +14,9 @@ from kawn_subscriptions_manager.subscriptions.views import (
     ActivateSubscription,
     deactivate_subscription,
     SubscriptionLogs,
+    DetailBilling,
     ListApprovalRequest,
+    DetailApprovalRequest,
     accept_subscription,
     decline_subscription,
 )
@@ -87,9 +89,19 @@ urlpatterns = [
         name="deactivate_subscription",
     ),
     path(
+        "billing/detail/",
+        view=DetailBilling.as_view(),
+        name="detail_billing",
+    ),
+    path(
         "approval/list/",
         view=ListApprovalRequest.as_view(),
         name="list_approval",
+    ),
+    path(
+        "approval/detail/<int:pk>", 
+        DetailApprovalRequest.as_view(), 
+        name="detail_approval"
     ),
     path(
         "approval/accept/<int:id>",
