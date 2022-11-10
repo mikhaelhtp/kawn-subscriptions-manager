@@ -33,11 +33,33 @@ class SubscriptionPlan(models.Model):
         super(SubscriptionPlan, self).save()
 
 
+class Billing(models.Model):
+    class PaymentType(models.TextChoices):
+        BANK = "bank_transfer", "Bank Transfer"
+        GOPAY = "gopay", "Gopay"
+        ECHANEL = "echannel", "Echanel"
+
+    class Status(models.TextChoices):
+        CANCELED = "canceled", "Canceled"
+        UNPAID = "unpaid", "Unpaid"
+        PAID = "paid", "Paid"
+
+    current_plan = models.IntegerField(null=True)
+    choosen_plan = models.IntegerField(null=True)
+    price = models.DecimalField(decimal_places=2, max_digits=12, null=True)
+    payment_type = models.CharField(max_length=255, choices=PaymentType.choices)
+    status = models.CharField(max_length=255, choices=Status.choices, default=Status.PAID)
+    created = models.DateTimeField(auto_now_add=True)
+    deleted = models.DateTimeField(null=True)
+    modified = models.DateTimeField(auto_now=True)
+
+
 class Subscription(models.Model):
     outlet = models.ForeignKey(Outlet, on_delete=models.CASCADE, null=True)
     subscriptionplan = models.ForeignKey(
         SubscriptionPlan, on_delete=models.CASCADE, null=True
     )
+    billing = models.ForeignKey(Billing, on_delete=models.CASCADE, null=True)
     expires = models.DateTimeField(null=True)
     billing_date = models.DateTimeField(null=True)
     cancelled = models.BooleanField(null=True)
@@ -56,3 +78,6 @@ class Subscription(models.Model):
 
         if self.expires < timezone.now():
             raise ValidationError("Expires date must be greater than today.")
+
+
+
