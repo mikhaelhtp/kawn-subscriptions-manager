@@ -134,7 +134,7 @@ class ListOutletClient(ListBreadcrumbMixin, ListView):
             return ["clients/list_outlet_client.html"]
 
 
-class AddClientOutlet(CreateView):
+class AddOutletClient(CreateView):
     model = Outlet
     form_class = OutletClientForm
     template_name = "clients/sales/form_outlet.html"
@@ -179,27 +179,7 @@ class ListOutlet(
     ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
 ):
     model = Outlet
-    exclude_columns = (
-        "id",
-        "display_name",
-        "subscription_plan_read",
-        "postal_code",
-        "outlet_code",
-        "outlet_image",
-        "is_expired",
-        "transaction_code_prefix",
-        "archieved",
-        "deleted",
-        "taxes",
-        "gratuity",
-        "enable_dashboard",
-        "branch_id",
-        "device_users",
-        "created",
-        "modified",
-        "province",
-        "city",
-    )
+    paginate_by = 10
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -210,11 +190,11 @@ class ListOutlet(
             return Outlet.objects.all().order_by("-id")
 
     def get_context_data(self, object_list=None):
-        outlets = OutletFilter(self.request.GET, queryset=self.get_queryset())
-        queryset = object_list if object_list is not None else outlets.qs
+        outlet = OutletFilter(self.request.GET, queryset=self.get_queryset())
+        queryset = object_list if object_list is not None else outlet.qs
         export_formats = ("csv", "tsv", "xlsx", "json")
         context = {
-            "myFilter": outlets,
+            "myFilter": outlet,
             "object_list": queryset,
             "export_formats": export_formats,
         }
@@ -229,7 +209,6 @@ class ListOutlet(
 
 class AddOutlet(BaseBreadcrumbMixin, CreateView):
     model = Outlet
-    # form_class = OutletForm
     template_name = "clients/form_outlet.html"
     crumbs = [
         ("Outlet", reverse_lazy("clients:list_outlet")),
@@ -241,9 +220,6 @@ class AddOutlet(BaseBreadcrumbMixin, CreateView):
             return OutletForm(data=self.request.POST, user=self.request.user)
         else:
             return OutletForm(user=self.request.user)
-
-    # def get_form_class(self):
-    #     return OutletForm(user=self.request.user)
 
     def form_valid(self, form):
         messages.success(self.request, "Outlet successfully added")
@@ -264,7 +240,6 @@ class UpdateOutlet(BaseBreadcrumbMixin, UpdateView):
     model = Outlet
     template_name = "clients/form_outlet.html"
     form_class = OutletForm
-    # success_url = reverse_lazy("clients:list_outlet")
     crumbs = [
         ("Outlet", reverse_lazy("clients:list_outlet")),
         ("Update Outlet", reverse_lazy("clients:update_outlet")),
