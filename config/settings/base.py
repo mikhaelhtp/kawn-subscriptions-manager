@@ -47,9 +47,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "kawn_subscriptions_manager",
         "USER": "postgres",
-        "PASSWORD": "root",
+        "PASSWORD": "iloveyou3000",
         "HOST": "localhost",
-        "PORT": "5433",
+        "PORT": "5432",
     }
 }
 
@@ -93,6 +93,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "phonenumber_field",
     "view_breadcrumbs",
+    "betterforms"
     # "django_celery_beat",
 ]
 
