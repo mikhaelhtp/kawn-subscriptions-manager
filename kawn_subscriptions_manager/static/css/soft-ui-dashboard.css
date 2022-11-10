@@ -2466,6 +2466,7 @@ progress {
   --bs-table-hover-color: #67748e;
   --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
   width: 100%;
+  table-layout: fixed;
   margin-bottom: 1rem;
   color: var(--bs-table-color);
   vertical-align: top;
@@ -2481,6 +2482,9 @@ progress {
 
 .table>tbody {
   vertical-align: inherit;
+  table-layout: fixed;
+  word-wrap: break-word;
+  width: 100%;
 }
 
 .table>thead {
