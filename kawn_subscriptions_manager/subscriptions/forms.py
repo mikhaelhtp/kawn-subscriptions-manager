@@ -6,16 +6,26 @@ from django.forms import ModelForm
 from betterforms.multiform import MultiModelForm
 
 from kawn_subscriptions_manager.clients.models import Client, Outlet
-from .models import SubscriptionPlan, Subscription, Billing
+from .models import SubscriptionPlan, Subscription, Billing, OrderPayment, SubscriptionDetail
 
 today = datetime.date.today()
 tomorow = datetime.date.today() + datetime.timedelta(days=1)
 
 
+class OrderPaymentForm(ModelForm):
+    class Meta:
+        model = OrderPayment
+        fields = ["payment_type", "amount"]
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(OrderPaymentForm, self).__init__(*args, **kwargs)
+
+
 class BillingForm(ModelForm):
     class Meta:
         model = Billing
-        fields = ["price", "payment_type"]
+        fields = ["price"]
     
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
@@ -59,10 +69,12 @@ class AddSubscriptionForm(ModelForm):
         self.fields["subscriptionplan"].choices = SUBPLAN
         self.fields["subscriptionplan"].label = "Subscription Plan"
 
+
 class SubscriptionMultiForm(MultiModelForm):
     form_classes = {
         "subscription_form": AddSubscriptionForm,
         "billing_form": BillingForm,
+        "order_payment": OrderPaymentForm,
     }
 
     def get_form_args_kwargs(self, key, args, kwargs):
@@ -76,7 +88,7 @@ class SubscriptionMultiForm(MultiModelForm):
 class ActivateBillingForm(ModelForm):
     class Meta:
         model = Billing
-        fields = ["price", "payment_type"]
+        fields = ["price"]
     
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")

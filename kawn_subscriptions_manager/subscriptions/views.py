@@ -212,7 +212,7 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
 
 
 @method_decorator([sales_only], name="dispatch")
-class ActivateSubscription(BaseBreadcrumbMixin, CreateView):
+class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
     model = Subscription
     form_class = ActivateSubscriptionMultiForm
     crumbs = [
@@ -244,7 +244,7 @@ class ActivateSubscription(BaseBreadcrumbMixin, CreateView):
         billing.save()
         top_billing = Billing.objects.order_by("-id")[0]
         subscription = form["activate_subscription_form"].save(commit=False)
-        subscription.outlet = self.kwargs["pk"]
+        subscription.outlet_id = self.kwargs["pk"]
         subscription.billing_id = top_billing.id
         subscription.modified_by = name_type
         subscription.id = top.id + 1
@@ -364,7 +364,7 @@ class DetailApprovalRequest(ListView):
         queryset = (
             object_list
             if object_list is not None
-            else Subscription.objects.filter(id=self.kwargs["pk"]).order_by("-id")
+            else Subscription.objects.filter(id=self.kwargs["pk"])
         )
         context = {
             "object_list": queryset,

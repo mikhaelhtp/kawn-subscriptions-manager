@@ -5,6 +5,7 @@ from email.policy import default
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
+import uuid
 
 from kawn_subscriptions_manager.clients.models import Outlet
 
@@ -33,21 +34,46 @@ class SubscriptionPlan(models.Model):
         super(SubscriptionPlan, self).save()
 
 
-class Billing(models.Model):
+class OrderPayment(models.Model):
+
     class PaymentType(models.TextChoices):
         BANK = "bank_transfer", "Bank Transfer"
         GOPAY = "gopay", "Gopay"
         ECHANEL = "echannel", "Echanel"
 
     class Status(models.TextChoices):
+        EXPIRED = "expired", "Expired"
         CANCELED = "canceled", "Canceled"
         UNPAID = "unpaid", "Unpaid"
         PAID = "paid", "Paid"
 
+    code = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
+    payment_type = models.CharField(max_length=255, choices=PaymentType.choices)
+    amount =  models.DecimalField(decimal_places=2, max_digits=12, null=True)
+    status = models.CharField(max_length=255, choices=Status.choices, default=Status.PAID)
+    created = models.DateTimeField(auto_now_add=True)
+    deleted = models.DateTimeField(null=True)
+    modified = models.DateTimeField(auto_now=True)
+
+class SubscriptionDetail(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    deleted = models.DateTimeField(null=True)
+    modified = models.DateTimeField(auto_now=True)
+    outlet = models.IntegerField(null=True)
     current_plan = models.IntegerField(null=True)
     choosen_plan = models.IntegerField(null=True)
+
+
+class Billing(models.Model):
+
+    class Status(models.TextChoices):
+        CANCELED = "canceled", "Canceled"
+        UNPAID = "unpaid", "Unpaid"
+        PAID = "paid", "Paid"
+
+    subscriptiondetail = models.ForeignKey(SubscriptionDetail, on_delete=models.CASCADE, null=True)
+    orderpayment = models.ForeignKey(OrderPayment, on_delete=models.CASCADE, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=12, null=True)
-    payment_type = models.CharField(max_length=255, choices=PaymentType.choices)
     status = models.CharField(max_length=255, choices=Status.choices, default=Status.PAID)
     created = models.DateTimeField(auto_now_add=True)
     deleted = models.DateTimeField(null=True)
