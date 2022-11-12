@@ -6,7 +6,13 @@ from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import UpdateView, CreateView, ListView, DeleteView, TemplateView
+from django.views.generic import (
+    UpdateView,
+    CreateView,
+    ListView,
+    DeleteView,
+    TemplateView,
+)
 from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
@@ -15,8 +21,18 @@ from django.http import JsonResponse
 
 from json import dumps
 
-from .models import SubscriptionPlan, Subscription, Billing
-from .forms import AddSubscriptionForm, BillingForm, SubscriptionMultiForm, ActivateSubscriptionForm, ActivateSubscriptionMultiForm
+from .models import (
+    SubscriptionPlan,
+    Subscription,
+    Billing,
+    OrderPayment,
+    SubscriptionDetail,
+)
+from .forms import (
+    SubscriptionMultiForm,
+    ActivateSubscriptionForm,
+    ActivateSubscriptionMultiForm,
+)
 from .filters import (
     SubscriptionPlanFilter,
     SubscriptionFilter,
@@ -191,16 +207,30 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subscriptionplan"] = dumps(list(SubscriptionPlan.objects.values('id', 'price')))
+        context["subscriptionplan"] = dumps(
+            list(SubscriptionPlan.objects.values("id", "price"))
+        )
         return context
 
     def form_valid(self, form):
         messages.success(self.request, "Subscriptions successfully added!")
         top = Subscription.objects.order_by("-id")[0]
-        name_type = dict({"name":self.request.user.name, "type":self.request.user.type})
+        name_type = dict(
+            {"name": self.request.user.name, "type": self.request.user.type}
+        )
+        order_payment = form["order_payment_form"].save(commit=False)
+        order_payment.save()
+        top_order_payment = OrderPayment.objects.order_by("-id")[0]
+        subscription_detail = SubscriptionDetail(
+            outlet = form["subscription_form"].cleaned_data["outlet"].id,
+            current_plan=form["subscription_form"].cleaned_data["subscriptionplan"].id,
+            choosen_plan=form["subscription_form"].cleaned_data["subscriptionplan"].id,
+        )
+        subscription_detail.save()
+        top_subscription_detail = SubscriptionDetail.objects.order_by("-id")[0]
         billing = form["billing_form"].save(commit=False)
-        billing.current_plan = form["subscription_form"].cleaned_data["subscriptionplan"].id
-        billing.choosen_plan = form["subscription_form"].cleaned_data["subscriptionplan"].id
+        billing.orderpayment_id = top_order_payment.id
+        billing.subscriptiondetail_id = top_subscription_detail.id
         billing.save()
         top_billing = Billing.objects.order_by("-id")[0]
         subscription = form["subscription_form"].save(commit=False)
@@ -231,16 +261,24 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subscriptionplan"] = dumps(list(SubscriptionPlan.objects.values('id', 'price')))
+        context["subscriptionplan"] = dumps(
+            list(SubscriptionPlan.objects.values("id", "price"))
+        )
         return context
 
     def form_valid(self, form):
         messages.success(self.request, "Subscriptions successfully activated!")
         top = Subscription.objects.order_by("-id")[0]
-        name_type = dict({"name":self.request.user.name, "type":self.request.user.type})
+        name_type = dict(
+            {"name": self.request.user.name, "type": self.request.user.type}
+        )
         billing = form["billing_form"].save(commit=False)
-        billing.current_plan = form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
-        billing.choosen_plan = form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+        billing.current_plan = (
+            form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+        )
+        billing.choosen_plan = (
+            form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+        )
         billing.save()
         top_billing = Billing.objects.order_by("-id")[0]
         subscription = form["activate_subscription_form"].save(commit=False)
@@ -266,7 +304,9 @@ class ActivateSubscriptionGagal(SuccessMessageMixin, BaseBreadcrumbMixin, Update
 
     def form_valid(self, form):
         subscription = form.save()
-        name_type = dict({"name":self.request.user.name, "type":self.request.user.type})
+        name_type = dict(
+            {"name": self.request.user.name, "type": self.request.user.type}
+        )
         subscription.active = True
         subscription.modified_by = name_type
         subscription.is_approved = True
@@ -278,7 +318,7 @@ class ActivateSubscriptionGagal(SuccessMessageMixin, BaseBreadcrumbMixin, Update
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def deactivate_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
-    name_type = dict({"name":request.user.name, "type":request.user.type})
+    name_type = dict({"name": request.user.name, "type": request.user.type})
     subscription.active = False
     subscription.modified_by = name_type
     subscription.is_approved = False
@@ -290,7 +330,11 @@ def deactivate_subscription(request, id):
 @method_decorator([sales_only], name="dispatch")
 class SalesActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     model = Subscription
-    success_message = _(mark_safe("Subscription activation request has been successful! <br/>Please wait for the activation process."))
+    success_message = _(
+        mark_safe(
+            "Subscription activation request has been successful! <br/>Please wait for the activation process."
+        )
+    )
     # fields = ["expires"]
     form_class = ActivateSubscriptionForm
     crumbs = [
@@ -308,9 +352,11 @@ class SalesActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, Update
     #     kwargs["request"] = self.request
 
     #     return kwargs
-    
+
     def form_valid(self, form):
-        name_type = dict({"name":self.request.user.name, "type":self.request.user.type})
+        name_type = dict(
+            {"name": self.request.user.name, "type": self.request.user.type}
+        )
         subscription = form.save()
         subscription.active = False
         subscription.modified_by = name_type
@@ -323,12 +369,17 @@ class SalesActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, Update
 @allowed_users(allowed_roles=["SALES"])
 def sales_deactivate_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
-    name_type = dict({"name":request.user.name, "type":request.user.type})
+    name_type = dict({"name": request.user.name, "type": request.user.type})
     subscription.active = True
     subscription.modified_by = name_type
     subscription.is_approved = ""
     subscription.save()
-    messages.success(request, mark_safe("Subscription deactivation request has been successful! <br/>Please wait for the deactivation process."))
+    messages.success(
+        request,
+        mark_safe(
+            "Subscription deactivation request has been successful! <br/>Please wait for the deactivation process."
+        ),
+    )
     return redirect("subscriptions:list_subscription")
 
 
@@ -351,7 +402,7 @@ class DetailBilling(ListView):
     #     billing_id = self.request.billing.id
     #     subscription = Subscription.objects.filter(billing_id=billing_id).values_list("id")
     #     billing = Billing.objects.filter(id__in=subscription)
-        
+
     #     return Subscription.objects.filter(billing_id__in=billing).order_by("-id")
 
 
@@ -372,7 +423,7 @@ class DetailApprovalRequest(ListView):
             "pk": self.kwargs["pk"],
         }
         return context
-    
+
     def get_template_names(self):
         return "subscriptions/detail_approval.html"
 
@@ -380,7 +431,7 @@ class DetailApprovalRequest(ListView):
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def accept_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
-    name_type = dict({"name":request.user.name, "type":request.user.type})
+    name_type = dict({"name": request.user.name, "type": request.user.type})
     # subscription.active = False
     if subscription.active is not True:
         subscription.active = True
@@ -398,7 +449,7 @@ def accept_subscription(request, id):
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
 def decline_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
-    name_type = dict({"name":request.user.name, "type":request.user.type})
+    name_type = dict({"name": request.user.name, "type": request.user.type})
     # subscription.active = True
     if subscription.active is not True:
         subscription.active = False

@@ -74,7 +74,7 @@ class SubscriptionMultiForm(MultiModelForm):
     form_classes = {
         "subscription_form": AddSubscriptionForm,
         "billing_form": BillingForm,
-        "order_payment": OrderPaymentForm,
+        "order_payment_form": OrderPaymentForm,
     }
 
     def get_form_args_kwargs(self, key, args, kwargs):
