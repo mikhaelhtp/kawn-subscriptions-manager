@@ -29,9 +29,7 @@ from .filters import OutletFilter, ClientFilter
 
 
 # CLIENT
-class ListClient(
-    ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
-):
+class ListClient(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
     model = Client
 
     def get_queryset(self):
@@ -121,6 +119,7 @@ class ListOutletClient(ListBreadcrumbMixin, ListView):
             else Outlet.objects.filter(client_id=self.kwargs["pk"]).order_by("-id")
         )
         context = {
+            # "myFilter": outlets,
             "object_list": queryset,
             "name": Client.objects.filter(id=self.kwargs["pk"])[0],
             "pk": self.kwargs["pk"],
@@ -183,9 +182,8 @@ class ListOutlet(
 
     def get_queryset(self):
         user_id = self.request.user.id
-        client_id = Client.objects.filter(user_id=user_id).values_list("id")
         if self.request.user.type == "SALES":
-            return Outlet.objects.filter(client_id__in=client_id).order_by("-id")
+            return Outlet.objects.filter(client__user=user_id).order_by("-id")
         else:
             return Outlet.objects.all().order_by("-id")
 
@@ -244,12 +242,6 @@ class UpdateOutlet(BaseBreadcrumbMixin, UpdateView):
         ("Outlet", reverse_lazy("clients:list_outlet")),
         ("Update Outlet", reverse_lazy("clients:update_outlet")),
     ]
-
-    # def get_form(self):
-    #     if self.request.method == "POST":
-    #         return OutletForm(data=self.request.POST, user=self.request.user)
-    #     else:
-    #         return OutletForm(user=self.request.user)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
