@@ -5,12 +5,17 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required, permission_required
-from kawn_subscriptions_manager.dashboard.views import SubscriptionLogs
+from kawn_subscriptions_manager.dashboard.views import SubscriptionLogsCreated, SubscriptionLogsModified
 
 urlpatterns = [
     path(
         "",
-        login_required(SubscriptionLogs.as_view()),
+        login_required(SubscriptionLogsCreated.as_view()),
+        name="home",
+    ),
+    path(
+        "/",
+        login_required(SubscriptionLogsModified.as_view()),
         name="home",
     ),
     # Django Admin, use {% url 'admin:index' %}
@@ -20,7 +25,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     path("subscriptions/", include("kawn_subscriptions_manager.subscriptions.urls")),
-    path("dashboard/", include("kawn_subscriptions_manager.dashboard.urls")),
+    # path("dashboard/", include("kawn_subscriptions_manager.dashboard.urls")),
     path("clients/", include("kawn_subscriptions_manager.clients.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
