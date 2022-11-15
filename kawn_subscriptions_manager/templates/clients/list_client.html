@@ -1,12 +1,9 @@
 {% extends "base.html" %}
 
-{% block menu-title %}List Outlet Client{% endblock %}
-
 {% load bootstrap_pagination %}
 {% load crispy_forms_tags %}
-{% load django_tables2 %}
-{% load crispy_forms_tags %}
 
+{% block menu-title %}List Outlet Client{% endblock %}
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
@@ -115,7 +112,7 @@
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Twitter</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Instagram</th>
                                 <th class="text-uppercase text-xxs text-dark font-weight-bolder">Sales Name</th>
-                                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder">Action</th>
+                                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder" style="width: 15%;">Action</th>
                             </tr>
                         </thead>
                         <tbody>

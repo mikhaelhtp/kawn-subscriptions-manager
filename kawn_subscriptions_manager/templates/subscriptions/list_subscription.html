@@ -93,13 +93,13 @@
                   {% for data in object_list %}
                   <tr>
                     <td class="align-middle text-sm px-4">
-                      <p class="text-xs font-weight-bold mb-0">{{ data.outlet.name }}</p>
+                      <p class="text-xs font-weight-bold mb-0">{{ data.outlet.name }} </p>
                     </td>
                     <td class="align-middle text-sm px-4">
                       <p class="text-xs font-weight-bold mb-0">{{ data.subscriptionplan.name }}</p>
                     </td>
                     <td data-sort="{{ data.billing_date | date:'Ymd' }}" class="align-middle text-sm px-4">
-                      <p class="text-xs font-weight-bold mb-0 text-end">{{ data.billing_date|date:'D, d M Y' }}</p>
+                      <p class="text-xs font-weight-bold mb-0 text-end">{{ data.billing_date|default_if_none:"-"|date:'D, d M Y' }}</p>
                     </td>
                     <td data-sort="{{ data.expires | date:'Ymd' }}" class="align-middle text-sm px-4">
                       <p class="text-xs font-weight-bold mb-0 text-end">{{ data.expires|date:'D, d M Y' }}</p>

@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-{% load static %}
+
 {% load bootstrap_pagination %}
 {% load humanize %}
 {% load crispy_forms_tags %}
 
 {% block menu-title %}List Subscriptions Plan{% endblock %}
 {% block listsubscriptionplan-active %}active{% endblock %}
-
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
@@ -111,11 +110,11 @@
             <thead>
               <tr>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Name</th>
-                <th class="text-uppercase text-xs text-dark font-weight-bolder">Trial Period</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Trial Period</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Price</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Trial Unit</th>
-                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Recurrence Period</th>
-                <th class="text-uppercase text-xs text-dark font-weight-bolder">Recurrence Unit</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Rec. Period</th>
+                <th class="text-uppercase text-xs text-dark font-weight-bolder">Rec. Unit</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
                 <th class="text-uppercase text-xs text-dark font-weight-bolder text-center" style="width: 15%;">Action</th>
               </tr>
