@@ -174,11 +174,8 @@ class UpdateOutletClient(UpdateView):
         return redirect("clients:list_outlet_client", pk=outlet_id.client_id)
 
 
-class ListOutlet(
-    ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
-):
+class ListOutlet(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
     model = Outlet
-    paginate_by = 10
 
     def get_queryset(self):
         user_id = self.request.user.id
