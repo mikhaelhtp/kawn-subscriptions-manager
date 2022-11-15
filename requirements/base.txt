@@ -30,3 +30,6 @@ django-widget-tweaks
 django-bootstrap5
 django-bootstrap4
 django-view-breadcrumbs
+django-celery
+crispy-bootstrap5
+django-betterforms
