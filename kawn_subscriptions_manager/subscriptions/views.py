@@ -18,7 +18,7 @@ from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin
-from django.http import JsonResponse
+from itertools import chain
 
 from json import dumps
 
@@ -242,7 +242,7 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
         return redirect("subscriptions:list_subscription")
 
 
-@method_decorator([sales_only], name="dispatch")
+@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
 class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
     model = Subscription
     form_class = ActivateSubscriptionMultiForm
