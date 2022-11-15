@@ -30,7 +30,7 @@ from .models import (
     SubscriptionDetail,
 )
 from .forms import (
-    SubscriptionMultiForm,
+    AddSubscriptionMultiForm,
     ActivateSubscriptionForm,
     ActivateSubscriptionMultiForm,
 )
@@ -193,7 +193,7 @@ class ListSubscription(
 @method_decorator([sales_only], name="dispatch")
 class AddSubscription(BaseBreadcrumbMixin, CreateView):
     model = Subscription
-    form_class = SubscriptionMultiForm
+    form_class = AddSubscriptionMultiForm
     crumbs = [
         ("Subscription", reverse_lazy("subscriptions:list_subscription")),
         ("Add Subscription", reverse_lazy("subscriptions:add_subscription")),
@@ -219,22 +219,22 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
         name_type = dict(
             {"name": self.request.user.name, "type": self.request.user.type}
         )
-        order_payment = form["order_payment_form"].save(commit=False)
+        order_payment = form["add_order_payment_form"].save(commit=False)
         order_payment.save()
         top_order_payment = OrderPayment.objects.order_by("-id")[0]
         subscription_detail = SubscriptionDetail(
-            outlet = form["subscription_form"].cleaned_data["outlet"].id,
-            current_plan=form["subscription_form"].cleaned_data["subscriptionplan"].id,
-            choosen_plan=form["subscription_form"].cleaned_data["subscriptionplan"].id,
+            outlet = form["add_subscription_form"].cleaned_data["outlet"].id,
+            current_plan=form["add_subscription_form"].cleaned_data["subscriptionplan"].id,
+            choosen_plan=form["add_subscription_form"].cleaned_data["subscriptionplan"].id,
         )
         subscription_detail.save()
         top_subscription_detail = SubscriptionDetail.objects.order_by("-id")[0]
-        billing = form["billing_form"].save(commit=False)
+        billing = form["add_billing_form"].save(commit=False)
         billing.orderpayment_id = top_order_payment.id
         billing.subscriptiondetail_id = top_subscription_detail.id
         billing.save()
         top_billing = Billing.objects.order_by("-id")[0]
-        subscription = form["subscription_form"].save(commit=False)
+        subscription = form["add_subscription_form"].save(commit=False)
         subscription.billing_id = top_billing.id
         subscription.created_by = name_type
         subscription.id = top.id + 1
@@ -246,24 +246,48 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
 class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
     model = Subscription
     form_class = ActivateSubscriptionMultiForm
+    template_name = "subscriptions/form_subscription.html"
     crumbs = [
         ("Subscription", reverse_lazy("subscriptions:list_subscription")),
         ("Activate Subscription", reverse_lazy("subscriptions:add_subscription")),
     ]
-    template_name = "subscriptions/form_subscription.html"
-
+    
     def get_form_kwargs(self):
         outlet = (Subscription.objects.get(id=self.kwargs["pk"])).outlet
         kwargs = super(ActivateSubscription, self).get_form_kwargs()
-        kwargs["request"] = self.request
         kwargs["outlet_id"] = outlet
+        print(outlet)
         kwargs.update(instance={
             'activate_subscription_form': self.object,
             'activate_billing_form': self.object.billing,
-            'activate_order_payment_form': self.object.billing.orderpayment,
         })
 
         return kwargs
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Subscriptions successfully added!")
+        name_type = dict(
+            {"name": self.request.user.name, "type": self.request.user.type}
+        )
+        billing_id = (Subscription.objects.get(id=self.kwargs["pk"])).billing
+        order_payment_id = (Billing.objects.get(id=billing_id.id)).orderpayment
+        order_payment = OrderPayment.objects.get(pk=order_payment_id.id)
+        order_payment.payment_type=form["activate_order_payment_form"].cleaned_data["payment_type"]
+        order_payment.amount=form["activate_order_payment_form"].cleaned_data["amount"]
+        order_payment.save()
+        subscription_detail_id = (Billing.objects.get(id=billing_id.id)).subscriptiondetail
+        subscription_detail = SubscriptionDetail.objects.get(pk=subscription_detail_id.id)
+        subscription_detail.current_plan=form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+        subscription_detail.choosen_plan=form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+        subscription_detail.save()
+        billing = form["activate_billing_form"].save(commit=False)
+        billing.save()
+        subscription = form["activate_subscription_form"].save(commit=False)
+        subscription.is_approved = ""
+        subscription.modified_by = name_type
+        subscription.save()
+    
+        return redirect("subscriptions:list_subscription")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -271,29 +295,6 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
             list(SubscriptionPlan.objects.values("id", "price"))
         )
         return context
-
-    def form_valid(self, form):
-        messages.success(self.request, "Subscriptions successfully activated!")
-        top = Subscription.objects.order_by("-id")[0]
-        name_type = dict(
-            {"name": self.request.user.name, "type": self.request.user.type}
-        )
-        billing = form["billing_form"].save(commit=False)
-        billing.current_plan = (
-            form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
-        )
-        billing.choosen_plan = (
-            form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
-        )
-        billing.save()
-        top_billing = Billing.objects.order_by("-id")[0]
-        subscription = form["activate_subscription_form"].save(commit=False)
-        subscription.outlet_id = self.kwargs["pk"]
-        subscription.billing_id = top_billing.id
-        subscription.modified_by = name_type
-        subscription.id = top.id + 1
-        subscription.save()
-        return redirect("subscriptions:list_subscription")
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")

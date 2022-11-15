@@ -12,24 +12,24 @@ today = datetime.date.today()
 tomorow = datetime.date.today() + datetime.timedelta(days=1)
 
 
-class OrderPaymentForm(ModelForm):
+class AddOrderPaymentForm(ModelForm):
     class Meta:
         model = OrderPayment
         fields = ["payment_type", "amount"]
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
-        super(OrderPaymentForm, self).__init__(*args, **kwargs)
+        super(AddOrderPaymentForm, self).__init__(*args, **kwargs)
 
 
-class BillingForm(ModelForm):
+class AddBillingForm(ModelForm):
     class Meta:
         model = Billing
         fields = ["price"]
     
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
-        super(BillingForm, self).__init__(*args, **kwargs)
+        super(AddBillingForm, self).__init__(*args, **kwargs)
         self.fields['price'].widget.attrs['readonly'] = True
 
 
@@ -70,20 +70,29 @@ class AddSubscriptionForm(ModelForm):
         self.fields["subscriptionplan"].label = "Subscription Plan"
 
 
-class SubscriptionMultiForm(MultiModelForm):
+class AddSubscriptionMultiForm(MultiModelForm):
     form_classes = {
-        "subscription_form": AddSubscriptionForm,
-        "billing_form": BillingForm,
-        "order_payment_form": OrderPaymentForm,
+        "add_subscription_form": AddSubscriptionForm,
+        "add_billing_form": AddBillingForm,
+        "add_order_payment_form": AddOrderPaymentForm,
     }
 
     def get_form_args_kwargs(self, key, args, kwargs):
-        fargs, fkwargs = super(SubscriptionMultiForm, self).get_form_args_kwargs(key, args, kwargs)
+        fargs, fkwargs = super(AddSubscriptionMultiForm, self).get_form_args_kwargs(key, args, kwargs)
         fkwargs.update({
             'request': kwargs.get('request')
         })
         return fargs, fkwargs
 
+
+class ActivateOrderPaymentForm(ModelForm):
+    class Meta:
+        model = OrderPayment
+        fields = ["payment_type", "amount"]
+
+    def __init__(self, *args, **kwargs):
+        outlet_id = kwargs.pop("outlet_id")
+        super(ActivateOrderPaymentForm, self).__init__(*args, **kwargs)
 
 class ActivateBillingForm(ModelForm):
     class Meta:
@@ -91,7 +100,6 @@ class ActivateBillingForm(ModelForm):
         fields = ["price"]
     
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request")
         outlet_id = kwargs.pop("outlet_id")
         super(ActivateBillingForm, self).__init__(*args, **kwargs)
         self.fields['price'].widget.attrs['readonly'] = True
@@ -113,23 +121,22 @@ class ActivateSubscriptionForm(ModelForm):
         required=True,
     )
 
-
     class Meta:
         model = Subscription
         input_type = "date"
         fields = ["subscriptionplan", "billing_date", "expires"]
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request")
         outlet_id = kwargs.pop("outlet_id")
+        print(outlet_id)
         super(ActivateSubscriptionForm, self).__init__(*args, **kwargs)
-        user_id = self.request.user.id
 
         subscriptionplan = SubscriptionPlan.objects.filter(is_active=True)
         subscriptionplans = [(i.id, i.name) for i in subscriptionplan]
         SUBPLAN = [("", "--------")] + subscriptionplans
 
         outlet = (Outlet.objects.get(id=outlet_id.id)).name
+        print(outlet)
 
         self.fields["subscriptionplan"].choices = SUBPLAN
         self.fields["subscriptionplan"].label = "Subscription Plan"
@@ -139,13 +146,13 @@ class ActivateSubscriptionForm(ModelForm):
 class ActivateSubscriptionMultiForm(MultiModelForm):
     form_classes = {
         "activate_subscription_form": ActivateSubscriptionForm,
-        "billing_form": ActivateBillingForm,
+        "activate_billing_form": ActivateBillingForm,
+        "activate_order_payment_form": ActivateOrderPaymentForm,
     }
 
     def get_form_args_kwargs(self, key, args, kwargs):
         fargs, fkwargs = super(ActivateSubscriptionMultiForm, self).get_form_args_kwargs(key, args, kwargs)
         fkwargs.update({
-            'request': kwargs.get('request'),
             'outlet_id' : kwargs.get('outlet_id')
         })
         return fargs, fkwargs
