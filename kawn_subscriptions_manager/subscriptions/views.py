@@ -12,6 +12,7 @@ from django.views.generic import (
     ListView,
     DeleteView,
     TemplateView,
+    DetailView
 )
 from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 from django_tables2 import SingleTableMixin
@@ -256,6 +257,11 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
         kwargs = super(ActivateSubscription, self).get_form_kwargs()
         kwargs["request"] = self.request
         kwargs["outlet_id"] = outlet
+        kwargs.update(instance={
+            'activate_subscription_form': self.object,
+            'activate_billing_form': self.object.billing,
+            'activate_order_payment_form': self.object.billing.orderpayment,
+        })
 
         return kwargs
 
@@ -407,25 +413,9 @@ class DetailBilling(ListView):
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
-class DetailApprovalRequest(ListView):
-    model = Billing
-    # template_name = "subscriptions/detail_approval.html"
-
-    def get_context_data(self, object_list=None):
-        queryset = (
-            object_list
-            if object_list is not None
-            else Subscription.objects.filter(id=self.kwargs["pk"])
-        )
-        context = {
-            "object_list": queryset,
-            "name": Billing.objects.filter(id=self.kwargs["pk"]),
-            "pk": self.kwargs["pk"],
-        }
-        return context
-
-    def get_template_names(self):
-        return "subscriptions/detail_approval.html"
+class DetailApprovalRequest(DetailView):
+    model = Subscription
+    template_name = "subscriptions/detail_approval.html"
 
 
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
