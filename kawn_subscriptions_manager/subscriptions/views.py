@@ -190,6 +190,12 @@ class ListSubscription(
     Subscription.objects.filter(expires__lte=now).update(active=False)
 
 
+@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
+class DetailSubscription(DetailView):
+    model = Subscription
+    template_name = "subscriptions/detail_subscription.html"
+
+
 @method_decorator([sales_only], name="dispatch")
 class AddSubscription(BaseBreadcrumbMixin, CreateView):
     model = Subscription

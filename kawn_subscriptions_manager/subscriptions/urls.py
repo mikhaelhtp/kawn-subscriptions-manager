@@ -8,6 +8,7 @@ from kawn_subscriptions_manager.subscriptions.views import (
     activate_subscription_plan,
     deactivate_subscription_plan,
     ListSubscription,
+    DetailSubscription,
     AddSubscription,
     SalesActivateSubscription,
     sales_deactivate_subscription,
@@ -62,6 +63,11 @@ urlpatterns = [
         "list/",
         view=ListSubscription.as_view(),
         name="list_subscription",
+    ),
+    path(
+        "detail/<int:pk>", 
+        DetailSubscription.as_view(), 
+        name="detail_subscription"
     ),
     path(
         "add/",

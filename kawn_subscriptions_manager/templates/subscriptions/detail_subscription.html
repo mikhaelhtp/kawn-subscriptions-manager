@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block menu-title %}Detail Subscriptions{% endblock %}
+{% block listclientsubscriptions-active %}active{% endblock %}
+
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subscriptions:list_approval' %}">Approval Subscription</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Detail Subscription</a></li>
+    </ol>
+</nav>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0 col-md-12">
+                <div class="row">
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
+                        <strong class="text-white">{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    {% endfor %}
+                    <div class="align-middle d-inline">
+                        <a href="{% url 'subscriptions:list_subscription'  %}" class="d-inline"><i class="fa fa-arrow-left"
+                            aria-hidden="true"></i></a>
+                        <h5 class="font-weight-bolder d-inline">Subscription Information</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item border-0 p-4 mb-2 bg-gray-100 border-radius-lg">
+                            <div class="d-flex flex-column">
+                                <h6 class="mb-3 text-sm">{{ object.outlet.name }}'s Outlet</h6>
+                                <table class="text-sm">
+                                    <tr>
+                                        <td><span class="mb-2">Address</span></td>
+                                        <td> : </td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.outlet.address }}, {{ object.outlet.city_read|default_if_none:"" }}, {{ object.outlet.province_read|default_if_none:"" }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="mb-2">Phone</span></td>
+                                        <td> : </td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.outlet.phone }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="mb-2">Owner</span></td>
+                                        <td> : </td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.outlet.client.name }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="mb-2">Sales</span></td>
+                                        <td> : </td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.outlet.client.user.name }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="mb-2">Subscription Plan</span></td>
+                                        <td> : </td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.subscriptionplan.name }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="mb-2">Price</span></td>
+                                        <td> : </td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">Rp {{ object.subscriptionplan.price|intcomma }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="mb-2">Amount</span></td>
+                                        <td> : </td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">Rp {{ object.billing.orderpayment.amount|intcomma }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="mb-2">Payment Type</span></td>
+                                        <td> : </td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.billing.orderpayment.get_payment_type_display }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="mb-2">Billing Status</span></td>
+                                        <td> : </td>
+                                        <td><span class="font-weight-bold ms-sm-2" style="color: green">{{ object.billing.get_status_display|upper }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="mb-2">Billing Date</span></td>
+                                        <td> : </td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.billing_date|date:'l, d F Y' }}</span></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="ms-auto text-start mt-4">
+                                {% if object.active is not None and object.is_approved == None %}
+                                <a href="{% url 'subscriptions:accept_subscription' object.id %}"
+                                    class="btn btn-sm bg-success text-white text-xs">Accept</a>
+                                <a href="{% url 'subscriptions:decline_subscription' object.id %}"
+                                    class="btn btn-sm bg-danger text-white text-xs">Decline</a>
+                                {% endif%}                            
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block inline_javascript %}
+<script></script>
+{% endblock inline_javascript %}
