@@ -44,7 +44,7 @@
                                     <tr>
                                         <td><span class="mb-2">Address</span></td>
                                         <td> : </td>
-                                        <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.outlet.address }}, {{ object.outlet.city_read }}, {{ object.outlet.province_read }}</span></td>
+                                        <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.outlet.address }}, {{ object.outlet.city_read|default_if_none:"" }}, {{ object.outlet.province_read|default_if_none:"" }}</span></td>
                                     </tr>
                                     <tr>
                                         <td><span class="mb-2">Phone</span></td>

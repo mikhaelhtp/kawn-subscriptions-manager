@@ -77,14 +77,12 @@
           <table class="table table-sm" id="table1">
             <thead>
               <tr>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Outlet Name</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Client Name</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end">Phone</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Address</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">City</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">Province</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Sales</th>
-                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder">Action</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 15%;">Outlet Name</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 15%;">Client Name</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end" style="width: 13%;">Phone</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 23%;">Address</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 15%;">Sales Name</th>
+                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder" style="width: 19%;">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -93,23 +91,17 @@
                 <td data-sort="{{ data.name }}" class="px-4">
                   <p class="text-xs font-weight-bold mb-0 text-start">{{ data.name }}</p>
                 </td>
-                <td data-sort="{{ data.client.name }}" class="px-4">
+                <td class="px-4">
                   <p class="text-xs font-weight-bold mb-0 text-start">{{ data.client.name }}</p>
                 </td>
-                <td data-sort="{{ data.phone }}">
+                <td>
                   <p class="text-xs font-weight-bold mb-0 text-end">{{ data.phone }}</p>
                 </td>
-                <td data-sort="{{ data.address }}" class="specifictd px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.address }}</p>
+                <td data-sort="{{ data.address }}" class="px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.address }}, {{ data.city_read|default_if_none:"" }}, {{ data.province_read|default_if_none:"-" }}</p>
                 </td>
                 <td class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.city_read|default_if_none:"-" }}</p>
-                </td>
-                <td class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.province_read|default_if_none:"-" }}</p>
-                </td>
-                <td class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.account.user.name }}</p>
+                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.client.user.name }}</p>
                 </td>
                 <td class="align-middle text-center text-sm">
                   <a href="{% url 'clients:update_outlet' data.id %}" class="btn btn-sm bg-warning text-white text-xs">Edit</a>
@@ -118,7 +110,7 @@
                     </a>
                     <button type="submit" class="btn btn-sm bg-danger btn-flat show_confirm text-white"
                         data-toggle="tooltip" title='Delete'>Delete</button>
-                </form>
+                  </form>
                 </td>
               </tr>
               {% empty %}

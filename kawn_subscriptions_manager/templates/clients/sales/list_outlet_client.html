@@ -4,7 +4,7 @@
 {% block menu-title %}List Outlet Client{% endblock %}
 {% load django_tables2 %}
 {% load bootstrap_pagination %}
-
+{% load crispy_forms_tags %}
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
@@ -55,12 +55,10 @@
                     <table class="table table-sm" id="table1">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-xs text-dark font-weight-bolder">Outlet Name</th>
-                                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Phone</th>
-                                <th class="text-uppercase text-xs text-dark font-weight-bolder">Address</th>
-                                <th class="text-uppercase text-xs text-dark font-weight-bolder">City</th>
-                                <th class="text-uppercase text-xs text-dark font-weight-bolder">Province</th>
-                                <th class="text-center text-uppercase text-xs text-dark font-weight-bolder">Action</th>
+                                <th class="text-uppercase text-xs text-dark font-weight-bolder" style="width: 30%;">Outlet Name</th>
+                                <th class="text-uppercase text-xs text-dark font-weight-bolder text-end" style="width: 15%;">Phone</th>
+                                <th class="text-uppercase text-xs text-dark font-weight-bolder" style="width: 35%;">Address</th>
+                                <th class="text-center text-uppercase text-xs text-dark font-weight-bolder" style="width: 20%;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,15 +71,9 @@
                                     <p class="text-xs font-weight-bold mb-0  text-end">{{ data.phone }}</p>
                                 </td>
                                 <td data-sort="{{ data.address }}" class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0">{{ data.address }}</p>
+                                    <p class="text-xs font-weight-bold mb-0">{{ data.address }}, {{ data.city_read|default_if_none:"" }}, {{ data.province_read|default_if_none:"-" }}</p>
                                 </td>
-                                <td data-sort="{{ data.city_read }}" class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0">{{ data.city_read }}</p>
-                                </td>
-                                <td data-sort="{{ data.province_read }}" class="px-4">
-                                    <p class="text-xs font-weight-bold mb-0">{{ data.province_read }}</p>
-                                </td>
-                                <td>
+                                <td class="text-center">
                                     <a href="{% url 'clients:update_outlet_client' data.id %}" class="btn btn-sm bg-warning text-white text-xs">Edit</a>
                                     <form class="d-inline" id="form-id" action="{% url 'clients:delete_outlet' data.id %}" method="post">
                                         {% csrf_token %}

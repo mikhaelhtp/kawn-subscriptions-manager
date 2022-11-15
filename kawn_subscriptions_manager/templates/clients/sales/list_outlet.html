@@ -80,14 +80,11 @@
           <table class="table table-sm" id="table1">
             <thead>
               <tr>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Outlet Name</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Client Name</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end">Phone</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Address</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">City</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">Province</th>
-                <th class="text-uppercase text-xxs text-dark font-weight-bolder">Sales</th>
-                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder">Action</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Outlet Name</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Client Name</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end" style="width: 10%;">Phone</th>
+                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 30%;">Address</th>
+                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -103,16 +100,7 @@
                   <p class="text-xs font-weight-bold mb-0 text-end">{{ data.phone }}</p>
                 </td>
                 <td data-sort="{{ data.address }}" class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.address }}</p>
-                </td>
-                <td class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.city_read|default_if_none:"-" }}</p>
-                </td>
-                <td class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.province_read|default_if_none:"-" }}</p>
-                </td>
-                <td class="px-4">
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.client.user.name }}</p>
+                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.address }}, {{ data.city_read|default_if_none:"" }}, {{ data.province_read|default_if_none:"-" }}</p>
                 </td>
                 <td class="align-middle text-center text-sm">
                   <a href="{% url 'clients:update_outlet' data.id %}" class="btn btn-sm bg-warning text-white text-xs">Edit</a>
