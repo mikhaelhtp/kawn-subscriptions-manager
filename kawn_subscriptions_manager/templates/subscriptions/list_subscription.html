@@ -87,6 +87,7 @@
                     <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Billing Date</th>
                     <th class="text-uppercase text-xs text-dark font-weight-bolder text-end">Expired Date</th>
                     <th class="text-uppercase text-xs text-dark font-weight-bolder">Status</th>
+                    <th class="text-center text-uppercase text-xs text-dark font-weight-bolder">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -110,6 +111,18 @@
                       {% else %}
                       <p class="text-xs font-weight-bold mb-0 text-start">Not Active</p>
                       {% endif%}
+                    </td>
+                    <td class="align-middle text-center px-4">
+                      {% if data.active == True %}
+                      <a href="{% url 'subscriptions:deactivate_subscription' data.id %}" class="btn btn-sm bg-danger text-white text-xs">
+                        Deactivate
+                      </a>
+                      {% else %}
+                      <a href="{% url 'subscriptions:activate_subscription' data.id %}" class="btn btn-sm bg-info text-white text-xs">
+                        Activate
+                      </a>
+                      {% endif %}
+                    </td>
                     </td>
                   </tr>
                   {% empty %}

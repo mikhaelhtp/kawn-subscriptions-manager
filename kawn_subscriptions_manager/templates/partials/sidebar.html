@@ -14,12 +14,12 @@
     <hr class="horizontal dark mt-0">
     <div class="sidenav  w-auto " id="sidenav-collapse-main">
         <ul class="navbar-nav">
+            {% with link=request.resolver_match.view_name %}
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase font-weight-bolder">Main</h6>
             </li>
-            {% url 'home' as home %}
             <li class="nav-item">
-                <a class="nav-link {% if request.get_full_path == home %}active{% endif %}" href="/">
+                <a class="nav-link {% if link == 'home' %}active{% endif %}" href="/">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-house"></i>
@@ -28,7 +28,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'clients:list_client' %}active{% endif %}"
+                <a class="nav-link {% if link == 'clients:list_client' or link == 'clients:add_client' or link == 'clients:update_client' or link == 'clients:list_outlet_client' or link == 'clients:add_outlet_client' or link == 'clients:update_outlet_client'  %}active{% endif %}"
                     href="{% url 'clients:list_client'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -38,7 +38,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'clients:list_outlet' %}active{% endif %}"
+                <a class="nav-link {% if link == 'clients:list_outlet' or link == 'clients:add_outlet' or link == 'clients:update_outlet' %}active{% endif %}"
                     href="{% url 'clients:list_outlet' %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -48,7 +48,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link  {% if request.resolver_match.view_name == 'subscriptions:list_subscription' %}active{% endif %}"
+                <a class="nav-link  {% if link == 'subscriptions:list_subscription' or link == 'subscriptions:activate_subscription' %}active{% endif %}"
                     href="{% url 'subscriptions:list_subscription'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -57,23 +57,9 @@
                     <span class="nav-link-text ms-1">Subscriptions</span>
                 </a>
             </li>
-            <!-- {% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
-            {% url 'subscriptions:detail_billing' as detail_billing %}
-            <li class="nav-item">
-                <a class="nav-link  {% if request.get_full_path == detail_billing %}active{% endif %}"
-                    href="{% url 'subscriptions:detail_billing'%}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-receipt"></i>
-                    </div>
-                    <span class="nav-link-popeo ms-1">Billing</span>
-                </a>
-            </li>
-            {% endif %} -->
             {% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
-            {% url 'subscriptions:list_approval' as list_approval %}
             <li class="nav-item">
-                <a class="nav-link  {% if request.get_full_path == list_approval %}active{% endif %}"
+                <a class="nav-link  {% if link == 'subscriptions:list_approval' or link == 'subscriptions:detail_approval' %}active{% endif %}"
                     href="{% url 'subscriptions:list_approval'%}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -87,9 +73,8 @@
                 <h6 class="ps-4 ms-2 text-uppercase font-weight-bolder">Settings</h6>
             </li>
             {% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
-            {% url 'subscriptions:subscription_logs' as subscription_logs %}
             <li class="nav-item">
-                <a class="nav-link  {% if request.get_full_path == subscription_logs %}active{% endif %}"
+                <a class="nav-link  {% if link == 'subscriptions:subscription_logs' %}active{% endif %}"
                     href="{% url 'subscriptions:subscription_logs'%}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -100,7 +85,7 @@
             </li>
             {% endif %}
             <li class="nav-item">
-                <a class="nav-link  {% if request.resolver_match.view_name == 'subscriptions:list_subscription_plan' %}active{% endif %}"
+                <a class="nav-link  {% if link == 'subscriptions:list_subscription_plan' or link == 'subscriptions:add_subscription_plan' or link == 'subscriptions:update_subscription_plan' %}active{% endif %}"
                     href="{% url 'subscriptions:list_subscription_plan'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -110,9 +95,8 @@
                 </a>
             </li>
             {% if request.user.type == "ADMIN" %}
-            {% url 'users:user_list' as user_list %}
             <li class="nav-item">
-                <a class="nav-link  {% if request.get_full_path == user_list %}active{% endif %}"
+                <a class="nav-link  {% if link == 'users:user_list' or link == 'users:add_users' or link == 'users:edit_users' %}active{% endif %}"
                     href="{% url 'users:user_list'%}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -122,9 +106,8 @@
                 </a>
             </li>
             {% endif %}
-            {% url 'users:profile_users' as profile_users %}
             <li class="nav-item">
-                <a class="nav-link  {% if request.get_full_path == profile_users %}active{% endif %}"
+                <a class="nav-link  {% if link == 'users:profile_users' or link == 'users:detail' or link == 'users:update' or link == 'account_email' or link == 'account_change_password' %}active{% endif %}"
                     href="{% url 'users:profile_users'  %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -133,6 +116,7 @@
                     <span class="nav-link-text ms-1">My Profile</span>
                 </a>
             </li>
+            {% endwith %}
         </ul>
     </div>
 </aside>
