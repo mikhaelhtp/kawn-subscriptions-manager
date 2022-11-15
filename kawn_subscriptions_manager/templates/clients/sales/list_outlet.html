@@ -107,18 +107,13 @@
                   <p class="text-xs font-weight-bold mb-0 text-start">{{ data.address }}</p>
                 </td>
                 <td class="px-4">
-                  {% if data.city_read == None %}
-                  <p class="text-xs font-weight-bold mb-0 text-start">-</p>
-                  {% else %}
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.city_read }}</p>
-                  {% endif %}
+                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.city_read|default_if_none:"-" }}</p>
                 </td>
                 <td class="px-4">
-                  {% if data.province_read == None %}
-                  <p class="text-xs font-weight-bold mb-0 text-start">-</p>
-                  {% else %}
-                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.province_read }}</p>
-                  {% endif %}
+                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.province_read|default_if_none:"-" }}</p>
+                </td>
+                <td class="px-4">
+                  <p class="text-xs font-weight-bold mb-0 text-start">{{ data.client.user.name }}</p>
                 </td>
                 <td class="align-middle text-center text-sm">
                   <a href="{% url 'clients:update_outlet' data.id %}" class="btn btn-sm bg-warning text-white text-xs">Edit</a>
