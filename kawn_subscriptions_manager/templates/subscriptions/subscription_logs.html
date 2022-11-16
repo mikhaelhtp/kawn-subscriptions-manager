@@ -1,16 +1,16 @@
 {% extends "base.html" %}
+
 {% load static %}
 {% load humanize %}
 
 {% block menu-title %}Subscriptions Overview{% endblock %}
-{% block listclientsubscriptions-active %}active{% endblock %}
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Subscriptions Logs</a></li>
-    </ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a role="link" aria-disabled="true">Subscriptions Logs</a></li>
+  </ol>
 </nav>
 {% endblock breadcrumbs %}
 
@@ -72,14 +72,14 @@
                     </td>
                     <td class="align-middle text-sm px-4">
                       <p class="text-xs font-weight-bold mb-0 text-start">{{ data.created_by.name }} ({{ data.created_by.type }})
-                        <br/>Date: {{ data.created|date:"D, d M Y" }}
-                        <br/>Time: {{ data.created|time:"H.i" }}
+                        <br />Date: {{ data.created|date:"D, d M Y" }}
+                        <br />Time: {{ data.created|time:"H.i" }}
                       </p>
                     </td>
                     <td class="align-middle text-sm px-4">
                       <p class="text-xs font-weight-bold mb-0 text-start">{{ data.modified_by.name }} ({{ data.modified_by.type }})
-                        <br/>Date: {{ data.modified|date:"D, d M Y" }}
-                        <br/>Time: {{ data.modified|time:"H.i" }}
+                        <br />Date: {{ data.modified|date:"D, d M Y" }}
+                        <br />Time: {{ data.modified|time:"H.i" }}
                       </p>
                     </td>
                   </tr>

@@ -3,7 +3,6 @@
 {% load crispy_forms_tags %}
 
 {% block menu-title %}Add Outlet{% endblock %}
-{% block listsubscriptionplan-active %}active{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -19,7 +18,8 @@
                                 <input type="hidden" name="next" value="{{ next }}">
                                 {{ form|crispy }}
                                 <button type="submit" class="btn bg-info col-md-2 mt-4 mb-0 text-white">SAVE</button>
-                                <a href="{% url 'clients:list_client'  %}" class="btn bg-danger col-md-2 mt-4 mb-0 text-white">CANCEL</a> 
+                                <a href="{% url 'clients:list_client'  %}"
+                                    class="btn bg-danger col-md-2 mt-4 mb-0 text-white">CANCEL</a>
                             </form>
                         </div>
                     </div>

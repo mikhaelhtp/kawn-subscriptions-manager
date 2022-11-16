@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
-{% block menu-title %}List Outlet Client{% endblock %}
-
 {% load bootstrap_pagination %}
 {% load crispy_forms_tags %}
 
+{% block menu-title %}List Outlet Client{% endblock %}
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
@@ -32,16 +31,18 @@
                         <div class="align-middle">
                             <h5 class="font-weight-bolder">Clients</h5>
                             <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info mt-2">Add Client</a>
-                            <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">
+                            <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2"
+                                data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Advanced Search
                             </button>
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">Advanced Search</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="col-lg-12">
@@ -55,11 +56,13 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button class="btn bg-secondary">
-                                                                <a href="{% url 'clients:list_client' %}" class="text-white">
+                                                                <a href="{% url 'clients:list_client' %}"
+                                                                    class="text-white">
                                                                     Clear Filter
                                                                 </a>
                                                             </button>
-                                                            <button class="btn bg-gradient-info" type="submit">Filter</button>
+                                                            <button class="btn bg-gradient-info"
+                                                                type="submit">Filter</button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -77,14 +80,22 @@
                     <table class="table table-sm" id="table1">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 14.5%;">Client Name</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Address</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end" style="width: 9.5%;">Phone</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 9%;">Brand Name</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 9%;">Facebook</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 9%;">Twitter</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 9%;">Instagram</th>
-                                <th class="text-center text-uppercase text-xxs font-weight-bolder" style="width: 20%;">Action</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 14.5%;">
+                                    Client Name</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">
+                                    Address</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end"
+                                    style="width: 9.5%;">Phone</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 9%;">
+                                    Brand Name</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 9%;">
+                                    Facebook</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 9%;">
+                                    Twitter</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 9%;">
+                                    Instagram</th>
+                                <th class="text-center text-uppercase text-xxs font-weight-bolder" style="width: 20%;">
+                                    Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -120,7 +131,8 @@
                                         action="{% url 'clients:delete_client' data.id %}" method="post">
                                         {% csrf_token %}
                                         </a>
-                                        <button type="submit" class="btn btn-sm bg-danger btn-flat show_confirm text-white"
+                                        <button type="submit"
+                                            class="btn btn-sm bg-danger btn-flat show_confirm text-white"
                                             data-toggle="tooltip" title='Delete'>Delete</button>
                                     </form>
                                 </td>

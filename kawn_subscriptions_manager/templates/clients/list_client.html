@@ -31,16 +31,18 @@
                         <div class="align-middle">
                             <h5 class="font-weight-bolder">Clients</h5>
                             <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info mt-2">Add Client</a>
-                            <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">
+                            <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2"
+                                data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Advanced Search
                             </button>
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">Advanced Search</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="col-lg-12">
@@ -54,11 +56,13 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button class="btn bg-secondary">
-                                                                <a href="{% url 'clients:list_client' %}" class="text-white">
+                                                                <a href="{% url 'clients:list_client' %}"
+                                                                    class="text-white">
                                                                     Clear Filter
                                                                 </a>
                                                             </button>
-                                                            <button class="btn bg-gradient-info" type="submit">Filter</button>
+                                                            <button class="btn bg-gradient-info"
+                                                                type="submit">Filter</button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -69,34 +73,6 @@
                             </div>
                         </div>
                     </div>
-
-                    {% comment %}
-                    <div class="align-middle">
-                        <h5 class="font-weight-bolder">Clients</h5>
-                        <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info mt-2">Add Client</a>
-                    </div>
-                    <div class="col-lg-12 mb-4 mt-2">
-                        <form method="get">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    {{ myFilter.form.name|as_crispy_field }}
-                                </div>
-                                <div class="col-md-2">
-                                    {{ myFilter.form.address|as_crispy_field }}
-                                </div>
-                                <div class="col-md-4 mt-4">
-                                    <button class="btn bg-gradient-info mt-2 mb-0" type="submit">Filter</button>
-                                    <button class="btn bg-gradient-info mt-2 mb-0">
-                                        <a href="{% url 'clients:list_outlet' %}" class="text-white">
-                                            Clear Filter
-                                        </a>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    {% endcomment %}
-                    
                 </div>
             </div>
             <div class="card-body">
@@ -104,15 +80,24 @@
                     <table class="table table-sm" id="table1">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 17%;">Client Name</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Address</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end" style="width: 12%;">Phone</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 12%;">Brand Name</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">Facebook</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">Twitter</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">Instagram</th>
-                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 11%;">Sales Name</th>
-                                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder" style="width: 26%;">Action</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 17%;">
+                                    Client Name</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">
+                                    Address</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end"
+                                    style="width: 12%;">Phone</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 12%;">
+                                    Brand Name</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">
+                                    Facebook</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">
+                                    Twitter</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 10%;">
+                                    Instagram</th>
+                                <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 11%;">
+                                    Sales Name</th>
+                                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder"
+                                    style="width: 26%;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -147,10 +132,12 @@
                                         class="btn btn-sm bg-info text-white text-xs">Outlet</a>
                                     <a href="{% url 'clients:update_client' data.id %}"
                                         class="btn btn-sm bg-warning text-white text-xs">Edit</a>
-                                    <form class="d-inline" id="form-id" action="{% url 'clients:delete_client' data.id %}" method="post">
+                                    <form class="d-inline" id="form-id"
+                                        action="{% url 'clients:delete_client' data.id %}" method="post">
                                         {% csrf_token %}
                                         </a>
-                                        <button type="submit" class="btn btn-sm bg-danger btn-flat show_confirm text-white"
+                                        <button type="submit"
+                                            class="btn btn-sm bg-danger btn-flat show_confirm text-white"
                                             data-toggle="tooltip" title='Delete'>Delete</button>
                                     </form>
                                 </td>
@@ -178,19 +165,19 @@
         var name = $(this).data("name");
         event.preventDefault();
         Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
         })
-        .then((willDelete) => {
-            if (willDelete.isConfirmed) {
-            form.submit();
-            }
-        });
+            .then((willDelete) => {
+                if (willDelete.isConfirmed) {
+                    form.submit();
+                }
+            });
     });
 </script>
 {% endblock inline_javascript %}

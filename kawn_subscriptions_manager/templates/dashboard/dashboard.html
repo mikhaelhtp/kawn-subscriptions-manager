@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block menu-title %}Dashboard{% endblock %}
-{% block dashboard-active %}active{% endblock %}
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
@@ -207,7 +206,8 @@
                 </div>
                 {% endfor %}
                 <div class="text-center mt-4">
-                    <a href="{% url 'subscriptions:subscription_logs'  %}" class="btn btn-outline-dark col-12">View All</a>
+                    <a href="{% url 'subscriptions:subscription_logs'  %}" class="btn btn-outline-dark col-12">View
+                        All</a>
                 </div>
             </div>
         </div>

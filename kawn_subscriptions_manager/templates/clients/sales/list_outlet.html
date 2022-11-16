@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block menu-title %}List Outlet Client{% endblock %}
-
 {% load static %}
 {% load static i18n compress%}
 {% load django_tables2 %}
 {% load crispy_forms_tags %}
 
+{% block menu-title %}List Outlet Client{% endblock %}
+
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/">Home</a></li>
-      <li class="breadcrumb-item"><a role="link" aria-disabled="true">Outlet</a></li>
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a role="link" aria-disabled="true">Outlet</a></li>
   </ol>
 </nav>
 {% endblock breadcrumbs %}
@@ -33,10 +33,12 @@
             <div class="align-middle">
               <h5 class="font-weight-bolder">Outlets</h5>
               <a href="{% url 'clients:add_outlet' %}" class="btn bg-gradient-info mt-2">Add Outlet</a>
-              <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
                 Advanced Search
               </button>
-              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -84,7 +86,8 @@
                 <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Client Name</th>
                 <th class="text-uppercase text-xxs text-dark font-weight-bolder text-end" style="width: 10%;">Phone</th>
                 <th class="text-uppercase text-xxs text-dark font-weight-bolder" style="width: 30%;">Address</th>
-                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Action</th>
+                <th class="text-center text-uppercase text-xxs text-dark font-weight-bolder" style="width: 20%;">Action
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -103,13 +106,14 @@
                   <p class="text-xs font-weight-bold mb-0 text-start">{{ data.address }}, {{ data.city_read|default_if_none:"" }}, {{ data.province_read|default_if_none:"-" }}</p>
                 </td>
                 <td class="align-middle text-center text-sm">
-                  <a href="{% url 'clients:update_outlet' data.id %}" class="btn btn-sm bg-warning text-white text-xs">Edit</a>
+                  <a href="{% url 'clients:update_outlet' data.id %}"
+                    class="btn btn-sm bg-warning text-white text-xs">Edit</a>
                   <form class="d-inline" id="form-id" action="{% url 'clients:delete_outlet' data.id %}" method="post">
                     {% csrf_token %}
                     </a>
                     <button type="submit" class="btn btn-sm bg-danger btn-flat show_confirm text-white"
-                        data-toggle="tooltip" title='Delete'>Delete</button>
-                </form>
+                      data-toggle="tooltip" title='Delete'>Delete</button>
+                  </form>
                 </td>
               </tr>
               {% empty %}

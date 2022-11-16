@@ -3,8 +3,6 @@
 {% load crispy_forms_tags %}
 
 {% block menu-title %}Add Outlet{% endblock %}
-{% block listsubscriptionplan-active %}active{% endblock %}
-
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
@@ -26,7 +24,8 @@
                     <div class="col-lg-12">
                         <div class="d-flex flex-column h-100">
                             <h5 class="font-weight-bolder">Form Outlet</h5>
-                            <form method="post" id="outletForm" data-cities-url="{% url 'clients:ajax_load_cities' %}" novalidate>
+                            <form method="post" id="outletForm" data-cities-url="{% url 'clients:ajax_load_cities' %}"
+                                novalidate>
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{{ next }}">
                                 {{ form|crispy }}
@@ -41,7 +40,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block inline_javascript %}
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 <script>
@@ -61,9 +62,4 @@
 
     });
 </script>
-
-{% endblock %}
-
-{% block inline_javascript %}
-<script></script>
 {% endblock inline_javascript %}
