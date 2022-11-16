@@ -1,7 +1,6 @@
 import django_filters
 
 from .models import Outlet, Client
-import django_filters as filters
 
 
 class OutletFilter(django_filters.FilterSet):
