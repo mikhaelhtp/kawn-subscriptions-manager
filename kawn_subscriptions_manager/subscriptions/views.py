@@ -37,6 +37,7 @@ from .forms import (
 from .filters import (
     SubscriptionPlanFilter,
     SubscriptionFilter,
+    ActivityFilter,
 )
 from kawn_subscriptions_manager.clients.models import Client, Outlet
 from kawn_subscriptions_manager.users.models import User
@@ -468,3 +469,53 @@ class SubscriptionLogs(ListView):
 
     def get_template_names(self):
         return "subscriptions/subscription_logs.html"
+
+
+class ActivityLogsCreated(ListView):
+    model = Subscription
+    template_name = "subscriptions/activity_logs_created.html"
+    paginate_by = 5
+    
+    def get_queryset(self):
+        return Subscription.objects.filter(created_by__isnull=False).order_by("-created")
+
+    def get_context_data(self, object_list=None):
+        activity_logs = ActivityFilter(self.request.GET, queryset=self.get_queryset())
+        queryset = object_list if object_list is not None else activity_logs.qs
+        page_size = self.paginate_by
+        paginator, page, queryset, is_paginated = self.paginate_queryset(
+            queryset, page_size
+        )
+        context = {
+            "myFilter": activity_logs,
+            "object_list": queryset,
+            "paginator": paginator,
+            "page_obj": page,
+            "is_paginated": is_paginated,
+        }
+        return context
+
+
+class ActivityLogsModified(ListView):
+    model = Subscription
+    template_name = "subscriptions/activity_logs_modified.html"
+    paginate_by = 5
+    
+    def get_queryset(self):
+        return Subscription.objects.filter(modified_by__isnull=False).order_by("-modified")
+
+    def get_context_data(self, object_list=None):
+        activity_logs = ActivityFilter(self.request.GET, queryset=self.get_queryset())
+        queryset = object_list if object_list is not None else activity_logs.qs
+        page_size = self.paginate_by
+        paginator, page, queryset, is_paginated = self.paginate_queryset(
+            queryset, page_size
+        )
+        context = {
+            "myFilter": activity_logs,
+            "object_list": queryset,
+            "paginator": paginator,
+            "page_obj": page,
+            "is_paginated": is_paginated,
+        }
+        return context
