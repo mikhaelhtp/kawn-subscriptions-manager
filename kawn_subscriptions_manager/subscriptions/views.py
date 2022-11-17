@@ -208,7 +208,7 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["subscriptionplan"] = dumps(
-            list(SubscriptionPlan.objects.values("id", "price"))
+            list(SubscriptionPlan.objects.values("id", "price", "recurrence_period"))
         )
         return context
 
@@ -309,7 +309,7 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["subscriptionplan"] = dumps(
-            list(SubscriptionPlan.objects.values("id", "price"))
+            list(SubscriptionPlan.objects.values("id", "price", "recurrence_period"))
         )
         return context
 

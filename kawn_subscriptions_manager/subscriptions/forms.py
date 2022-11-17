@@ -14,6 +14,7 @@ from .models import (
 
 today = datetime.date.today()
 tomorow = datetime.date.today() + datetime.timedelta(days=1)
+month = datetime.date.today() + datetime.timedelta(days=30)
 
 
 class AddOrderPaymentForm(ModelForm):
@@ -39,7 +40,7 @@ class AddBillingForm(ModelForm):
 
 class AddSubscriptionForm(ModelForm):
     billing_date = forms.DateField(
-        widget=forms.DateTimeInput(attrs={"type": "date", "value": today}),
+        widget=forms.DateTimeInput(attrs={"max": month, "type": "date", "value": today}),
         required=True,
     )
     expires = forms.DateField(
