@@ -1,20 +1,15 @@
-from http import client
-from urllib import request
 from django.contrib.messages.views import SuccessMessageMixin
-from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 from django_tables2 import SingleTableMixin
-from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin
 
-from kawn_subscriptions_manager.decorators import sales_only
-from .models import Outlet, Client, Province, City
-from kawn_subscriptions_manager.users.models import User
+from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
+
+from .models import Outlet, Client, City
 from kawn_subscriptions_manager.api import (
     api_province,
     api_city,
@@ -28,7 +23,6 @@ from .forms import (
 from .filters import OutletFilter, ClientFilter
 
 
-# CLIENT
 class ListClient(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
     model = Client
 

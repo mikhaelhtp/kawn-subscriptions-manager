@@ -1,10 +1,9 @@
 {% extends "base.html" %}
+
 {% load static %}
 {% load humanize %}
 
 {% block menu-title %}Detail Subscriptions{% endblock %}
-{% block listclientsubscriptions-active %}active{% endblock %}
-
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
@@ -30,8 +29,8 @@
                     </div>
                     {% endfor %}
                     <div class="align-middle d-inline">
-                        <a href="{% url 'subscriptions:list_subscription'  %}" class="d-inline"><i class="fa fa-arrow-left"
-                            aria-hidden="true"></i></a>
+                        <a href="{% url 'subscriptions:list_subscription'  %}" class="d-inline"><i
+                                class="fa fa-arrow-left" aria-hidden="true"></i></a>
                         <h5 class="font-weight-bolder d-inline">Subscription Information</h5>
                     </div>
                 </div>
@@ -94,14 +93,6 @@
                                         <td><span class="text-dark font-weight-bold ms-sm-2">{{ object.billing_date|date:'l, d F Y' }}</span></td>
                                     </tr>
                                 </table>
-                            </div>
-                            <div class="ms-auto text-start mt-4">
-                                {% if object.active is not None and object.is_approved == None %}
-                                <a href="{% url 'subscriptions:accept_subscription' object.id %}"
-                                    class="btn btn-sm bg-success text-white text-xs">Accept</a>
-                                <a href="{% url 'subscriptions:decline_subscription' object.id %}"
-                                    class="btn btn-sm bg-danger text-white text-xs">Decline</a>
-                                {% endif%}                            
                             </div>
                         </li>
                     </ul>

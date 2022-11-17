@@ -3,7 +3,6 @@
 {% load crispy_forms_tags %}
 
 {% block menu-title %}Add Client Subscription{% endblock %}
-{% block dashboard-active %}active{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -19,7 +18,8 @@
                 <input type="hidden" name="next" value="{{ next }}">
                 {{ form|crispy }}
                 <button type="submit" class="btn bg-info mt-4 mb-0 col-md-2 text-white">SAVE</button>
-                <a href="{% url 'subscriptions:list_subscription'  %}" class="btn bg-danger col-md-2 mt-4 mb-0 text-white">CANCEL</a> 
+                <a href="{% url 'subscriptions:list_subscription'  %}"
+                  class="btn bg-danger col-md-2 mt-4 mb-0 text-white">CANCEL</a>
               </form>
             </div>
           </div>
@@ -32,39 +32,34 @@
 </div>
 {% endblock %}
 
-<script>
-  $(function(){
-      var dtToday = new Date();
-
-      var month = dtToday.getMonth() + 1;
-      var day = dtToday.getDate();
-      var year = dtToday.getFullYear();
-      if(month < 10)
-          month = '0' + month.toString();
-      if(day < 10)
-          day = '0' + day.toString();
-
-      var minDate= year + '-' + month + '-' + day;
-
-      $('#txtDate').attr('min', minDate);
-  });
-</script>
-
 {% block inline_javascript %}
 <script type="text/javascript">
   let data = JSON.parse("{{subscriptionplan|escapejs}}");
 
-  if(document.getElementById("id_add_subscription_form-subscriptionplan")){
+  Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  }
+  
+  var date = new Date();
+
+  if (document.getElementById("id_add_subscription_form-subscriptionplan")) {
     document.getElementById("id_add_subscription_form-subscriptionplan").onchange = (e) => {
-        let subscriptionplan = data.find(dataSubplan => dataSubplan.id == e.target.value);
-        $('#id_add_billing_form-price').val(subscriptionplan.price)
+      let subscriptionplan = data.find(dataSubplan => dataSubplan.id == e.target.value);
+      var days = ((subscriptionplan.recurrence_period)*30)+30;
+      console.log(days)
+      document.getElementById("id_add_subscription_form-expires").max = (date.addDays(days)).toISOString().split("T")[0];
+      $('#id_add_billing_form-price').val(subscriptionplan.price);
     };
   } else {
     document.getElementById("id_activate_subscription_form-subscriptionplan").onchange = (e) => {
-        let subscriptionplan = data.find(dataSubplan => dataSubplan.id == e.target.value);
-        $('#id_activate_billing_form-price').val(subscriptionplan.price)
+      let subscriptionplan = data.find(dataSubplan => dataSubplan.id == e.target.value);
+      $('#id_activate_billing_form-price').val(subscriptionplan.price);
+      var days = ((subscriptionplan.recurrence_period)*30)+30;
+      console.log(days)
+      document.getElementById("id_activate_subscription_form-expires").max = (date.addDays(days)).toISOString().split("T")[0];
     };
   }
-
 </script>
 {% endblock inline_javascript %}

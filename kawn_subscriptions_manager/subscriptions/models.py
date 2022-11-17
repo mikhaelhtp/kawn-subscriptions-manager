@@ -35,7 +35,6 @@ class SubscriptionPlan(models.Model):
 
 
 class OrderPayment(models.Model):
-
     class PaymentType(models.TextChoices):
         BANK = "bank_transfer", "Bank Transfer"
         GOPAY = "gopay", "Gopay"
@@ -47,13 +46,18 @@ class OrderPayment(models.Model):
         UNPAID = "unpaid", "Unpaid"
         PAID = "paid", "Paid"
 
-    code = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
+    code = models.UUIDField(
+        default=uuid.uuid4, unique=True, db_index=True, editable=False
+    )
     payment_type = models.CharField(max_length=255, choices=PaymentType.choices)
-    amount =  models.DecimalField(decimal_places=2, max_digits=12, null=True)
-    status = models.CharField(max_length=255, choices=Status.choices, default=Status.PAID)
+    amount = models.DecimalField(decimal_places=2, max_digits=12, null=True)
+    status = models.CharField(
+        max_length=255, choices=Status.choices, default=Status.PAID
+    )
     created = models.DateTimeField(auto_now_add=True)
     deleted = models.DateTimeField(null=True)
     modified = models.DateTimeField(auto_now=True)
+
 
 class SubscriptionDetail(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -65,16 +69,19 @@ class SubscriptionDetail(models.Model):
 
 
 class Billing(models.Model):
-
     class Status(models.TextChoices):
         CANCELED = "canceled", "Canceled"
         UNPAID = "unpaid", "Unpaid"
         PAID = "paid", "Paid"
 
-    subscriptiondetail = models.ForeignKey(SubscriptionDetail, on_delete=models.CASCADE, null=True)
+    subscriptiondetail = models.ForeignKey(
+        SubscriptionDetail, on_delete=models.CASCADE, null=True
+    )
     orderpayment = models.ForeignKey(OrderPayment, on_delete=models.CASCADE, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=12, null=True)
-    status = models.CharField(max_length=255, choices=Status.choices, default=Status.PAID)
+    status = models.CharField(
+        max_length=255, choices=Status.choices, default=Status.PAID
+    )
     created = models.DateTimeField(auto_now_add=True)
     deleted = models.DateTimeField(null=True)
     modified = models.DateTimeField(auto_now=True)
@@ -104,6 +111,3 @@ class Subscription(models.Model):
 
         if self.expires < timezone.now():
             raise ValidationError("Expires date must be greater than today.")
-
-
-

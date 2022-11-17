@@ -1,6 +1,5 @@
 from django.forms import ModelForm
 from django import forms
-from phonenumber_field.formfields import PhoneNumberField
 
 from .models import Outlet, Client, Province, City
 from kawn_subscriptions_manager.users.models import User

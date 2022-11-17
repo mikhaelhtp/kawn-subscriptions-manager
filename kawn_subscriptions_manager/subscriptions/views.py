@@ -11,16 +11,13 @@ from django.views.generic import (
     CreateView,
     ListView,
     DeleteView,
-    TemplateView,
-    DetailView
+    DetailView,
 )
-from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 from django_tables2 import SingleTableMixin
-from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin
-from itertools import chain
 
 from json import dumps
+from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 
 from .models import (
     SubscriptionPlan,
@@ -31,7 +28,6 @@ from .models import (
 )
 from .forms import (
     AddSubscriptionMultiForm,
-    ActivateSubscriptionForm,
     ActivateSubscriptionMultiForm,
 )
 from .filters import (
@@ -40,7 +36,6 @@ from .filters import (
     ActivityFilter,
 )
 from kawn_subscriptions_manager.clients.models import Client, Outlet
-from kawn_subscriptions_manager.users.models import User
 from kawn_subscriptions_manager.decorators import allowed_users, sales_only
 from kawn_subscriptions_manager.api import (
     api_outlet,
@@ -51,7 +46,7 @@ from kawn_subscriptions_manager.api import (
 
 
 class ListSubscriptionPlan(
-    ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
+    ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin
 ):
     model = SubscriptionPlan
     filterset_class = SubscriptionPlanFilter
@@ -152,9 +147,7 @@ def activate_subscription_plan(request, id):
     return redirect("subscriptions:list_subscription_plan")
 
 
-class ListSubscription(
-    ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin, FilterView
-):
+class ListSubscription(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
     model = Subscription
     filterset_class = SubscriptionFilter
 
@@ -205,7 +198,7 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
         ("Subscription", reverse_lazy("subscriptions:list_subscription")),
         ("Add Subscription", reverse_lazy("subscriptions:add_subscription")),
     ]
-    template_name = "subscriptions/form_subscription.html"
+    template_name = "subscriptions/sales/form_subscription.html"
 
     def get_form_kwargs(self):
         kwargs = super(AddSubscription, self).get_form_kwargs()
@@ -216,7 +209,7 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["subscriptionplan"] = dumps(
-            list(SubscriptionPlan.objects.values("id", "price"))
+            list(SubscriptionPlan.objects.values("id", "price", "recurrence_period"))
         )
         return context
 
@@ -230,9 +223,13 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
         order_payment.save()
         top_order_payment = OrderPayment.objects.order_by("-id")[0]
         subscription_detail = SubscriptionDetail(
-            outlet = form["add_subscription_form"].cleaned_data["outlet"].id,
-            current_plan=form["add_subscription_form"].cleaned_data["subscriptionplan"].id,
-            choosen_plan=form["add_subscription_form"].cleaned_data["subscriptionplan"].id,
+            outlet=form["add_subscription_form"].cleaned_data["outlet"].id,
+            current_plan=form["add_subscription_form"]
+            .cleaned_data["subscriptionplan"]
+            .id,
+            choosen_plan=form["add_subscription_form"]
+            .cleaned_data["subscriptionplan"]
+            .id,
         )
         subscription_detail.save()
         top_subscription_detail = SubscriptionDetail.objects.order_by("-id")[0]
@@ -249,28 +246,30 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
         return redirect("subscriptions:list_subscription")
 
 
-@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
+@method_decorator([allowed_users(["SALES"])], name="dispatch")
 class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
     model = Subscription
     form_class = ActivateSubscriptionMultiForm
-    template_name = "subscriptions/form_subscription.html"
+    template_name = "subscriptions/sales/form_subscription.html"
     crumbs = [
         ("Subscription", reverse_lazy("subscriptions:list_subscription")),
         ("Activate Subscription", reverse_lazy("subscriptions:add_subscription")),
     ]
-    
+
     def get_form_kwargs(self):
         outlet = (Subscription.objects.get(id=self.kwargs["pk"])).outlet
         kwargs = super(ActivateSubscription, self).get_form_kwargs()
         kwargs["outlet_id"] = outlet
         print(outlet)
-        kwargs.update(instance={
-            'activate_subscription_form': self.object,
-            'activate_billing_form': self.object.billing,
-        })
+        kwargs.update(
+            instance={
+                "activate_subscription_form": self.object,
+                "activate_billing_form": self.object.billing,
+            }
+        )
 
         return kwargs
-    
+
     def form_valid(self, form):
         messages.success(self.request, "Subscriptions successfully added!")
         name_type = dict(
@@ -279,13 +278,25 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
         billing_id = (Subscription.objects.get(id=self.kwargs["pk"])).billing
         order_payment_id = (Billing.objects.get(id=billing_id.id)).orderpayment
         order_payment = OrderPayment.objects.get(pk=order_payment_id.id)
-        order_payment.payment_type=form["activate_order_payment_form"].cleaned_data["payment_type"]
-        order_payment.amount=form["activate_order_payment_form"].cleaned_data["amount"]
+        order_payment.payment_type = form["activate_order_payment_form"].cleaned_data[
+            "payment_type"
+        ]
+        order_payment.amount = form["activate_order_payment_form"].cleaned_data[
+            "amount"
+        ]
         order_payment.save()
-        subscription_detail_id = (Billing.objects.get(id=billing_id.id)).subscriptiondetail
-        subscription_detail = SubscriptionDetail.objects.get(pk=subscription_detail_id.id)
-        subscription_detail.current_plan=form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
-        subscription_detail.choosen_plan=form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+        subscription_detail_id = (
+            Billing.objects.get(id=billing_id.id)
+        ).subscriptiondetail
+        subscription_detail = SubscriptionDetail.objects.get(
+            pk=subscription_detail_id.id
+        )
+        subscription_detail.current_plan = (
+            form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+        )
+        subscription_detail.choosen_plan = (
+            form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+        )
         subscription_detail.save()
         billing = form["activate_billing_form"].save(commit=False)
         billing.save()
@@ -293,95 +304,19 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
         subscription.is_approved = ""
         subscription.modified_by = name_type
         subscription.save()
-    
+
         return redirect("subscriptions:list_subscription")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["subscriptionplan"] = dumps(
-            list(SubscriptionPlan.objects.values("id", "price"))
+            list(SubscriptionPlan.objects.values("id", "price", "recurrence_period"))
         )
         return context
 
 
-@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
-class ActivateSubscriptionGagal(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
-    model = Subscription
-    success_message = _("Subscription successfully activated!")
-    fields = ["expires"]
-    crumbs = [
-        ("Subscription", reverse_lazy("subscriptions:list_subscription")),
-        ("Activate Subscription", reverse_lazy("subscriptions:activate_subscription")),
-    ]
-    template_name = "subscriptions/form_subscription.html"
-    success_url = reverse_lazy("subscriptions:list_subscription")
-
-    def form_valid(self, form):
-        subscription = form.save()
-        name_type = dict(
-            {"name": self.request.user.name, "type": self.request.user.type}
-        )
-        subscription.active = True
-        subscription.modified_by = name_type
-        subscription.is_approved = True
-        subscription.save()
-
-        return super().form_valid(form)
-
-
-@allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
-def deactivate_subscription(request, id):
-    subscription = Subscription.objects.get(pk=id)
-    name_type = dict({"name": request.user.name, "type": request.user.type})
-    subscription.active = False
-    subscription.modified_by = name_type
-    subscription.is_approved = False
-    subscription.save()
-    messages.success(request, "Subscriptions successfully deactivated!")
-    return redirect("subscriptions:list_subscription")
-
-
-@method_decorator([sales_only], name="dispatch")
-class SalesActivateSubscription(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
-    model = Subscription
-    success_message = _(
-        mark_safe(
-            "Subscription activation request has been successful! <br/>Please wait for the activation process."
-        )
-    )
-    # fields = ["expires"]
-    form_class = ActivateSubscriptionForm
-    crumbs = [
-        ("Subscription", reverse_lazy("subscriptions:list_subscription")),
-        (
-            "Activate Subscription",
-            reverse_lazy("subscriptions:sales_activate_subscription"),
-        ),
-    ]
-    template_name = "subscriptions/form_subscription.html"
-    success_url = reverse_lazy("subscriptions:list_subscription")
-
-    # def get_form_kwargs(self):
-    #     kwargs = super(SalesActivateSubscription, self).get_form_kwargs()
-    #     kwargs["request"] = self.request
-
-    #     return kwargs
-
-    def form_valid(self, form):
-        name_type = dict(
-            {"name": self.request.user.name, "type": self.request.user.type}
-        )
-        subscription = form.save()
-        subscription.active = False
-        subscription.modified_by = name_type
-        subscription.is_approved = ""
-        subscription.save()
-
-        return super().form_valid(form)
-
-
 @allowed_users(allowed_roles=["SALES"])
-def sales_deactivate_subscription(request, id):
+def deactivate_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     name_type = dict({"name": request.user.name, "type": request.user.type})
     subscription.active = True
@@ -407,20 +342,6 @@ class ListApprovalRequest(ListView):
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
-class DetailBilling(ListView):
-    model = Billing
-    queryset = Billing.objects.all()
-    template_name = "subscriptions/detail_billing.html"
-
-    # def get_queryset(self):
-    #     billing_id = self.request.billing.id
-    #     subscription = Subscription.objects.filter(billing_id=billing_id).values_list("id")
-    #     billing = Billing.objects.filter(id__in=subscription)
-
-    #     return Subscription.objects.filter(billing_id__in=billing).order_by("-id")
-
-
-@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
 class DetailApprovalRequest(DetailView):
     model = Subscription
     template_name = "subscriptions/detail_approval.html"
@@ -430,7 +351,7 @@ class DetailApprovalRequest(DetailView):
 def accept_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     name_type = dict({"name": request.user.name, "type": request.user.type})
-    # subscription.active = False
+
     if subscription.active is not True:
         subscription.active = True
         subscription.save()
@@ -448,7 +369,6 @@ def accept_subscription(request, id):
 def decline_subscription(request, id):
     subscription = Subscription.objects.get(pk=id)
     name_type = dict({"name": request.user.name, "type": request.user.type})
-    # subscription.active = True
     if subscription.active is not True:
         subscription.active = False
         subscription.save()

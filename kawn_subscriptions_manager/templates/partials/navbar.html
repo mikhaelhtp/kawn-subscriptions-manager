@@ -30,140 +30,151 @@
                 </li>
                 <li class="nav-item dropdown px-3 d-flex align-items-center">
                     {% if bell != 0 %}
-                    <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-bell text-danger cursor-pointer"></i>
                     </a>
                     {% else %}
-                    <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-bell cursor-pointer"></i>
                     </a>
                     {% endif %}
-                    <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                    <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
+                        aria-labelledby="dropdownMenuButton">
                         <li>
                             {% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
-                                {% for data in notif|slice:":5" %}
-                                <a class="dropdown-item border-radius-md" href="#">
-                                    <div class="d-flex py-1">
-                                        {% if data.active == False and data.is_approved == None %}
-                                        <div class="avatar avatar-sm bg-gradient-success  me-3  my-auto">
-                                            <i class="fa-regular fa-circle-check fa-lg"></i>
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">Request Activation</h6>
-                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
-                                            <p class="text-xs text-secondary mb-0 ">
-                                                <i class="fa fa-clock me-1"></i>
-                                                {{ data.modified|date:"d M Y | H.i e" }}
-                                            </p>
-                                        </div>
-                                        {% elif data.active == True and data.is_approved == None %}
-                                        <div class="avatar avatar-sm bg-gradient-danger  me-3  my-auto">
-                                            <i class="fa-regular fa-circle-xmark fa-lg"></i>
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">Request Deactivation</h6>
-                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
-                                            <p class="text-xs text-secondary mb-0 ">
-                                                <i class="fa fa-clock me-1"></i>
-                                                {{ data.modified|date:"d M Y | H.i e" }}
-                                            </p>
-                                        </div>
-                                        {% endif%}
+                            {% for data in notif|slice:":5" %}
+                            <a class="dropdown-item border-radius-md" href="#">
+                                <div class="d-flex py-1">
+                                    {% if data.active == False and data.is_approved == None %}
+                                    <div class="avatar avatar-sm bg-gradient-success  me-3  my-auto">
+                                        <i class="fa-regular fa-circle-check fa-lg"></i>
                                     </div>
-                                </a>
-                                {% endfor %}
-                                {% if notif_empty == 0 %}
-                                <div class="d-flex flex-column justify-content-center">
-                                    <h6 class="text-sm text-center font-weight-normal mb-1">No Notification</h6>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">Request Activation</h6>
+                                        <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                        <p class="text-xs text-secondary mb-0 ">
+                                            <i class="fa fa-clock me-1"></i>
+                                            {{ data.modified|date:"d M Y | H.i e" }}
+                                        </p>
+                                    </div>
+                                    {% elif data.active == True and data.is_approved == None %}
+                                    <div class="avatar avatar-sm bg-gradient-danger  me-3  my-auto">
+                                        <i class="fa-regular fa-circle-xmark fa-lg"></i>
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">Request Deactivation</h6>
+                                        <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                        <p class="text-xs text-secondary mb-0 ">
+                                            <i class="fa fa-clock me-1"></i>
+                                            {{ data.modified|date:"d M Y | H.i e" }}
+                                        </p>
+                                    </div>
+                                    {% endif%}
                                 </div>
-                                {% endif %}
-                                <div class="text-center mt-2">
-                                    <a href="{% url 'subscriptions:list_approval'  %}" class="btn btn-sm btn-outline-dark text-xxs col-12">View All</a>
-                                </div>
+                            </a>
+                            {% endfor %}
+                            {% if notif_empty == 0 %}
+                            <div class="d-flex flex-column justify-content-center">
+                                <h6 class="text-sm text-center font-weight-normal mb-1">No Notification</h6>
+                            </div>
+                            {% endif %}
+                            <div class="text-center mt-2">
+                                <a href="{% url 'subscriptions:list_approval'  %}"
+                                    class="btn btn-sm btn-outline-dark text-xxs col-12">View All</a>
+                            </div>
 
                             {% elif request.user.type == "SALES" %}
-                                {% for data in sales_notif|slice:":5" %}
-                                <a class="dropdown-item border-radius-md" href="#">
-                                    <div class="d-flex py-1">
-                                        {% if data.active == False and data.is_approved == True %}
-                                        <div class="avatar avatar-sm bg-gradient-success  me-3  my-auto">
-                                            <i class="fa-regular fa-circle-check fa-lg"></i>
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">Your Deactivation Request Has Been Accepted</h6>
-                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
-                                            <p class="text-xs text-secondary mb-0 ">
-                                                <i class="fa fa-clock me-1"></i>
-                                                Accepted Time:  {{ data.modified|date:"d M Y | H.i e" }}
-                                            </p>
-                                        </div>
-                                        {% elif data.active == False and data.is_approved == False %}
-                                        <div class="avatar avatar-sm bg-gradient-danger  me-3  my-auto">
-                                            <i class="fa-regular fa-circle-xmark fa-lg"></i>
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">Your Activation Request Has Been Declined</h6>
-                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
-                                            <p class="text-xs text-secondary mb-0 ">
-                                                <i class="fa fa-clock me-1"></i>
-                                                Declined Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
-                                            </p>
-                                        </div>
-                                        {% elif data.active == True and data.is_approved == True %}
-                                        <div class="avatar avatar-sm bg-gradient-success  me-3  my-auto">
-                                            <i class="fa-regular fa-circle-check fa-lg"></i>
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">Your Activation Request Has Been Accepted</h6>
-                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
-                                            <p class="text-xs text-secondary mb-0 ">
-                                                <i class="fa fa-clock me-1"></i>
-                                                Accepted Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
-                                            </p>
-                                        </div>
-                                        {% elif data.active == True and data.is_approved == False %}
-                                        <div class="avatar avatar-sm bg-gradient-danger  me-3  my-auto">
-                                            <i class="fa-regular fa-circle-xmark fa-lg"></i>
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">Your Deactivation Request Has Been Declined</h6>
-                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
-                                            <p class="text-xs text-secondary mb-0 ">
-                                                <i class="fa fa-clock me-1"></i>
-                                                Declined Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
-                                            </p>
-                                        </div>
-                                        {% elif data.active == True and data.is_approved == None %}
-                                        <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                                            <i class="fa-regular fa-circle-question fa-lg"></i>
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">Your Deactivation Request is being Reviewed</h6>
-                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
-                                            <p class="text-xs text-secondary mb-0 ">
-                                                <i class="fa fa-clock me-1"></i>
-                                                Requested Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
-                                            </p>
-                                        </div>
-                                        {% elif data.active == False and data.is_approved == None %}
-                                        <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                                            <i class="fa-regular fa-circle-question fa-lg"></i>
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">Your Activation Request is being Reviewed</h6>
-                                            <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
-                                            <p class="text-xs text-secondary mb-0 ">
-                                                <i class="fa fa-clock me-1"></i>
-                                                Requested Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
-                                            </p>
-                                        </div>
-                                        {% endif%}
+                            {% for data in sales_notif|slice:":5" %}
+                            <a class="dropdown-item border-radius-md" href="#">
+                                <div class="d-flex py-1">
+                                    {% if data.active == False and data.is_approved == True %}
+                                    <div class="avatar avatar-sm bg-gradient-success  me-3  my-auto">
+                                        <i class="fa-regular fa-circle-check fa-lg"></i>
                                     </div>
-                                </a>
-                                {% endfor %}
-                                <div class="text-center mt-2">
-                                    <a href="{% url 'subscriptions:list_subscription'  %}" class="btn btn-sm btn-outline-dark col-12">View All</a>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">Your Deactivation Request Has Been
+                                            Accepted</h6>
+                                        <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                        <p class="text-xs text-secondary mb-0 ">
+                                            <i class="fa fa-clock me-1"></i>
+                                            Accepted Time: {{ data.modified|date:"d M Y | H.i e" }}
+                                        </p>
+                                    </div>
+                                    {% elif data.active == False and data.is_approved == False %}
+                                    <div class="avatar avatar-sm bg-gradient-danger  me-3  my-auto">
+                                        <i class="fa-regular fa-circle-xmark fa-lg"></i>
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">Your Activation Request Has Been
+                                            Declined</h6>
+                                        <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                        <p class="text-xs text-secondary mb-0 ">
+                                            <i class="fa fa-clock me-1"></i>
+                                            Declined Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                        </p>
+                                    </div>
+                                    {% elif data.active == True and data.is_approved == True %}
+                                    <div class="avatar avatar-sm bg-gradient-success  me-3  my-auto">
+                                        <i class="fa-regular fa-circle-check fa-lg"></i>
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">Your Activation Request Has Been
+                                            Accepted</h6>
+                                        <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                        <p class="text-xs text-secondary mb-0 ">
+                                            <i class="fa fa-clock me-1"></i>
+                                            Accepted Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                        </p>
+                                    </div>
+                                    {% elif data.active == True and data.is_approved == False %}
+                                    <div class="avatar avatar-sm bg-gradient-danger  me-3  my-auto">
+                                        <i class="fa-regular fa-circle-xmark fa-lg"></i>
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">Your Deactivation Request Has Been
+                                            Declined</h6>
+                                        <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                        <p class="text-xs text-secondary mb-0 ">
+                                            <i class="fa fa-clock me-1"></i>
+                                            Declined Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                        </p>
+                                    </div>
+                                    {% elif data.active == True and data.is_approved == None %}
+                                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                                        <i class="fa-regular fa-circle-question fa-lg"></i>
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">Your Deactivation Request is being
+                                            Reviewed</h6>
+                                        <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                        <p class="text-xs text-secondary mb-0 ">
+                                            <i class="fa fa-clock me-1"></i>
+                                            Requested Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                        </p>
+                                    </div>
+                                    {% elif data.active == False and data.is_approved == None %}
+                                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                                        <i class="fa-regular fa-circle-question fa-lg"></i>
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">Your Activation Request is being
+                                            Reviewed</h6>
+                                        <p class="text-xs text-secondary mb-1 ">Outlet: <strong>{{ data.outlet.name }}</strong></p>
+                                        <p class="text-xs text-secondary mb-0 ">
+                                            <i class="fa fa-clock me-1"></i>
+                                            Requested Time: &nbsp;{{ data.modified|date:"d M Y | H.i e" }}
+                                        </p>
+                                    </div>
+                                    {% endif%}
                                 </div>
+                            </a>
+                            {% endfor %}
+                            <div class="text-center mt-2">
+                                <a href="{% url 'subscriptions:list_subscription'  %}"
+                                    class="btn btn-sm btn-outline-dark col-12">View All</a>
+                            </div>
                             {% endif %}
                         </li>
                     </ul>

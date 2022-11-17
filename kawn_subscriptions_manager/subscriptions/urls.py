@@ -10,10 +10,8 @@ from kawn_subscriptions_manager.subscriptions.views import (
     ListSubscription,
     DetailSubscription,
     AddSubscription,
-    SalesActivateSubscription,
-    sales_deactivate_subscription,
-    ActivateSubscription,
     deactivate_subscription,
+    ActivateSubscription,
     SubscriptionLogs,
     ActivityLogsCreated,
     ActivityLogsModified,
@@ -76,25 +74,16 @@ urlpatterns = [
         view=ListSubscription.as_view(),
         name="list_subscription",
     ),
-    path(
-        "detail/<int:pk>", 
-        DetailSubscription.as_view(), 
-        name="detail_subscription"
-    ),
+    path("detail/<int:pk>", DetailSubscription.as_view(), name="detail_subscription"),
     path(
         "add/",
         view=AddSubscription.as_view(),
         name="add_subscription",
     ),
     path(
-        "sales/activate/<int:pk>",
-        view=SalesActivateSubscription.as_view(),
-        name="sales_activate_subscription",
-    ),
-    path(
         "sales/deactivate/<int:id>",
-        view=sales_deactivate_subscription,
-        name="sales_deactivate_subscription",
+        view=deactivate_subscription,
+        name="deactivate_subscription",
     ),
     path(
         "activate/<int:pk>",
@@ -102,24 +91,14 @@ urlpatterns = [
         name="activate_subscription",
     ),
     path(
-        "deactivate/<int:id>",
-        view=deactivate_subscription,
-        name="deactivate_subscription",
-    ),
-    path(
-        "billing/detail/",
-        view=DetailBilling.as_view(),
-        name="detail_billing",
-    ),
-    path(
         "approval/list/",
         view=ListApprovalRequest.as_view(),
         name="list_approval",
     ),
     path(
-        "approval/detail/<int:pk>", 
-        DetailApprovalRequest.as_view(), 
-        name="detail_approval"
+        "approval/detail/<int:pk>",
+        DetailApprovalRequest.as_view(),
+        name="detail_approval",
     ),
     path(
         "approval/accept/<int:id>",

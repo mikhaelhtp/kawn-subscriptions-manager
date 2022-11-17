@@ -1,15 +1,20 @@
 import datetime
-from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django import forms
 from django.forms import ModelForm
 from betterforms.multiform import MultiModelForm
 
 from kawn_subscriptions_manager.clients.models import Client, Outlet
-from .models import SubscriptionPlan, Subscription, Billing, OrderPayment, SubscriptionDetail
+from .models import (
+    SubscriptionPlan,
+    Subscription,
+    Billing,
+    OrderPayment,
+)
 
 today = datetime.date.today()
 tomorow = datetime.date.today() + datetime.timedelta(days=1)
+month = datetime.date.today() + datetime.timedelta(days=30)
 
 
 class AddOrderPaymentForm(ModelForm):
@@ -26,16 +31,16 @@ class AddBillingForm(ModelForm):
     class Meta:
         model = Billing
         fields = ["price"]
-    
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(AddBillingForm, self).__init__(*args, **kwargs)
-        self.fields['price'].widget.attrs['readonly'] = True
+        self.fields["price"].widget.attrs["readonly"] = True
 
 
 class AddSubscriptionForm(ModelForm):
     billing_date = forms.DateField(
-        widget=forms.DateTimeInput(attrs={"type": "date", "value": today}),
+        widget=forms.DateTimeInput(attrs={"max": month, "type": "date", "value": today}),
         required=True,
     )
     expires = forms.DateField(
@@ -78,10 +83,10 @@ class AddSubscriptionMultiForm(MultiModelForm):
     }
 
     def get_form_args_kwargs(self, key, args, kwargs):
-        fargs, fkwargs = super(AddSubscriptionMultiForm, self).get_form_args_kwargs(key, args, kwargs)
-        fkwargs.update({
-            'request': kwargs.get('request')
-        })
+        fargs, fkwargs = super(AddSubscriptionMultiForm, self).get_form_args_kwargs(
+            key, args, kwargs
+        )
+        fkwargs.update({"request": kwargs.get("request")})
         return fargs, fkwargs
 
 
@@ -94,23 +99,24 @@ class ActivateOrderPaymentForm(ModelForm):
         outlet_id = kwargs.pop("outlet_id")
         super(ActivateOrderPaymentForm, self).__init__(*args, **kwargs)
 
+
 class ActivateBillingForm(ModelForm):
     class Meta:
         model = Billing
         fields = ["price"]
-    
+
     def __init__(self, *args, **kwargs):
         outlet_id = kwargs.pop("outlet_id")
         super(ActivateBillingForm, self).__init__(*args, **kwargs)
-        self.fields['price'].widget.attrs['readonly'] = True
+        self.fields["price"].widget.attrs["readonly"] = True
 
 
 class ActivateSubscriptionForm(ModelForm):
-    
+
     outlet = forms.CharField(disabled=True, required=False)
 
     billing_date = forms.DateField(
-        widget=forms.DateTimeInput(attrs={"type": "date", "value": today}),
+        widget=forms.DateTimeInput(attrs={"max": month, "type": "date", "value": today}),
         required=True,
     )
 
@@ -151,8 +157,8 @@ class ActivateSubscriptionMultiForm(MultiModelForm):
     }
 
     def get_form_args_kwargs(self, key, args, kwargs):
-        fargs, fkwargs = super(ActivateSubscriptionMultiForm, self).get_form_args_kwargs(key, args, kwargs)
-        fkwargs.update({
-            'outlet_id' : kwargs.get('outlet_id')
-        })
+        fargs, fkwargs = super(
+            ActivateSubscriptionMultiForm, self
+        ).get_form_args_kwargs(key, args, kwargs)
+        fkwargs.update({"outlet_id": kwargs.get("outlet_id")})
         return fargs, fkwargs

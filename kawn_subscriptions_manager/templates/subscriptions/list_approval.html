@@ -1,17 +1,16 @@
 {% extends "base.html" %}
+
 {% load static %}
 {% load humanize %}
 
 {% block menu-title %}List Approval Subscriptions{% endblock %}
-{% block listclientsubscriptions-active %}active{% endblock %}
-
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Approval Subscription</a></li>
-    </ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a role="link" aria-disabled="true">Approval Subscriptions</a></li>
+  </ol>
 </nav>
 {% endblock breadcrumbs %}
 
@@ -19,22 +18,20 @@
 <div class="row">
   <div class="col-12">
     <div class="card mb-4">
-      <div class="card-header pb-0 col-md-12">
-        <div class="row">
-          {% for message in messages %}
-          <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
-            <strong class="text-white">{{ message }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
-          </div>
-          {% endfor %}
-          <div class="align-middle">
-            <h5 class="font-weight-bolder">Approval Subcriptions</h5>
-          </div>
+      <div class="card-header pb-0 justify-content-lg-between">
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
+          <strong class="text-white">{{ message }}</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        {% endfor %}
+        <div class="align-middle">
+          <h5 class="font-weight-bolder">Approval Subcriptions</h5>
         </div>
       </div>
-      <div class="card">
-        <div class="card-body">
+      <div class="card-body">
+        <div class="table-responsive p-0">
           <table class="table table-sm " id="table1">
             <thead>
               <tr>
@@ -69,7 +66,8 @@
                   {% endif%}
                 </td>
                 <td class="align-middle text-center px-4">
-                  <a href="{% url 'subscriptions:detail_approval' data.id %}" class="btn btn-sm bg-gradient-faded-info text-white text-xs">
+                  <a href="{% url 'subscriptions:detail_approval' data.id %}"
+                    class="btn btn-sm bg-gradient-faded-info text-white text-xs">
                     Detail
                   </a>
                 </td>
@@ -79,7 +77,8 @@
                   {% if data.active is not None and data.is_approved == None %}
                   <a href="{% url 'subscriptions:accept_subscription' data.id %}"
                     class="btn btn-sm bg-success text-white text-xs">Accept</a>
-                  <a href="{% url 'subscriptions:decline_subscription' data.id %}" class="btn btn-sm bg-danger text-white text-xs">Decline</a>
+                  <a href="{% url 'subscriptions:decline_subscription' data.id %}"
+                    class="btn btn-sm bg-danger text-white text-xs">Decline</a>
                   {% endif%}
                 </td>
                 {% endcomment %}
