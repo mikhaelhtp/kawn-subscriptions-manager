@@ -5,7 +5,7 @@ from .models import (
     SubscriptionPlan,
     Subscription,
 )
-
+from kawn_subscriptions_manager.clients.models import Outlet
 
 class SubscriptionPlanFilter(django_filters.FilterSet):
     STATUS_CHOICES = (
@@ -51,3 +51,25 @@ class SubscriptionFilter(django_filters.FilterSet):
         subscription_plans = [(i.id, i.name) for i in subscription_plan]
         self.filters["subscriptionplan"].extra["choices"] = subscription_plans
         self.filters["outlet"].lookup_expr = "icontains"
+
+
+class ActivityFilter(django_filters.FilterSet):
+    subscriptionplan = ChoiceFilter(
+        label="Subscription Plan:", empty_label="All", choices=[]
+    )
+    outlet = ChoiceFilter(
+        label="Outlet Name:", empty_label="--------", choices=[]
+    )
+    
+    class Meta:
+        model = Subscription
+        fields = ["subscriptionplan", "outlet"]
+
+    def __init__(self, *args, **kwargs):
+        super(ActivityFilter, self).__init__(*args, **kwargs)
+        subscription_plan = SubscriptionPlan.objects.all()
+        subscription_plans = [(i.id, i.name) for i in subscription_plan]
+        outlet = Outlet.objects.all()
+        outlets = [(i.id, i.name) for i in outlet]
+        self.filters["subscriptionplan"].extra["choices"] = subscription_plans
+        self.filters["outlet"].extra["choices"] = outlets
