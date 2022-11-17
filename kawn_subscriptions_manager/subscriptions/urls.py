@@ -15,6 +15,8 @@ from kawn_subscriptions_manager.subscriptions.views import (
     ActivateSubscription,
     deactivate_subscription,
     SubscriptionLogs,
+    ActivityLogsCreated,
+    ActivityLogsModified,
     DetailBilling,
     ListApprovalRequest,
     DetailApprovalRequest,
@@ -54,10 +56,20 @@ urlpatterns = [
         view=deactivate_subscription_plan,
         name="deactivate_subscription_plan",
     ),
+    # path(
+    #     "logs/",
+    #     view=SubscriptionLogs.as_view(),
+    #     name="subscription_logs",
+    # ),
     path(
-        "logs/",
-        view=SubscriptionLogs.as_view(),
-        name="subscription_logs",
+        "activity/logs/created/",
+        view=ActivityLogsCreated.as_view(),
+        name="activity_logs_created",
+    ),
+    path(
+        "activity/logs/modified/",
+        view=ActivityLogsModified.as_view(),
+        name="activity_logs_modified",
     ),
     path(
         "list/",
