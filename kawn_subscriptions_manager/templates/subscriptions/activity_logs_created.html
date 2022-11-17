@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load humanize %}
+{% load bootstrap_pagination %}
+{% load crispy_forms_tags %}
+
+{% block menu-title %}Dashboard{% endblock %}
+{% block dashboard-active %}active{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subscriptions:activity_logs_created'%}">Activity Logs</a></li>
+        <li class="breadcrumb-item"><a role="link" aria-disabled="true">Created</a></li>
+    </ol>
+</nav>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show {{ message.tags }}" role="alert">
+        <strong class="text-white">{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+    </div>
+    {% endfor %}
+</div>
+
+{% if request.user.type == "ADMIN" or request.user.type == "SUPERVISOR" %}
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="card h-100">
+            <div class="card-header pb-0">
+                <h6 class="font-weight-bolder">Activity Logs
+                    <span class="badge badge-sm bg-gradient-success">Created</span>
+                </h6>
+                <a href="{% url 'subscriptions:activity_logs_created'%}" class="btn btn-sm btn-outline-success col-md-3 mt-2 mb-1">Created</a>
+                <a href="{% url 'subscriptions:activity_logs_modified'%}" class="btn btn-sm btn-outline-warning col-md-3 mt-2 mb-1">Modified</a>
+                <!-- <p class="text-sm">
+                    <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
+                    <span class="font-weight-bold">24%</span> this month
+                </p> -->
+            </div>
+            <div class="card-body p-3">
+                <div class="mt-2 mb-2 p-2">
+                    <a class="btn btn-sm bg-gradient-dark text-start" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                        <i class="fa-solid fa-filter"></i> Filter
+                    </a>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Filter</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="col-lg-12">
+                                        <form method="get">
+                                            <div class="row">
+                                                <div>
+                                                    {{ myFilter.form.outlet|as_crispy_field }}
+                                                </div>
+                                                <div>
+                                                    {{ myFilter.form.subscriptionplan|as_crispy_field }}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn bg-secondary">
+                                                        <a href="{% url 'subscriptions:activity_logs_created' %}" class="text-white">
+                                                            Clear Filter
+                                                        </a>
+                                                    </button>
+                                                    <button class="btn bg-gradient-info" type="submit">Filter</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% for data in object_list %}
+                <div class="timeline timeline-one-side">
+                    {% if data.created %}
+                    <div class="timeline-block mb-3">
+                        <span class="timeline-step">
+                            <i class="ni ni-app text-dark text-gradient"></i>
+                        </span>
+                        <div class="timeline-content">
+                            <h6 class="text-dark text-sm font-weight-bold mb-0">Subscriptions has been
+                                <span class="badge badge-sm bg-gradient-success">created</span>
+                                by <b>{{ data.created_by.name }} ({{ data.created_by.type }})</b>
+                            </h6>
+                            <li>
+                                <label for="text-dark text-sm font-weight-bold">Outlet Name</label>
+                                <ul>
+                                    <p class="text-secondary font-weight-bold text-xs">{{ data.outlet.name }}</p>
+                                </ul>
+                            </li>
+                            <li>
+                                <label for="text-dark text-sm font-weight-bold">Subscriptions Plan</label>
+                                <ul>
+                                    <p class="text-secondary font-weight-bold text-xs">{{ data.subscriptionplan.name }}
+                                    </p>
+                                </ul>
+                            </li>
+                            <p class="text-uppercase text-secondary font-weight-bold text-xs mt-1 mb-0">
+                                {{ data.created|date:"d M Y | H.i e" }}
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <div class="card-footer row">
+                    <hr>
+                        <span class="col-lg-6">{% bootstrap_paginate page_obj show_first_last="true" centered="true" range=4 %}</span>
+                        <span class="col-lg-6 text-end text-sm">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}
+
+{% block inline_javascript %}
+<script></script>
+{% endblock inline_javascript %}
