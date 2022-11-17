@@ -47,9 +47,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "kawn_subscriptions_manager",
         "USER": "postgres",
-        "PASSWORD": "iloveyou3000",
+        "PASSWORD": "root",
         "HOST": "localhost",
-        "PORT": "5432",
+        "PORT": "5433",
     }
 }
 
@@ -123,7 +123,8 @@ AUTHENTICATION_BACKENDS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "clients:list_client"
+LOGIN_REQUIRED_REDIRECT_FIELD_NAME = ''
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
 
