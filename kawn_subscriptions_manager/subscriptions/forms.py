@@ -116,7 +116,7 @@ class ActivateSubscriptionForm(ModelForm):
     outlet = forms.CharField(disabled=True, required=False)
 
     billing_date = forms.DateField(
-        widget=forms.DateTimeInput(attrs={"type": "date", "value": today}),
+        widget=forms.DateTimeInput(attrs={"max": month, "type": "date", "value": today}),
         required=True,
     )
 
