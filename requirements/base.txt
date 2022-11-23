@@ -33,3 +33,4 @@ django-view-breadcrumbs
 django-celery
 crispy-bootstrap5
 django-betterforms
+httpsig
