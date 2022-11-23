@@ -37,12 +37,6 @@ from .filters import (
 )
 from kawn_subscriptions_manager.clients.models import Client, Outlet
 from kawn_subscriptions_manager.decorators import allowed_users, sales_only
-from kawn_subscriptions_manager.api import (
-    api_outlet,
-    api_outlet1,
-    api_subscription_plans,
-    api_subscriptions,
-)
 
 
 class ListSubscriptionPlan(
@@ -91,8 +85,14 @@ class AddSubscriptionPlan(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
         ("Add Subscription Plans", reverse_lazy("subscriptions:add_subscription_plan")),
     ]
     template_name = "subscriptions/subscription_plans/form_subscription_plan.html"
-    success_url = reverse_lazy("subscriptions:list_subscription_plan")
-    success_message = "Subscription plans successfully added!"
+
+    def form_valid(self, form):
+        messages.success(self.request, "Subscription plans successfully added!")
+        top = SubscriptionPlan.objects.order_by("-id")[0]
+        subscription_plan = form.save(commit=False)
+        subscription_plan.id = top.id + 1
+        subscription_plan.save()
+        return redirect("subscriptions:list_subscription_plan")
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
@@ -180,8 +180,9 @@ class ListSubscription(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMi
         else:
             return ["subscriptions/list_subscription.html"]
 
-    now = timezone.now()
-    Subscription.objects.filter(expires__lte=now).update(active=False)
+    def __init__(self):
+        now = timezone.now()
+        Subscription.objects.filter(expires__lte=now).update(active=False)
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
