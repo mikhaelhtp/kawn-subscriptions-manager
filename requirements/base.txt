@@ -29,6 +29,6 @@ django-phonenumber-field[phonenumberslite]==7.0.0 # https://pypi.org/project/dja
 django-widget-tweaks==1.4.12 # https://pypi.org/project/django-widget-tweaks/
 django-bootstrap5==22.2 #https://pypi.org/project/django-bootstrap5/
 django-view-breadcrumbs==2.4.1 #https://pypi.org/project/django-view-breadcrumbs/
-django-celery==3.3.1
+django-celery==3.3.1 # https://pypi.org/project/django-celery/
 crispy-bootstrap5==0.7 #https://pypi.org/project/crispy-bootstrap5/
 django-betterforms==2.0.0 #https://pypi.org/project/django-betterforms/
