@@ -6,6 +6,7 @@ from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 
+
 urlpatterns = [
     path(
         "",
