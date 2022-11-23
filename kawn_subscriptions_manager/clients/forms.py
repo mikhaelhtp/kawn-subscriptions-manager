@@ -12,6 +12,7 @@ class OutletForm(ModelForm):
             "client",
             "name",
             "display_name",
+            "outlet_code",
             "phone",
             "address",
             "province",
