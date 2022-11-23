@@ -47,9 +47,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "kawn_subscriptions_manager",
         "USER": "postgres",
-        "PASSWORD": "root",
+        "PASSWORD": "password",
         "HOST": "localhost",
-        "PORT": "5433",
+        "PORT": "5432",
     }
 }
 
@@ -88,7 +88,6 @@ THIRD_PARTY_APPS = [
     "widget_tweaks",
     "bootstrap_pagination",
     "django_bootstrap5",
-    "bootstrap4",
     "django_tables2",
     "django_filters",
     "phonenumber_field",
@@ -351,6 +350,4 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-# Crispy form
-# CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-# CRISPY_TEMPLATE_PACK = "bootstrap5"
+# INSTALLED_APPS += ("djcelery", )
