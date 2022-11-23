@@ -20,17 +20,15 @@ django-crispy-forms==1.14.0  # https://github.com/django-crispy-forms/django-cri
 crispy-bootstrap5==0.6  # https://github.com/django-crispy-forms/crispy-bootstrap5
 django-compressor==4.1  # https://github.com/django-compressor/django-compressor
 django-redis==5.2.0  # https://github.com/jazzband/django-redis
-django-login-required-middleware
-django-bootstrap-pagination
-django-filter
-django-tables2
-tablib[xlsx]
-django-phonenumber-field[phonenumberslite]
-django-widget-tweaks
-django-bootstrap5
-django-bootstrap4
-django-view-breadcrumbs
-django-celery
-crispy-bootstrap5
-django-betterforms
-httpsig
+django-login-required-middleware==0.9.0 # https://pypi.org/project/django-login-required-middleware/
+django-bootstrap-pagination==1.7.1 # https://pypi.org/project/django-bootstrap-pagination/
+django-filter==22.1 # https://pypi.org/project/django-filter/
+django-tables2==2.4.1 # https://pypi.org/project/django-tables2/
+tablib[xlsx]==3.2.1 # https://pypi.org/project/tablib/
+django-phonenumber-field[phonenumberslite]==7.0.0 # https://pypi.org/project/django-phonenumber-field/
+django-widget-tweaks==1.4.12 # https://pypi.org/project/django-widget-tweaks/
+django-bootstrap5==22.2 #https://pypi.org/project/django-bootstrap5/
+django-view-breadcrumbs==2.4.1 #https://pypi.org/project/django-view-breadcrumbs/
+django-celery==3.3.1
+crispy-bootstrap5==0.7 #https://pypi.org/project/crispy-bootstrap5/
+django-betterforms==2.0.0 #https://pypi.org/project/django-betterforms/
