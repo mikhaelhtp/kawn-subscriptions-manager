@@ -131,7 +131,6 @@ class AddOutletClient(CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        top = Outlet.objects.order_by("-id")[0]
         outlet = form.save(commit=False)
         outlet.client_id = self.kwargs["pk"]
         outlet.province_read = dict(form.fields["province"].choices)[
@@ -140,7 +139,9 @@ class AddOutletClient(CreateView):
         outlet.city_read = dict(form.fields["city"].choices)[
             int(self.request.POST.get("city"))
         ]
-        outlet.id = top.id + 1
+        if Outlet.objects.all().exists():
+            top = Outlet.objects.order_by("-id")[0]
+            outlet.id = top.id + 1
         outlet.save()
         return redirect("clients:list_outlet_client", pk=self.kwargs["pk"])
 
@@ -208,7 +209,6 @@ class AddOutlet(BaseBreadcrumbMixin, CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Outlet successfully added")
-        top = Outlet.objects.order_by("-id")[0]
         outlet = form.save(commit=False)
         outlet.province_read = dict(form.fields["province"].choices)[
             int(self.request.POST.get("province"))
@@ -216,7 +216,9 @@ class AddOutlet(BaseBreadcrumbMixin, CreateView):
         outlet.city_read = dict(form.fields["city"].choices)[
             int(self.request.POST.get("city"))
         ]
-        outlet.id = top.id + 1
+        if Outlet.objects.all().exists():
+            top = Outlet.objects.order_by("-id")[0]
+            outlet.id = top.id + 1
         outlet.save()
         return redirect("clients:list_outlet")
 

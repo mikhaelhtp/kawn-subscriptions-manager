@@ -88,9 +88,10 @@ class AddSubscriptionPlan(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Subscription plans successfully added!")
-        top = SubscriptionPlan.objects.order_by("-id")[0]
         subscription_plan = form.save(commit=False)
-        subscription_plan.id = top.id + 1
+        if SubscriptionPlan.objects.all().exists():
+            top = SubscriptionPlan.objects.order_by("-id")[0]
+            subscription_plan.id = top.id + 1
         subscription_plan.save()
         return redirect("subscriptions:list_subscription_plan")
 
@@ -216,7 +217,6 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Subscriptions successfully added!")
-        top = Subscription.objects.order_by("-id")[0]
         name_type = dict(
             {"name": self.request.user.name, "type": self.request.user.type}
         )
@@ -242,7 +242,9 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
         subscription = form["add_subscription_form"].save(commit=False)
         subscription.billing_id = top_billing.id
         subscription.created_by = name_type
-        subscription.id = top.id + 1
+        if Subscription.objects.all().exists():
+            top = Subscription.objects.order_by("-id")[0]
+            subscription.id = top.id + 1
         subscription.save()
         return redirect("subscriptions:list_subscription")
 
