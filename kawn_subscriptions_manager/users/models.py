@@ -15,7 +15,7 @@ class User(AbstractUser):
         ADMIN = "ADMIN", "Admin"
 
     type = models.CharField(
-        _("Type"), max_length=50, choices=Types.choices, default=Types.SALES
+        _("Type"), max_length=50, choices=Types.choices
     )
 
     """
