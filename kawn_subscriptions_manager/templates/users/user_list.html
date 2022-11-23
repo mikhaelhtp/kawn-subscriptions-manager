@@ -44,23 +44,23 @@
                     <table class="table table-sm" id="table1">
                         <thead>
                             <tr class="text-center">
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name
+                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Name
                                 </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Username
+                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Username
                                 </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email
+                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Email
                                 </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status
+                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Status
                                 </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Access
+                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Access
                                 </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action
+                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Action
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for user in object_list %}
-                            <tr class="text-center text-black">
+                            <tr>
                                 <td class="align-middle text-center text-sm">
                                     <p class="text-xs mb-0">{{ user.name }}</p>
                                 </td>
@@ -80,7 +80,7 @@
                                 <td class="align-middle text-center text-sm">
                                     <p class="text-xs mb-0">{{ user.type }}</p>
                                 </td>
-                                <td class="align-middle text-sm">
+                                <td class="align-middle text-center text-sm">
                                     <div class="d-inline">
                                         <a href="{% url 'users:edit_users' user.id %}"
                                             class="btn btn-sm bg-warning text-white text-xs" title='Edit'>Edit</a>
