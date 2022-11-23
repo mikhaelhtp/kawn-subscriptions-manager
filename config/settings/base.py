@@ -164,8 +164,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_htmx.middleware.HtmxMiddleware"
-    # "kawn_subscriptions_manager.users.middleware.RestrictUserMiddleware",
 ]
 
 LOGIN_REQUIRED_IGNORE_VIEW_NAMES = []
