@@ -3,7 +3,6 @@ from django import forms
 
 from .models import Outlet, Client, Province, City
 from kawn_subscriptions_manager.users.models import User
-from kawn_subscriptions_manager.signature import prov
 
 
 class OutletForm(ModelForm):
