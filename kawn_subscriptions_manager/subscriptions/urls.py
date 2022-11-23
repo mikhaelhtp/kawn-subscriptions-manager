@@ -15,7 +15,6 @@ from kawn_subscriptions_manager.subscriptions.views import (
     SubscriptionLogs,
     ActivityLogsCreated,
     ActivityLogsModified,
-    DetailBilling,
     ListApprovalRequest,
     DetailApprovalRequest,
     accept_subscription,
