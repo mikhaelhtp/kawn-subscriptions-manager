@@ -10,10 +10,6 @@ from django_tables2.export.views import ExportMixin
 from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 
 from .models import Outlet, Client, City
-from kawn_subscriptions_manager.api import (
-    api_province,
-    api_city,
-)
 from .forms import (
     OutletForm,
     ClientForm,
