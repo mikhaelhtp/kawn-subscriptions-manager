@@ -42,18 +42,12 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": env("DATABASE_NAME"),
-        "USER": env("DATABASE_USER"),
-        "PASSWORD": env("DATABASE_PASS"),
-        "HOST": env("DATABASE_HOST"),
-        "PORT": env("DATABASE_PORT"),
-    }
+    "default": env.db(
+        "DATABASE_URL",
+        default="postgres:///kawn_subscriptions_manager",
+    ),
 }
-
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -257,13 +251,6 @@ EMAIL_BACKEND = env(
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 # EMAIL_TIMEOUT = 5
-
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT =  env("EMAIL_PORT")
-EMAIL_HOST_USER =  env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD =  env("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS =  False
-# EMAIL_USE_SSL = False
 
 # ADMIN
 # ------------------------------------------------------------------------------
