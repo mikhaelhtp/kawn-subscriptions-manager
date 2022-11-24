@@ -1,6 +1,5 @@
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from asyncio.windows_events import NULL
 from email.policy import default
 from django.db import models
 from django.utils.translation import gettext_lazy as _
