@@ -2,7 +2,7 @@ from kawn_subscriptions_manager.signature import subscriptions
 from kawn_subscriptions_manager.subscriptions.models import Subscription
 
 
-subscriptions = tuple(subscription["results"])
+subscriptions = tuple(subscriptions["results"])
 
 for subscription in subscriptions:
     Subscription.objects.bulk_create([

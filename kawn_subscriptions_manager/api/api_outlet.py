@@ -2,8 +2,8 @@ from kawn_subscriptions_manager.signature import outlets, subscriptions
 from kawn_subscriptions_manager.clients.models import Outlet
 
 
-outlets_in_subscription = tuple(subscription["results"])
-outlets = tuple(outlet["results"])
+outlets_in_subscription = tuple(subscriptions["results"])
+outlets = tuple(outlets["results"])
 
 for outlet in outlets_in_subscription:
     if outlet["outlet"]["province"] is not None and outlet["outlet"]["city"] is not None:
