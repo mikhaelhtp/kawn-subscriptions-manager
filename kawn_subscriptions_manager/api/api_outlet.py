@@ -1,4 +1,4 @@
-from kawn_subscriptions_manager.signature import outlet, subscription
+from kawn_subscriptions_manager.signature import outlets, subscriptions
 from kawn_subscriptions_manager.clients.models import Outlet
 
 

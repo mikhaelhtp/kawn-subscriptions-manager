@@ -1,4 +1,4 @@
-from kawn_subscriptions_manager.signature import subscription
+from kawn_subscriptions_manager.signature import subscriptions
 from kawn_subscriptions_manager.subscriptions.models import Subscription
 
 
