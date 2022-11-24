@@ -27,13 +27,13 @@ subscriptions = requests.get(
 ).json()
 
 outlets = requests.get(
-    "https://"+ DOMAIN +"/api/v2.1/internal-application/outlet/",
+    "https://"+ DOMAIN +"/api/v2.1/internal-application/outlet/?limit=465",
     auth=auth,
     headers=headers,
 ).json()
 
 provinces = requests.get(
-    "https://"+ DOMAIN +"/api/v2.1/provinces/",
+    "https://"+ DOMAIN +"/api/v2.1/provinces/?ordering=id&limit=34&offset=0",
     auth=auth,
     headers=headers,
 ).json()

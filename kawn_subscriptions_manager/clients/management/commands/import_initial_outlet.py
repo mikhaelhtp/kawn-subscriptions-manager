@@ -1,9 +1,9 @@
 from django.core.management.base import BaseCommand
-from kawn_subscriptions_manager.api import api_outlet
+from kawn_subscriptions_manager.api.api_get import get_outlet
 
 
 class Command(BaseCommand):
     help = 'Import API Outlet'
 
     def handle(self, *args, **kwargs):
-        api_outlet
+        get_outlet
