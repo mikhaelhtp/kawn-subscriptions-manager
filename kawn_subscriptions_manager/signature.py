@@ -7,8 +7,8 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
-KEY_ID = env("KEY_ID")
-SECRET = env("SECRET")
+KAWN_SUBSCRIPTION_KEY_ID = env("KAWN_SUBSCRIPTION_KEY_ID")
+KAWN_SUBSCRIPTION_SECRET = env("KAWN_SUBSCRIPTION_SECRET")
 DOMAIN = "indev.kawn.co.id"
 
 e = datetime.datetime.now()
@@ -17,22 +17,22 @@ signature_headers = ["(request-target)", "date"]
 headers = {"Date": e.strftime("%a, %d %b %Y %I:%M:%S")}
 
 auth = HTTPSignatureAuth(
-    key_id=KEY_ID, secret=SECRET, algorithm="hmac-sha256", headers=signature_headers
+    key_id=KAWN_SUBSCRIPTION_KEY_ID, secret=KAWN_SUBSCRIPTION_SECRET, algorithm="hmac-sha256", headers=signature_headers
 )
 
-req = requests.get(
+subscriptions = requests.get(
     "https://"+ DOMAIN +"/api/v2.1/internal-application/subscription/",
     auth=auth,
     headers=headers,
 ).json()
 
-reqoutlet = requests.get(
+outlets = requests.get(
     "https://"+ DOMAIN +"/api/v2.1/internal-application/outlet/",
     auth=auth,
     headers=headers,
 ).json()
 
-prov = requests.get(
+provinces = requests.get(
     "https://"+ DOMAIN +"/api/v2.1/provinces/",
     auth=auth,
     headers=headers,
@@ -48,13 +48,13 @@ for i in p:
     ).json()
     cities += tuple(city["results"])
 
-account = requests.get(
+accounts = requests.get(
     "https://"+ DOMAIN +"/api/v2.1/account/",
     auth=auth,
     headers=headers,
 ).json()
 
-subscription_plan = requests.get(
+subscription_plans = requests.get(
     "https://"+ DOMAIN +"/api/v2.1/internal-application/subscription-plan/",
     auth=auth,
     headers=headers,
