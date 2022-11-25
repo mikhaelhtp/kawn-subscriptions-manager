@@ -130,6 +130,7 @@ class AddUsers(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
             {
                 "email": form.cleaned_data["email"],
                 "access": form.cleaned_data["type"],
+                "domain": self.request.scheme+"://"+self.request.META['HTTP_HOST']
             },
         )
 
