@@ -103,16 +103,17 @@ class ListOutletClient(ListBreadcrumbMixin, ListView):
     model = Outlet
 
     def get_context_data(self, object_list=None):
+        client_id = Client.objects.filter(slug=self.kwargs["slug"]).values_list("id")
         queryset = (
             object_list
             if object_list is not None
-            else Outlet.objects.filter(client_id=self.kwargs["pk"]).order_by("-id")
+            else Outlet.objects.filter(client_id__in=client_id).order_by("-id")
         )
         context = {
             # "myFilter": outlets,
             "object_list": queryset,
-            "name": Client.objects.filter(id=self.kwargs["pk"])[0],
-            "pk": self.kwargs["pk"],
+            "name": Client.objects.filter(slug=self.kwargs["slug"])[0],
+            "slug": self.kwargs["slug"],
         }
         return context
 
@@ -132,7 +133,8 @@ class AddOutletClient(CreateView):
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         outlet = form.save(commit=False)
-        outlet.client_id = self.kwargs["pk"]
+        client_id = Client.objects.filter(slug=self.kwargs["slug"]).values_list("id")
+        outlet.client_id = client_id
         outlet.province_read = dict(form.fields["province"].choices)[
             int(self.request.POST.get("province"))
         ]
@@ -143,7 +145,7 @@ class AddOutletClient(CreateView):
             top = Outlet.objects.order_by("-id")[0]
             outlet.id = top.id + 1
         outlet.save()
-        return redirect("clients:list_outlet_client", pk=self.kwargs["pk"])
+        return redirect("clients:list_outlet_client", slug=self.kwargs["slug"])
 
 
 class UpdateOutletClient(UpdateView):
@@ -152,8 +154,8 @@ class UpdateOutletClient(UpdateView):
     template_name = "clients/sales/form_outlet.html"
 
     def form_valid(self, form):
-        messages.success(self.request, "Outlet successfully added")
-        outlet_id = Outlet.objects.get(id=self.kwargs["pk"])
+        messages.success(self.request, "Outlet successfully updated")
+        outlet_slug = Outlet.objects.get(slug=self.kwargs["slug"])
         outlet = form.save(commit=False)
         outlet.province_read = dict(form.fields["province"].choices)[
             int(self.request.POST.get("province"))
@@ -162,7 +164,7 @@ class UpdateOutletClient(UpdateView):
             int(self.request.POST.get("city"))
         ]
         outlet.save()
-        return redirect("clients:list_outlet_client", pk=outlet_id.client_id)
+        return redirect("clients:list_outlet_client", slug=outlet_slug.client.slug)
 
 
 class ListOutlet(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
