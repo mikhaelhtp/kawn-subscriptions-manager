@@ -12,11 +12,17 @@ class OutletForm(ModelForm):
             "client",
             "name",
             "display_name",
-            "outlet_code",
             "phone",
             "address",
+            "postal_code",
             "province",
             "city",
+            "outlet_code",
+            "transaction_code_prefix",
+            "archieved",
+            "enable_dashboard",
+            "taxes", 
+            "gratuity",
         ]
 
     def __init__(self, user, *args, **kwargs):
@@ -78,7 +84,22 @@ class ClientFormForSupervisor(ModelForm):
 class OutletClientForm(ModelForm):
     class Meta:
         model = Outlet
-        fields = ["name", "display_name", "phone", "address", "province", "city"]
+        fields = [
+            "name",
+            "display_name",
+            "phone",
+            "address",
+            "postal_code",
+            "province",
+            "city",
+            "outlet_code",
+            "transaction_code_prefix",
+            "archieved",
+            "enable_dashboard",
+            "taxes", 
+            "gratuity",
+            ]
+
 
     def __init__(self, *args, **kwargs):
         super(OutletClientForm, self).__init__(*args, **kwargs)
