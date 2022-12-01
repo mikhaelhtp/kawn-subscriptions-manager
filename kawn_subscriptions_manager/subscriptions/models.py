@@ -16,9 +16,9 @@ class SubscriptionPlan(models.Model):
         M = "M", "Month"
         Y = "Y", "Year"
 
-    name = models.CharField(max_length=255, null=True)
-    slug = models.SlugField(max_length=255, null=True, editable=False)
-    price = models.FloatField(null=True)
+    name = models.CharField(max_length=255, null=True, unique=True)
+    slug = models.SlugField(max_length=255, null=True, editable=False, unique=True)
+    price = models.DecimalField(decimal_places=2, max_digits=12, null=True)
     description = models.TextField(null=True)
     trial_unit = models.CharField(max_length=255, choices=Unit.choices, null=True)
     trial_period = models.SmallIntegerField(null=True)
@@ -92,6 +92,7 @@ class Subscription(models.Model):
         SubscriptionPlan, on_delete=models.CASCADE, null=True
     )
     billing = models.ForeignKey(Billing, on_delete=models.CASCADE, null=True)
+    slug = models.SlugField(max_length=255, null=True, editable=False, default=uuid.uuid4, unique=True)
     expires = models.DateTimeField(null=True)
     billing_date = models.DateTimeField(null=True)
     cancelled = models.BooleanField(null=True)

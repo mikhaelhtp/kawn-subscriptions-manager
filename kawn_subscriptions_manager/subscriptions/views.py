@@ -17,6 +17,7 @@ from django_tables2 import SingleTableMixin
 from django_tables2.export.views import ExportMixin
 
 from json import dumps
+import simplejson as json
 from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 
 from .models import (
@@ -89,6 +90,7 @@ class AddSubscriptionPlan(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
     def form_valid(self, form):
         messages.success(self.request, "Subscription plans successfully added!")
         subscription_plan = form.save(commit=False)
+        
         if SubscriptionPlan.objects.all().exists():
             top = SubscriptionPlan.objects.order_by("-id")[0]
             subscription_plan.id = top.id + 1
@@ -131,8 +133,8 @@ class DeleteSubscriptionPlan(DeleteView):
 
 
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
-def deactivate_subscription_plan(request, id):
-    subscriptionplan = SubscriptionPlan.objects.get(pk=id)
+def deactivate_subscription_plan(request, slug):
+    subscriptionplan = SubscriptionPlan.objects.get(slug=slug)
     subscriptionplan.is_active = False
     subscriptionplan.save()
     messages.success(request, "Subscription plans has been successfully deactivated!")
@@ -140,8 +142,8 @@ def deactivate_subscription_plan(request, id):
 
 
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
-def activate_subscription_plan(request, id):
-    subscriptionplan = SubscriptionPlan.objects.get(pk=id)
+def activate_subscription_plan(request, slug):
+    subscriptionplan = SubscriptionPlan.objects.get(slug=slug)
     subscriptionplan.is_active = True
     subscriptionplan.save()
     messages.success(request, "Subscription plans has been successfully activated!")
@@ -210,7 +212,7 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subscriptionplan"] = dumps(
+        context["subscriptionplan"] = json.dumps(
             list(SubscriptionPlan.objects.values("id", "price", "recurrence_period"))
         )
         return context
@@ -260,7 +262,7 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
     ]
 
     def get_form_kwargs(self):
-        outlet = (Subscription.objects.get(id=self.kwargs["pk"])).outlet
+        outlet = (Subscription.objects.get(slug=self.kwargs["slug"])).outlet
         kwargs = super(ActivateSubscription, self).get_form_kwargs()
         kwargs["outlet_id"] = outlet
         print(outlet)
@@ -278,7 +280,7 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
         name_type = dict(
             {"name": self.request.user.name, "type": self.request.user.type}
         )
-        billing_id = (Subscription.objects.get(id=self.kwargs["pk"])).billing
+        billing_id = (Subscription.objects.get(slug=self.kwargs["slug"])).billing
         order_payment_id = (Billing.objects.get(id=billing_id.id)).orderpayment
         order_payment = OrderPayment.objects.get(pk=order_payment_id.id)
         order_payment.payment_type = form["activate_order_payment_form"].cleaned_data[
@@ -312,15 +314,15 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subscriptionplan"] = dumps(
+        context["subscriptionplan"] = json.dumps(
             list(SubscriptionPlan.objects.values("id", "price", "recurrence_period"))
         )
         return context
 
 
 @allowed_users(allowed_roles=["SALES"])
-def deactivate_subscription(request, id):
-    subscription = Subscription.objects.get(pk=id)
+def deactivate_subscription(request, slug):
+    subscription = Subscription.objects.get(slug=slug)
     name_type = dict({"name": request.user.name, "type": request.user.type})
     subscription.active = True
     subscription.modified_by = name_type
@@ -351,8 +353,8 @@ class DetailApprovalRequest(DetailView):
 
 
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
-def accept_subscription(request, id):
-    subscription = Subscription.objects.get(pk=id)
+def accept_subscription(request, slug):
+    subscription = Subscription.objects.get(slug=slug)
     name_type = dict({"name": request.user.name, "type": request.user.type})
 
     if subscription.active is not True:
@@ -369,8 +371,8 @@ def accept_subscription(request, id):
 
 
 @allowed_users(allowed_roles=["ADMIN", "SUPERVISOR"])
-def decline_subscription(request, id):
-    subscription = Subscription.objects.get(pk=id)
+def decline_subscription(request, slug):
+    subscription = Subscription.objects.get(slug=slug)
     name_type = dict({"name": request.user.name, "type": request.user.type})
     if subscription.active is not True:
         subscription.active = False

@@ -34,30 +34,25 @@ urlpatterns = [
         name="add_subscription_plan",
     ),
     path(
-        "subscription_plan/update/<int:pk>",
+        "subscription_plan/update/<slug:slug>/",
         view=UpdateSubscriptionPlan.as_view(),
         name="update_subscription_plan",
     ),
     path(
-        "subscription_plan/delete/<int:pk>",
+        "subscription_plan/delete/<slug:slug>/",
         view=DeleteSubscriptionPlan.as_view(),
         name="delete_subscription_plan",
     ),
     path(
-        "subscription_plan/activate/<int:id>",
+        "subscription_plan/activate/<slug:slug>/",
         view=activate_subscription_plan,
         name="activate_subscription_plan",
     ),
     path(
-        "subscription_plan/deactivate/<int:id>",
+        "subscription_plan/deactivate/<slug:slug>/",
         view=deactivate_subscription_plan,
         name="deactivate_subscription_plan",
     ),
-    # path(
-    #     "logs/",
-    #     view=SubscriptionLogs.as_view(),
-    #     name="subscription_logs",
-    # ),
     path(
         "activity/logs/created/",
         view=ActivityLogsCreated.as_view(),
@@ -73,19 +68,19 @@ urlpatterns = [
         view=ListSubscription.as_view(),
         name="list_subscription",
     ),
-    path("detail/<int:pk>", DetailSubscription.as_view(), name="detail_subscription"),
+    path("detail/<slug:slug>/", DetailSubscription.as_view(), name="detail_subscription"),
     path(
         "add/",
         view=AddSubscription.as_view(),
         name="add_subscription",
     ),
     path(
-        "sales/deactivate/<int:id>",
+        "deactivate/<slug:slug>/",
         view=deactivate_subscription,
         name="deactivate_subscription",
     ),
     path(
-        "activate/<int:pk>",
+        "activate/<slug:slug>/",
         view=ActivateSubscription.as_view(),
         name="activate_subscription",
     ),
@@ -95,17 +90,17 @@ urlpatterns = [
         name="list_approval",
     ),
     path(
-        "approval/detail/<int:pk>",
+        "approval/detail/<slug:slug>/",
         DetailApprovalRequest.as_view(),
         name="detail_approval",
     ),
     path(
-        "approval/accept/<int:id>",
+        "approval/accept/<slug:slug>/",
         view=accept_subscription,
         name="accept_subscription",
     ),
     path(
-        "approval/decline/<int:id>",
+        "approval/decline/<slug:slug>/",
         view=decline_subscription,
         name="decline_subscription",
     ),
