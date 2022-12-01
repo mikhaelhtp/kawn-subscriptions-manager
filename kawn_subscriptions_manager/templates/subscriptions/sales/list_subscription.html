@@ -124,10 +124,10 @@
                   </td>
                   <td class="align-middle text-center px-4">
                     {% if data.active == True and data.is_approved is not None %}
-                    <a href="{% url 'subscriptions:deactivate_subscription' data.id %}"
+                    <a href="{% url 'subscriptions:deactivate_subscription' data.slug %}"
                       class="btn btn-sm bg-danger text-white text-xs">Deactivate</a>
                     {% elif data.active == False and data.is_approved is not None %}
-                    <a href="{% url 'subscriptions:activate_subscription' data.id %}"
+                    <a href="{% url 'subscriptions:activate_subscription' data.slug %}"
                       class="btn btn-sm bg-info text-white text-xs">Activate</a>
                     {% else %}
                     <p class="text-xs font-weight-bolder mb-0 text-center">Waiting for Approval</p>
