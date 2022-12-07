@@ -186,6 +186,7 @@ class ListSubscription(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMi
     def __init__(self):
         now = timezone.now()
         Subscription.objects.filter(expires__lte=now).update(active=False)
+        Subscription.objects.filter(expires__lte=now).update(cancelled=True)
 
 
 @method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
@@ -243,6 +244,7 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
         top_billing = Billing.objects.order_by("-id")[0]
         subscription = form["add_subscription_form"].save(commit=False)
         subscription.billing_id = top_billing.id
+        subscription.is_approved = ""
         subscription.created_by = name_type
         if Subscription.objects.all().exists():
             top = Subscription.objects.order_by("-id")[0]
@@ -307,6 +309,7 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
         billing.save()
         subscription = form["activate_subscription_form"].save(commit=False)
         subscription.is_approved = ""
+        subscription.cancelled = False
         subscription.modified_by = name_type
         subscription.save()
 
@@ -324,7 +327,6 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
 def deactivate_subscription(request, slug):
     subscription = Subscription.objects.get(slug=slug)
     name_type = dict({"name": request.user.name, "type": request.user.type})
-    subscription.active = True
     subscription.modified_by = name_type
     subscription.is_approved = ""
     subscription.save()
@@ -359,9 +361,11 @@ def accept_subscription(request, slug):
 
     if subscription.active is not True:
         subscription.active = True
+        subscription.cancelled = False
         subscription.save()
     else:
         subscription.active = False
+        subscription.cancelled = True
         subscription.save()
     subscription.is_approved = True
     subscription.modified_by = name_type
@@ -376,9 +380,11 @@ def decline_subscription(request, slug):
     name_type = dict({"name": request.user.name, "type": request.user.type})
     if subscription.active is not True:
         subscription.active = False
+        subscription.cancelled = True
         subscription.save()
-    elif subscription.active is not False:
+    elif subscription.active is True:
         subscription.active == True
+        subscription.cancelled = False
         subscription.save()
     subscription.is_approved = False
     subscription.modified_by = name_type
