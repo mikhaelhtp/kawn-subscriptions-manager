@@ -3,7 +3,6 @@
 {% load crispy_forms_tags %}
 
 {% block menu-title %}Edit User{% endblock %}
-{% block profile-active %}active{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -11,14 +10,16 @@
         <div class="card">
             <div class="card-body p-5">
                 <div class="row">
-                    <div class="col-lg-10">
+                    <div class="col-lg-12">
                         <div class="d-flex flex-column h-100">
                             <h5 class="font-weight-bolder">Edit User</h5>
                             <form method="post" novalidate>
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{{ next }}">
                                 {{ form|crispy }}
-                                <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">EDIT</button>
+                                <button type="submit" class="btn bg-gradient-info col-md-2 mt-4 mb-0">SAVE</button>
+                                <a href="{% url 'users:user_list' %}"
+                                    class="btn bg-danger col-md-2 mt-4 mb-0 text-white">CANCEL</a>
                             </form>
                         </div>
                     </div>

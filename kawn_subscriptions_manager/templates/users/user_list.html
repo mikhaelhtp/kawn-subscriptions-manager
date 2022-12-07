@@ -6,8 +6,6 @@
 {% load static i18n compress%}
 
 {% block menu-title %}Users List{% endblock %}
-{% block listsubscriptionplan-active %}active{% endblock %}
-
 
 {% block content %}
 <div class="row">
@@ -25,16 +23,16 @@
                     <h5 class="font-weight-bolder">Users</h5>
                     <div class="row">
                         <div class="col-md-2 align-middle">
-                        <a href="{% url 'users:add_users' %}" class="btn bg-gradient-info mt-2">Add User</a>
+                            <a href="{% url 'users:add_users' %}" class="btn bg-gradient-info mt-2">Add User</a>
                         </div>
                         {% comment %} <div class="col-md-10 align-middle mt-2">
-                        {% if view.export_formats %}
+                            {% if view.export_formats %}
                             {% for format in view.export_formats %}
                             <a href="{% export_url format %}" class="btn bg-gradient-faded-light btn-xs text-dark">
-                            download <code>.{{ format }}</code>
+                                download <code>.{{ format }}</code>
                             </a>
                             {% endfor %}
-                        {% endif %}
+                            {% endif %}
                         </div> {% endcomment %}
                     </div>
                 </div>
@@ -44,54 +42,66 @@
                     <table class="table table-sm" id="table1">
                         <thead>
                             <tr class="text-center">
-                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Name
+                                <th class="text-uppercase text-dark text-xxs font-weight-bolder" style="width: 16%;">Name
                                 </th>
-                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Username
+                                <th class="text-uppercase text-dark text-xxs font-weight-bolder" style="width: 16%;">Username
                                 </th>
-                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Email
+                                <th class="text-uppercase text-dark text-xxs font-weight-bolder" style="width: 16%;">Email
                                 </th>
-                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Status
+                                <th class="text-uppercase text-dark text-xxs font-weight-bolder" style="width: 16%;">Access
                                 </th>
-                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Access
+                                <th class="text-uppercase text-dark text-xxs font-weight-bolder" style="width: 16%;">Status
                                 </th>
-                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder">Action
+                                <th class="text-uppercase text-center text-dark text-xxs font-weight-bolder" style="width: 20%;">Action
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for user in object_list %}
                             <tr>
-                                <td class="align-middle text-center text-sm">
-                                    <p class="text-xs mb-0">{{ user.name }}</p>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0">{{ user.name }}</p>
                                 </td>
-                                <td class="align-middle text-center text-sm">
-                                    <p class="text-xs mb-0">{{ user.username }}</p>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0">{{ user.username }}</p>
                                 </td>
-                                <td class="align-middle text-center text-sm">
-                                    <p class="text-xs mb-0">{{ user.email }}</p>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0">{{ user.email }}</p>
                                 </td>
-                                <td class="align-middle text-center text-sm">
-                                    {% if user.verified %}
-                                    <p class="text-xs mb-0">Verified</p>
+                                <td class="px-4">
+                                    <p class="text-xs font-weight-bold mb-0">{{ user.type }}</p>
+                                </td>
+                                <td class="px-4">
+                                    {% if user.is_active %}
+                                    <p class="text-xs font-weight-bold mb-0">Active</p>
                                     {% else %}
-                                    <p class="text-xs mb-0">Unverified</p>
+                                    <p class="text-xs font-weight-bold mb-0">Not Active</p>
                                     {% endif %}
                                 </td>
-                                <td class="align-middle text-center text-sm">
-                                    <p class="text-xs mb-0">{{ user.type }}</p>
-                                </td>
-                                <td class="align-middle text-center text-sm">
+                                <td class="text-center">
                                     <div class="d-inline">
                                         <a href="{% url 'users:edit_users' user.id %}"
                                             class="btn btn-sm bg-warning text-white text-xs" title='Edit'>Edit</a>
-                                        <form class="d-inline" id="form-id" action="{% url 'users:delete_users' user.id %}"
-                                            method="post">
-                                            {% csrf_token %}
-                                            <input name="_method" type="hidden" value="Delete">
-                                            <button type="submit" class="btn btn-sm btn-danger btn-flat show_confirm"
-                                                data-toggle="tooltip" title='Delete'>Delete</button>
-                                        </form>
+                                        {% if user.is_active %}
+                                        <a href="{% url 'users:deactivate_user' user.id %}"
+                                            class="btn btn-sm bg-danger text-white text-xs"
+                                            title='Deactivate'>Deactivate</a>
+                                        {% else %}
+                                        <a href="{% url 'users:activate_user' user.id %}"
+                                            class="btn btn-sm bg-info text-white text-xs" title='Activate'>Activate</a>
+                                        {% endif %}
                                     </div>
+                                    {% if user.is_active == False %}
+                                    <form class="d-inline" id="form-id"
+                                        action="{% url 'users:delete_users' user.id %}"
+                                        method="post">
+                                        {% csrf_token %}
+                                        </a>
+                                        <button type="submit"
+                                            class="btn btn-sm bg-danger show_confirm text-white text-xs"
+                                            data-toggle="tooltip" title='Delete'>Delete</button>
+                                    </form>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

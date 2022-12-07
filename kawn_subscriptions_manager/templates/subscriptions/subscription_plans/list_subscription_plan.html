@@ -32,7 +32,7 @@
             <h5 class="font-weight-bolder">Susbcription Plans</h5>
             <a href="{% url 'subscriptions:add_subscription_plan' %}" class="btn bg-gradient-info mt-2">Add Susbcription
               Plans</a>
-            <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal"
+            <button type="button" class="btn bg-gradient-info align-middle col-md-2 mt-2" data-bs-toggle="modal"
               data-bs-target="#exampleModal">
               Advanced Search
             </button>
@@ -58,7 +58,7 @@
                             {{ subscription_plan_filter.form.is_active|as_crispy_field }}
                           </div>
                           <div class="modal-footer">
-                            <button class="btn bg-secondary">
+                            <button class="btn bg-danger">
                               <a href="{% url 'subscriptions:list_subscription_plan' %}" class="text-white">
                                 Clear Filter
                               </a>

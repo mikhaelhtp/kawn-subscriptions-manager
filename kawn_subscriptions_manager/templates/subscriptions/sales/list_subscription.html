@@ -38,7 +38,7 @@
               <a href="{% url 'subscriptions:add_subscription' %}" class="btn bg-gradient-info col-md-2 mt-2">
                 Add Subscription
               </a>
-              <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal"
+              <button type="button" class="btn bg-gradient-info align-middle col-md-2 mt-2" data-bs-toggle="modal"
                 data-bs-target="#exampleModal">
                 Advanced Search
               </button>
@@ -64,7 +64,7 @@
                               {{ subscription_filter.form.active|as_crispy_field }}
                             </div>
                             <div class="modal-footer">
-                              <button class="btn bg-secondary">
+                              <button class="btn bg-danger">
                                 <a href="{% url 'subscriptions:list_subscription' %}" class="text-white">
                                   Clear Filter
                                 </a>
@@ -126,7 +126,7 @@
                     {% if data.active == True and data.is_approved is not None %}
                     <a href="{% url 'subscriptions:deactivate_subscription' data.slug %}"
                       class="btn btn-sm bg-danger text-white text-xs">Deactivate</a>
-                    {% elif data.active == False and data.is_approved is not None %}
+                    {% elif data.cancelled == True and data.is_approved is not None %}
                     <a href="{% url 'subscriptions:activate_subscription' data.slug %}"
                       class="btn btn-sm bg-info text-white text-xs">Activate</a>
                     {% else %}

@@ -17,7 +17,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}">
                 {{ form|crispy }}
-                <button type="submit" class="btn bg-info mt-4 mb-0 col-md-2 text-white">SAVE</button>
+                <button type="submit" class="btn bg-gradient-info mt-4 mb-0 col-md-2">SAVE</button>
                 <a href="{% url 'subscriptions:list_subscription'  %}"
                   class="btn bg-danger col-md-2 mt-4 mb-0 text-white">CANCEL</a>
               </form>

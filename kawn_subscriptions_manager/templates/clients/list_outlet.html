@@ -31,7 +31,7 @@
             <div class="align-middle">
               <h5 class="font-weight-bolder">Outlets</h5>
               <a href="{% url 'clients:add_outlet' %}" class="btn bg-gradient-info mt-2">Add Outlet</a>
-              <button type="button" class="btn bg-gradient-dark align-middle col-md-2 mt-2" data-bs-toggle="modal"
+              <button type="button" class="btn bg-gradient-info align-middle col-md-2 mt-2" data-bs-toggle="modal"
                 data-bs-target="#exampleModal">
                 Advanced Search
               </button>
@@ -54,7 +54,7 @@
                               {{ myFilter.form.province_read|as_crispy_field }}
                             </div>
                             <div class="modal-footer">
-                              <button class="btn bg-secondary">
+                              <button class="btn bg-danger">
                                 <a href="{% url 'clients:list_outlet' %}" class="text-white">
                                   Clear Filter
                                 </a>
