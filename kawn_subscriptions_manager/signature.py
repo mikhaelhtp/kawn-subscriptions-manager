@@ -21,13 +21,13 @@ auth = HTTPSignatureAuth(
 )
 
 subscriptions = requests.get(
-    "https://"+ DOMAIN +"/api/v2.1/internal-application/subscription/",
+    "https://"+ DOMAIN +"/api/v2.1/internal-application/subscription/?limit=1000",
     auth=auth,
     headers=headers,
 ).json()
 
 outlets = requests.get(
-    "https://"+ DOMAIN +"/api/v2.1/internal-application/outlet/?limit=465",
+    "https://"+ DOMAIN +"/api/v2.1/internal-application/outlet/?limit=1000",
     auth=auth,
     headers=headers,
 ).json()

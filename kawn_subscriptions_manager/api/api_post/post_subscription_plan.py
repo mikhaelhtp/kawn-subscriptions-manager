@@ -46,7 +46,6 @@ for subplan in subplans:
         "trial_unit": subplan.trial_unit,
         "recurrence_period": subplan.recurrence_period,
         "recurrence_unit": subplan.recurrence_unit,
-        "slug": subplan.slug
       }
     )
 
