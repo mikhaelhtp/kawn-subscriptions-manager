@@ -19,8 +19,6 @@ class OutletForm(ModelForm):
             "city",
             "outlet_code",
             "transaction_code_prefix",
-            "archieved",
-            "enable_dashboard",
             "taxes", 
             "gratuity",
         ]
@@ -94,8 +92,6 @@ class OutletClientForm(ModelForm):
             "city",
             "outlet_code",
             "transaction_code_prefix",
-            "archieved",
-            "enable_dashboard",
             "taxes", 
             "gratuity",
             ]
