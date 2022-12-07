@@ -30,7 +30,7 @@ from .filters import UserFilter
 from .models import User
 from .forms import UsersEditForm
 from kawn_subscriptions_manager.decorators import (
-    admin_only,
+    admin_only
 )
 
 User = get_user_model()
@@ -168,23 +168,18 @@ class DeleteUsers(SuccessMessageMixin, DeleteView):
         messages.success(self.request, self.success_message)
         return super(DeleteUsers, self).delete(request, *args, **kwargs)
 
+@admin_only
+def deactivate_user(request, id):
+    user = User.objects.get(id=id)
+    user.is_active = False
+    user.save()
+    messages.success(request, "User has been successfully deactivated!")
+    return redirect("users:user_list")
 
-# @login_required
-# @admin_only
-# def invite(request):
-
-#     if request.method == 'GET':
-#         form = UserInviteForm()
-#     else:
-#         form = UserInviteForm(request.POST)
-#         if form.is_valid():
-#             from_email = request.user.email
-#             to = form.cleaned_data['to']
-#             subject = form.cleaned_data['subject']
-#             message = form.cleaned_data['message']
-#             try:
-#                 send_mail(from_email, subject, message, [to], fail_silently=False)
-#             except BadHeaderError:
-#                 return HttpResponse('Invalid header found.')
-#             return redirect('users:inviteUsers')
-#     return render(request, "users/admin/invite_users.html", {'form': form})
+@admin_only
+def activate_user(request, id):
+    user = User.objects.get(id=id)
+    user.is_active = True
+    user.save()
+    messages.success(request, "User has been successfully activated!")
+    return redirect("users:user_list")
