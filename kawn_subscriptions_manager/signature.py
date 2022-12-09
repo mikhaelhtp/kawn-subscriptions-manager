@@ -1,7 +1,6 @@
 import requests
 import datetime
 from httpsig.requests_auth import HTTPSignatureAuth
-from kawn_subscriptions_manager.clients.models import Province
 import environ
 
 env = environ.Env()
@@ -38,18 +37,8 @@ provinces = requests.get(
     headers=headers,
 ).json()
 
-p = Province.objects.all().order_by("id")
-cities = tuple()
-for i in p:
-    city = requests.get(
-        "https://"+ DOMAIN +"/api/v2.1/provinces/"+ str(i.id) +"/cities/",
-        auth=auth,
-        headers=headers,
-    ).json()
-    cities += tuple(city["results"])
-
-accounts = requests.get(
-    "https://"+ DOMAIN +"/api/v2.1/account/",
+cities = requests.get(
+    "https://indev.kawn.co.id/api/v2.1/cities/?limit=1000",
     auth=auth,
     headers=headers,
 ).json()

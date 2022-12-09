@@ -4,55 +4,60 @@ from httpsig.requests_auth import HTTPSignatureAuth
 import environ
 
 from kawn_subscriptions_manager.subscriptions.models  import SubscriptionPlan
-from kawn_subscriptions_manager.signature import subscription_plans
+from kawn_subscriptions_manager.signature import subscription_plans as sp
 
-env = environ.Env()
-environ.Env.read_env()
 
-KAWN_SUBSCRIPTION_KEY_ID = env("KAWN_SUBSCRIPTION_KEY_ID")
-KAWN_SUBSCRIPTION_SECRET = env("KAWN_SUBSCRIPTION_SECRET")
-DOMAIN = "indev.kawn.co.id"
+def post_subscription_plans():
+  env = environ.Env()
+  environ.Env.read_env()
 
-e = datetime.datetime.now()
+  KAWN_SUBSCRIPTION_KEY_ID = env("KAWN_SUBSCRIPTION_KEY_ID")
+  KAWN_SUBSCRIPTION_SECRET = env("KAWN_SUBSCRIPTION_SECRET")
+  DOMAIN = "indev.kawn.co.id"
 
-signature_headers = ["(request-target)", "date"]
-headers = {"Date": e.strftime("%a, %d %b %Y %I:%M:%S")}
+  e = datetime.datetime.now()
 
-auth = HTTPSignatureAuth(
-    key_id=KAWN_SUBSCRIPTION_KEY_ID,
-    secret=KAWN_SUBSCRIPTION_SECRET,
-    algorithm="hmac-sha256",
-    headers=signature_headers,
-)
+  signature_headers = ["(request-target)", "date"]
+  headers = {"Date": e.strftime("%a, %d %b %Y %I:%M:%S")}
 
-url = "https://" + DOMAIN + "/api/v2.1/internal-application/subscription-plan/"
-subplans = SubscriptionPlan.objects.all()
-subscription_plans = tuple(subscription_plans["results"])
-subplan_id = []
-for i in subscription_plans:
-    subplan_id.append(
-      i["id"]
-    )
+  auth = HTTPSignatureAuth(
+      key_id=KAWN_SUBSCRIPTION_KEY_ID,
+      secret=KAWN_SUBSCRIPTION_SECRET,
+      algorithm="hmac-sha256",
+      headers=signature_headers,
+  )
 
-payloads = []
-for subplan in subplans:
-  if subplan.id not in subplan_id:
-    payloads.append(
-      {
-        "name": subplan.name,
-        "description": subplan.description,
-        "price": subplan.price,
-        "trial_period": subplan.trial_period,
-        "trial_unit": subplan.trial_unit,
-        "recurrence_period": subplan.recurrence_period,
-        "recurrence_unit": subplan.recurrence_unit,
-      }
-    )
+  url = "https://" + DOMAIN + "/api/v2.1/internal-application/subscription-plan/"
+  subplans = SubscriptionPlan.objects.all()
+  subscription_plans = tuple(sp["results"])
+  subplan_id = []
+  for i in subscription_plans:
+      subplan_id.append(
+        i["id"]
+      )
 
-for payload in payloads:
-  results = requests.post(url, data=payload, auth=auth, headers=headers)
+  payloads = []
+  for subplan in subplans:
+    if subplan.id not in subplan_id:
+      payloads.append(
+        {
+          "name": subplan.name,
+          "description": subplan.description,
+          "price": subplan.price,
+          "trial_period": subplan.trial_period,
+          "trial_unit": subplan.trial_unit,
+          "recurrence_period": subplan.recurrence_period,
+          "recurrence_unit": subplan.recurrence_unit,
+        }
+      )
 
-if results.status_code == 201:
-  print("Success")
-else:
-  print(results.status_code)
+  if payloads:
+    for payload in payloads:
+      results = requests.post(url, auth=auth, headers=headers, json=payload, )
+
+    if results.status_code == 201:
+      print("Success")
+    else:
+      print(results.status_code)
+  else:
+    print("There is no new data to post")
