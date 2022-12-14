@@ -6,5 +6,4 @@ class ClientsConfig(AppConfig):
     name = "kawn_subscriptions_manager.clients"
 
     def ready(self):
-        from kawn_subscriptions_manager.jobs import scheduler
-        scheduler.start()
+        pass
