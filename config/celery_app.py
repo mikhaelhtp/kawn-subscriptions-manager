@@ -14,7 +14,8 @@ app = Celery("kawn_subscriptions_manager")
 # the configuration object to child processes.
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
-app.conf.enable_utc = True
+app.conf.enable_utc = False
+app.conf.use_tz = True
 app.conf.timezone = 'Asia/Jakarta'
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
@@ -22,43 +23,43 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-# Executes every day morning at 6:00 a.m.
+# Executes every day morning at 6:00 a.m or 23:00 UTC.
 'get_province': {
     'task': 'kawn_subscriptions_manager.clients.tasks.get_province',
-    'schedule': crontab(hour=6, minute=0),
+    'schedule': crontab(hour=23, minute=0),
 }, 
 'get_city': {
     'task': 'kawn_subscriptions_manager.clients.tasks.get_city',
-    'schedule': crontab(hour=6, minute=1),
+    'schedule': crontab(hour=23, minute=1),
 },
 'get_outlet': {
     'task': 'kawn_subscriptions_manager.clients.tasks.get_outlet',
-    'schedule': crontab(hour=6, minute=0),
+    'schedule': crontab(hour=23, minute=0),
 },
 'get_subscription_plan': {
     'task': 'kawn_subscriptions_manager.subscriptions.tasks.get_subscription_plan',
-    'schedule': crontab(hour=6, minute=0),
+    'schedule': crontab(hour=23, minute=0),
 },
 'get_subscription': {
     'task': 'kawn_subscriptions_manager.subscriptions.tasks.get_subscription',
-    'schedule': crontab(hour=6, minute=1),
+    'schedule': crontab(hour=23, minute=1),
 },
-# Executes every day afternoon at 6:00 p.m.
+# Executes every day afternoon at 6:00 p.m. or 11:00 UTC
 'post_outlet': {
     'task': 'kawn_subscriptions_manager.clients.tasks.post_outlet',
-    'schedule': crontab(hour=18, minute=0),
+    'schedule': crontab(hour=11, minute=0),
 },
 'post_subscription_plan': {
     'task': 'kawn_subscriptions_manager.subscriptions.tasks.post_subscription_plan',
-    'schedule': crontab(hour=18, minute=0),
+    'schedule': crontab(hour=11, minute=0),
 },
-# Executes every day afternoon at 6:30 p.m.
+# Executes every day afternoon at 6:30 p.m. or 11:30 UTC
 'put_subscription_plan': {
     'task': 'kawn_subscriptions_manager.subscriptions.tasks.put_subscription_plan',
-    'schedule': crontab(hour=18, minute=30),
+    'schedule': crontab(hour=11, minute=30),
 },
 'put_subscription': {
     'task': 'kawn_subscriptions_manager.subscriptions.tasks.put_subscription',
-    'schedule': crontab(hour=18, minute=30),
+    'schedule': crontab(hour=11, minute=30),
 },
 }
