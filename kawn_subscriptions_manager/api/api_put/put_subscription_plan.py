@@ -57,8 +57,8 @@ def put_subscription_plans():
       results = requests.put(url, auth=auth, headers=headers, json=payload)
 
     if results.status_code == 200:
-      print("Success")
+      print("Success update subscription plans")
     else:
       print(results.status_code)
   else:
-    print("There is no new data to put")
+    print("There is no subscription plans to put")

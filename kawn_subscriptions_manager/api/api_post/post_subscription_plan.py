@@ -48,12 +48,13 @@ def post_subscription_plans():
           "trial_unit": subplan.trial_unit,
           "recurrence_period": subplan.recurrence_period,
           "recurrence_unit": subplan.recurrence_unit,
+          "slug": subplan.slug,
         }
       )
 
   if payloads:
     for payload in payloads:
-      results = requests.post(url, auth=auth, headers=headers, json=payload, )
+      results = requests.post(url, auth=auth, headers=headers, json=payload)
 
     if results.status_code == 201:
       print("Success")
