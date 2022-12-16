@@ -30,7 +30,6 @@
                     <div class="col-lg-12 mb-4 mt-2">
                         <div class="align-middle">
                             <h5 class="font-weight-bolder">Clients</h5>
-                            <a href="{% url 'clients:add_client' %}" class="btn bg-gradient-info mt-2">Add Client</a>
                             <button type="button" class="btn bg-gradient-info align-middle col-md-2 mt-2"
                                 data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Advanced Search
@@ -132,14 +131,6 @@
                                         class="btn btn-sm bg-info text-white text-xs">Outlet</a>
                                     <a href="{% url 'clients:update_client' data.slug %}"
                                         class="btn btn-sm bg-warning text-white text-xs">Edit</a>
-                                    <form class="d-inline" id="form-id"
-                                        action="{% url 'clients:delete_client' data.slug %}" method="post">
-                                        {% csrf_token %}
-                                        </a>
-                                        <button type="submit"
-                                            class="btn btn-sm bg-danger btn-flat show_confirm text-white"
-                                            data-toggle="tooltip" title='Delete'>Delete</button>
-                                    </form>
                                 </td>
                             </tr>
                             {% empty %}

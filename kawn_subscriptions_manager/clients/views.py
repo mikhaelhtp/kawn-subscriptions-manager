@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from django_tables2 import SingleTableMixin
 from django_tables2.export.views import ExportMixin
+from django.utils.decorators import method_decorator
 
 from view_breadcrumbs import ListBreadcrumbMixin, BaseBreadcrumbMixin
 
@@ -14,9 +15,9 @@ from .forms import (
     OutletForm,
     ClientForm,
     OutletClientForm,
-    ClientFormForSupervisor,
 )
 from .filters import OutletFilter, ClientFilter
+from kawn_subscriptions_manager.decorators import allowed_users
 
 
 class ListClient(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
@@ -48,55 +49,17 @@ class ListClient(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
             return ["clients/list_client.html"]
 
 
-class AddClient(BaseBreadcrumbMixin, CreateView):
-    model = Client
-    template_name = "clients/form_client.html"
-    crumbs = [
-        ("Client", reverse_lazy("clients:list_client")),
-        ("Add Client", reverse_lazy("clients:add_client")),
-    ]
-
-    def get_form_class(self):
-        if self.request.user.type == "SALES":
-            return ClientForm
-        else:
-            return ClientFormForSupervisor
-
-    def form_valid(self, form):
-        messages.success(self.request, "Client successfully added")
-        client = form.save(commit=False)
-        if self.request.user.type == "SALES":
-            client.user_id = self.request.user.id
-        client.save()
-
-        return redirect("clients:list_client")
-
-
+@method_decorator([allowed_users(["ADMIN", "SUPERVISOR"])], name="dispatch")
 class UpdateClient(SuccessMessageMixin, BaseBreadcrumbMixin, UpdateView):
     model = Client
     template_name = "clients/form_client.html"
+    form_class = ClientForm
     success_url = reverse_lazy("clients:list_client")
     success_message = "Client successfully updated!"
     crumbs = [
         ("Client", reverse_lazy("clients:list_client")),
         ("Update Client", reverse_lazy("clients:update_client")),
     ]
-
-    def get_form_class(self):
-        if self.request.user.type == "SALES":
-            return ClientForm
-        else:
-            return ClientFormForSupervisor
-
-
-class DeleteClient(SuccessMessageMixin, BaseBreadcrumbMixin, DeleteView):
-    model = Client
-    crumbs = [("Delete Client", reverse_lazy("clients:delete_client"))]
-    success_url = reverse_lazy("clients:list_client")
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, "Client successfully deleted!")
-        return super(DeleteClient, self).delete(request, *args, **kwargs)
 
 
 class ListOutletClient(ListBreadcrumbMixin, ListView):

@@ -32,9 +32,13 @@ app.conf.beat_schedule = {
     'task': 'kawn_subscriptions_manager.clients.tasks.get_city',
     'schedule': crontab(hour=23, minute=1),
 },
+'get_client': {
+    'task': 'kawn_subscriptions_manager.clients.tasks.get_client',
+    'schedule': crontab(hour=23, minute=0),
+}, 
 'get_outlet': {
     'task': 'kawn_subscriptions_manager.clients.tasks.get_outlet',
-    'schedule': crontab(hour=23, minute=0),
+    'schedule': crontab(hour=23, minute=1),
 },
 'get_subscription_plan': {
     'task': 'kawn_subscriptions_manager.subscriptions.tasks.get_subscription_plan',
@@ -42,7 +46,7 @@ app.conf.beat_schedule = {
 },
 'get_subscription': {
     'task': 'kawn_subscriptions_manager.subscriptions.tasks.get_subscription',
-    'schedule': crontab(hour=23, minute=1),
+    'schedule': crontab(hour=23, minute=2),
 },
 # Executes every day afternoon at 6:00 p.m. or 11:00 UTC
 'post_outlet': {

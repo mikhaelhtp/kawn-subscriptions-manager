@@ -28,6 +28,7 @@ def get_outlets():
                     modified=outlet["modified"],
                     province=outlet["province"],
                     city=outlet["city"],
+                    client_id=outlet["account"],
                 )
             ], ignore_conflicts=True)
             count = count+1

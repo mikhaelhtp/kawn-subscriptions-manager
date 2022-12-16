@@ -34,9 +34,9 @@ class Client(models.Model):
     modified = models.DateTimeField(auto_now=True)
     name = models.CharField(_("Client Name"), max_length=255, null=True)
     address = models.CharField(_("Address"), max_length=255, null=True)
-    phone = PhoneNumberField(_("Phone Number"), null=True, unique=True)
+    phone = PhoneNumberField(_("Phone Number"), null=True)
     business_code = models.CharField(
-        _("Business Code"), max_length=255, unique=True, null=True
+        _("Business Code"), max_length=255, null=True
     )
     brand_name = models.CharField(
         _("Brand Name"), max_length=255, null=True, blank=True

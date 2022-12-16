@@ -26,9 +26,9 @@ class OutletForm(ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(OutletForm, self).__init__(*args, **kwargs)
         if user.type == "SALES":
-            client = Client.objects.filter(user_id=user.id)
+            client = Client.objects.filter(user_id=user.id).order_by('name')
         else:
-            client = Client.objects.all()
+            client = Client.objects.all().order_by('name')
         clients = [(i.id, i.name) for i in client]
         CLIENT = [("", "--------")] + clients
 
@@ -58,18 +58,10 @@ class OutletForm(ModelForm):
 class ClientForm(ModelForm):
     class Meta:
         model = Client
-        fields = "__all__"
-        exclude = ["user", "business_code", "brand_logo", "registered_via"]
-
-
-class ClientFormForSupervisor(ModelForm):
-    class Meta:
-        model = Client
-        fields = "__all__"
-        exclude = ["business_code", "brand_logo", "registered_via"]
+        fields = ["user"]
 
     def __init__(self, *args, **kwargs):
-        super(ClientFormForSupervisor, self).__init__(*args, **kwargs)
+        super(ClientForm, self).__init__(*args, **kwargs)
 
         user = User.objects.filter(type="SALES")
         users = [(i.id, i.name) for i in user]
