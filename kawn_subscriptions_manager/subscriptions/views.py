@@ -251,7 +251,7 @@ class AddSubscription(BaseBreadcrumbMixin, CreateView):
             subscription.id = top.id + 1
         subscription.save()
         return redirect("subscriptions:list_subscription")
-
+    
 
 @method_decorator([allowed_users(["SALES"])], name="dispatch")
 class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
@@ -278,42 +278,47 @@ class ActivateSubscription(BaseBreadcrumbMixin, UpdateView):
         return kwargs
 
     def form_valid(self, form):
-        messages.success(self.request, "Subscriptions successfully added!")
-        name_type = dict(
-            {"name": self.request.user.name, "type": self.request.user.type}
-        )
         billing_id = (Subscription.objects.get(slug=self.kwargs["slug"])).billing
-        order_payment_id = (Billing.objects.get(id=billing_id.id)).orderpayment
-        order_payment = OrderPayment.objects.get(pk=order_payment_id.id)
-        order_payment.payment_type = form["activate_order_payment_form"].cleaned_data[
-            "payment_type"
-        ]
-        order_payment.amount = form["activate_order_payment_form"].cleaned_data[
-            "amount"
-        ]
-        order_payment.save()
-        subscription_detail_id = (
-            Billing.objects.get(id=billing_id.id)
-        ).subscriptiondetail
-        subscription_detail = SubscriptionDetail.objects.get(
-            pk=subscription_detail_id.id
-        )
-        subscription_detail.current_plan = (
-            form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
-        )
-        subscription_detail.choosen_plan = (
-            form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
-        )
-        subscription_detail.save()
-        billing = form["activate_billing_form"].save(commit=False)
-        billing.save()
-        subscription = form["activate_subscription_form"].save(commit=False)
-        subscription.is_approved = ""
-        subscription.cancelled = False
-        subscription.modified_by = name_type
-        subscription.save()
+        if billing_id:
+            messages.success(self.request, "Subscriptions successfully added!")
+            name_type = dict(
+                {"name": self.request.user.name, "type": self.request.user.type}
+            )
+            billing_id = (Subscription.objects.get(slug=self.kwargs["slug"])).billing
+            order_payment_id = (Billing.objects.get(id=billing_id.id)).orderpayment
+            order_payment = OrderPayment.objects.get(pk=order_payment_id.id)
+            order_payment.payment_type = form["activate_order_payment_form"].cleaned_data[
+                "payment_type"
+            ]
+            order_payment.amount = form["activate_order_payment_form"].cleaned_data[
+                "amount"
+            ]
+            order_payment.save()
+            subscription_detail_id = (
+                Billing.objects.get(id=billing_id.id)
+            ).subscriptiondetail
+            subscription_detail = SubscriptionDetail.objects.get(
+                pk=subscription_detail_id.id
+            )
+            subscription_detail.current_plan = (
+                form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+            )
+            subscription_detail.choosen_plan = (
+                form["activate_subscription_form"].cleaned_data["subscriptionplan"].id
+            )
+            subscription_detail.save()
+            billing = form["activate_billing_form"].save(commit=False)
+            billing.save()
+            subscription = form["activate_subscription_form"].save(commit=False)
+            subscription.is_approved = ""
+            subscription.cancelled = False
+            subscription.modified_by = name_type
+            subscription.save()
 
-        return redirect("subscriptions:list_subscription")
+            return redirect("subscriptions:list_subscription")
+        else:
+            messages.success(self.request, "This outlet has no billing!")
+            return redirect("subscriptions:list_subscription")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
