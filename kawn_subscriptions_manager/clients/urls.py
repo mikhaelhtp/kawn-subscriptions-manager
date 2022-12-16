@@ -13,8 +13,6 @@ from .views import (
     load_cities,
 )
 
-from .api import PostOutlets
-
 
 app_name = "clients"
 urlpatterns = [
@@ -28,6 +26,4 @@ urlpatterns = [
     path("outlet/update/<slug:slug>/", UpdateOutlet.as_view(), name="update_outlet"),
     path("outlet/delete/<slug:slug>/", DeleteOutlet.as_view(), name="delete_outlet"),
     path("ajax/load-cities/", load_cities, name="ajax_load_cities"),
-
-    path('api/post_outlets/', PostOutlets.as_view()),
 ]
