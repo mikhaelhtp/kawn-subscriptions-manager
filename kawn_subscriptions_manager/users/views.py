@@ -117,7 +117,7 @@ class AddUsers(SuccessMessageMixin, BaseBreadcrumbMixin, CreateView):
         ("Add User", reverse_lazy("users:add_users")),
     ]
     success_message = _(
-        "Account has been created successfully! <br/>Account details have been sent to the respective email."
+        "Account has been created successfully! Account details have been sent to the respective email."
     )
     success_url = reverse_lazy("users:user_list")
 

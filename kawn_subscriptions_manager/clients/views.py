@@ -26,6 +26,7 @@ class ListClient(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
     def get_queryset(self):
         user_id = self.request.user.id
         user_role = self.request.user.type
+        # mutant 6
         if user_role == "SALES":
             return Client.objects.filter(user_id=user_id).order_by("-id")
         else:
@@ -43,6 +44,7 @@ class ListClient(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
         return context
 
     def get_template_names(self):
+        # mutant 5
         if self.request.user.type == "SALES":
             return ["clients/sales/list_client.html"]
         else:
@@ -135,6 +137,7 @@ class ListOutlet(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
 
     def get_queryset(self):
         user_id = self.request.user.id
+        # mutant
         if self.request.user.type == "SALES":
             return Outlet.objects.filter(client__user=user_id).order_by("-id")
         else:
@@ -152,6 +155,7 @@ class ListOutlet(ListBreadcrumbMixin, ListView, SingleTableMixin, ExportMixin):
         return context
 
     def get_template_names(self):
+        # mutant
         if self.request.user.type == "SALES":
             return ["clients/sales/list_outlet.html"]
         else:
@@ -173,6 +177,7 @@ class AddOutlet(BaseBreadcrumbMixin, CreateView):
             return OutletForm(user=self.request.user)
 
     def form_valid(self, form):
+        # mutant
         messages.success(self.request, "Outlet successfully added")
         outlet = form.save(commit=False)
         outlet.province_read = dict(form.fields["province"].choices)[
@@ -183,8 +188,10 @@ class AddOutlet(BaseBreadcrumbMixin, CreateView):
         ]
         if Outlet.objects.all().exists():
             top = Outlet.objects.order_by("-id")[0]
+            # mutant 
             outlet.id = top.id + 1
         outlet.save()
+        # mutant 
         return redirect("clients:list_outlet")
 
 

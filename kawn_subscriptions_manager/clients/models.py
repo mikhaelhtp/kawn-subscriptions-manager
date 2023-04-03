@@ -72,6 +72,7 @@ class Outlet(models.Model):
     postal_code = models.CharField(
         _("Postal Code"),
         max_length=10,
+        # mutant 1 
         validators=[RegexValidator("^[0-9]{5}$", _("Invalid postal code"))],
         null=True,
         blank=True,
@@ -83,7 +84,9 @@ class Outlet(models.Model):
     )
     archieved = models.BooleanField(default=True)
     deleted = models.CharField(max_length=255, null=True)
+    # mutant 2
     taxes = models.DecimalField(decimal_places=2, max_digits=12, null=True, blank=True)
+    # mutant 3
     gratuity = models.DecimalField(decimal_places=2, max_digits=12, null=True, blank=True)
     enable_dashboard = models.BooleanField(default=True)
     branch_id = models.CharField(max_length=255, null=True)
@@ -96,6 +99,7 @@ class Outlet(models.Model):
     def save(self, *args, **kwargs):
         for field_name in ["transaction_code_prefix", "outlet_code"]:
             val = getattr(self, field_name, False)
+            # mutant 4
             if val:
                 setattr(self, field_name, val.upper())
         super(Outlet, self).save(*args, **kwargs)
